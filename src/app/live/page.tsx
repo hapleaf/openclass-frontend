@@ -450,13 +450,13 @@ export default function LivePage() {
               <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginBottom: "0.6rem" }}>
                 <Link href="/" style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.8rem", textDecoration: "none" }}>Home</Link>
                 <span style={{ color: "rgba(255,255,255,0.3)", fontSize: "0.8rem" }}>›</span>
-                <span style={{ color: "#7ed9a4", fontSize: "0.8rem", fontWeight: 600 }}>Live Classes &amp; Webinars</span>
+                <span style={{ color: "#7ed9a4", fontSize: "0.8rem", fontWeight: 600 }}>Webinars</span>
               </div>
               <h1 style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "clamp(1.6rem,3vw,2.2rem)", fontWeight: 700, color: "#fff", letterSpacing: "-0.02em", lineHeight: 1.15 }}>
-                Live Classes &amp; <em style={{ color: "#7ed9a4", fontStyle: "italic" }}>Webinars</em>
+                Free <em style={{ color: "#7ed9a4", fontStyle: "italic" }}>Webinars</em>
               </h1>
               <p style={{ color: "rgba(255,255,255,0.55)", fontSize: "0.9rem", marginTop: "0.35rem", maxWidth: 560 }}>
-                Free, expert-led live sessions across Mathematics, Science, Engineering, Finance, Languages, and more.
+                Live, interactive webinars from expert hosts across Mathematics, Science, Finance, Technology, Languages, and more.
               </p>
             </div>
             <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)", color: "rgba(255,255,255,0.85)", fontSize: "0.8rem", fontWeight: 500, padding: "0.4rem 0.9rem", borderRadius: 100, alignSelf: "flex-start" }}>
@@ -599,7 +599,7 @@ export default function LivePage() {
               <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="#6b7a72" strokeWidth={2.2} style={{ flexShrink: 0 }}>
                 <circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" />
               </svg>
-              <input type="text" placeholder="Search sessions, teachers, or subjects…" value={search} onChange={e => setSearch(e.target.value)}
+              <input type="text" placeholder="Search webinars, speakers, or subjects…" value={search} onChange={e => setSearch(e.target.value)}
                 style={{ border: "none", outline: "none", background: "transparent", fontFamily: "'DM Sans', sans-serif", fontSize: "0.875rem", color: "#0f1410", width: "100%" }} />
               {search && (
                 <button onClick={() => setSearch("")} style={{ background: "none", border: "none", cursor: "pointer", color: "#6b7a72", padding: 0, display: "flex", alignItems: "center" }}>

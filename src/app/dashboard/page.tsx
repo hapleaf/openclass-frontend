@@ -319,7 +319,7 @@ export default function DashboardPage() {
 
             <div style={{ position: "relative", zIndex: 1 }}>
               <div style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", background: "rgba(232,160,32,0.15)", border: "1px solid rgba(232,160,32,0.25)", color: "#f5c84a", fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", padding: "0.25rem 0.7rem", borderRadius: 100, marginBottom: "0.75rem" }}>
-                🎓 Teaching Center
+                🎙️ Speaker Center
               </div>
               <h1 style={{ fontFamily: T.ffd, fontSize: "clamp(1.4rem,2.5vw,1.8rem)", fontWeight: 700, color: T.white, letterSpacing: "-0.02em", marginBottom: "0.3rem" }}>
                 {greeting(firstName)}
@@ -334,7 +334,7 @@ export default function DashboardPage() {
             <div style={{ position: "relative", zIndex: 1, flexShrink: 0, display: "flex", flexDirection: "column", gap: "0.65rem", alignItems: isMobile ? "flex-start" : "flex-end", width: isMobile ? "100%" : "auto" }}>
               <Link href="/session" style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.75rem 1.5rem", borderRadius: T.rs, fontFamily: T.ff, fontSize: "0.9rem", fontWeight: 600, background: T.leaf, color: T.white, textDecoration: "none" }}>
                 <svg width="15" height="15" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><line x1="12" y1="5" x2="12" y2="19" /><line x1="5" y1="12" x2="19" y2="12" /></svg>
-                New Session
+                New Webinar
               </Link>
               <a href={`/u/${makeProfileSlug(profile)}`} target="_blank" rel="noopener noreferrer" style={{ display: "inline-flex", alignItems: "center", gap: "0.45rem", padding: "0.55rem 1.2rem", borderRadius: T.rs, fontFamily: T.ff, fontSize: "0.82rem", fontWeight: 600, background: "rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.85)", textDecoration: "none", border: "1px solid rgba(255,255,255,0.18)", backdropFilter: "blur(4px)" }}>
                 <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path d="M18 13v6a2 2 0 01-2 2H5a2 2 0 01-2-2V8a2 2 0 012-2h6"/><polyline points="15 3 21 3 21 9"/><line x1="10" y1="14" x2="21" y2="3"/></svg>
@@ -357,7 +357,7 @@ export default function DashboardPage() {
 
             {/* Active & Upcoming Sessions */}
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.1rem" }}>
-              <SectionTitle>Active &amp; Upcoming Sessions</SectionTitle>
+              <SectionTitle>Active &amp; Upcoming Webinars</SectionTitle>
               <Link href="/my-sessions" style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", padding: "0.4rem 0.9rem", borderRadius: 100, fontFamily: T.ff, fontSize: "0.78rem", fontWeight: 500, border: `1.5px solid ${T.border}`, background: T.white, color: T.inkSoft, textDecoration: "none" }}>
                 View all →
               </Link>

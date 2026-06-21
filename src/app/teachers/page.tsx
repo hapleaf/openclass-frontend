@@ -398,17 +398,17 @@ export default function TeachersPage() {
               <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginBottom: "0.6rem" }}>
                 <Link href="/" style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.8rem", textDecoration: "none" }}>Home</Link>
                 <span style={{ color: "rgba(255,255,255,0.3)", fontSize: "0.8rem" }}>›</span>
-                <span style={{ color: "rgba(255,255,255,0.85)", fontSize: "0.8rem", fontWeight: 500 }}>Teachers</span>
+                <span style={{ color: "rgba(255,255,255,0.85)", fontSize: "0.8rem", fontWeight: 500 }}>Speakers</span>
               </div>
               <h1 style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "clamp(1.6rem,3vw,2.2rem)", fontWeight: 700, color: "#fff", letterSpacing: "-0.02em", lineHeight: 1.15 }}>
-                Our <em style={{ color: "#7ed9a4", fontStyle: "italic" }}>Teachers</em>
+                Our <em style={{ color: "#7ed9a4", fontStyle: "italic" }}>Speakers</em>
               </h1>
               <p style={{ color: "rgba(255,255,255,0.55)", fontSize: "0.9rem", marginTop: "0.35rem" }}>
-                Experts, educators, and practitioners sharing knowledge freely.
+                Experts, practitioners, and thinkers hosting free webinars on OpenWebinar.
               </p>
             </div>
             <div style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "rgba(255,255,255,0.08)", border: "1px solid rgba(255,255,255,0.15)", color: "rgba(255,255,255,0.85)", fontSize: "0.8rem", fontWeight: 500, padding: "0.4rem 0.9rem", borderRadius: 100, alignSelf: "flex-start" }}>
-              👩‍🏫 {loading ? "…" : `${allTeachers.length} teachers`}
+              🎙️ {loading ? "…" : `${allTeachers.length} speakers`}
             </div>
           </div>
         </div>
@@ -523,7 +523,7 @@ export default function TeachersPage() {
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.25rem", flexWrap: "wrap", gap: "0.75rem" }}>
               <div style={{ fontSize: "0.875rem", color: "#6b7a72" }}>
                 <strong style={{ color: "#0f1410", fontWeight: 600 }}>{filtered.length}</strong>{" "}
-                teacher{filtered.length !== 1 ? "s" : ""} found
+                speaker{filtered.length !== 1 ? "s" : ""} found
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
                 <span style={{ fontSize: "0.8rem", color: "#6b7a72" }}>Sort:</span>
@@ -555,7 +555,7 @@ export default function TeachersPage() {
               </div>
             ) : filtered.length === 0 ? (
               <div style={{ textAlign: "center", padding: "4rem 2rem", color: "#6b7a72" }}>
-                <p style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "1.4rem", color: "#0f1410", marginBottom: "0.5rem" }}>No teachers found</p>
+                <p style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "1.4rem", color: "#0f1410", marginBottom: "0.5rem" }}>No speakers found</p>
                 <p style={{ fontFamily: "'DM Sans', sans-serif" }}>Try adjusting your filters or search query.</p>
               </div>
             ) : (

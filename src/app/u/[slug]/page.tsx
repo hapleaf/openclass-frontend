@@ -194,7 +194,7 @@ function SessionRow({ s, isPast = false, idx, total, isRegistered = false, isOwn
               ? (isOwner || isRegistered)
                 ? (isLive ? "🔴 Join Now" : "🎬 Join Now")
                 : "Register to Join →"
-              : "View Session →";
+              : "View Webinar Details →";
           const bg = isPast
             ? C.cream
             : joinOpen
@@ -385,7 +385,7 @@ export default function PublicProfilePage() {
         <div style={{ position: "absolute", top: "1.25rem", left: isMobile ? "1rem" : "2rem", zIndex: 1, display: "flex", alignItems: "center", gap: "0.4rem", fontSize: "0.78rem", color: "rgba(255,255,255,0.45)" }}>
           <Link href="/"    style={{ color: "rgba(255,255,255,0.45)", textDecoration: "none" }}>Home</Link>
           <span style={{ color: "rgba(255,255,255,0.25)" }}>›</span>
-          <Link href="/live" style={{ color: "rgba(255,255,255,0.45)", textDecoration: "none" }}>Teachers</Link>
+          <Link href="/teachers" style={{ color: "rgba(255,255,255,0.45)", textDecoration: "none" }}>Speakers</Link>
           <span style={{ color: "rgba(255,255,255,0.25)" }}>›</span>
           <span style={{ color: "rgba(255,255,255,0.75)" }}>{name}</span>
         </div>
@@ -442,7 +442,7 @@ export default function PublicProfilePage() {
                 <div style={{ display: "inline-flex", alignItems: "center", gap: "0.45rem", background: "#fdf3e0", border: "1px solid rgba(232,160,32,0.25)", borderRadius: 100, padding: "0.32rem 0.85rem" }}>
                   <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke={C.sun} strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
                   <span style={{ fontFamily: C.ffD, fontSize: "0.92rem", fontWeight: 700, color: C.sun }}>{sessions.filter(s => s.type === "liveclass").length}</span>
-                  <span style={{ fontSize: "0.72rem", color: C.sun, opacity: 0.85 }}>Live Classes</span>
+                  <span style={{ fontSize: "0.72rem", color: C.sun, opacity: 0.85 }}>Live Sessions</span>
                 </div>
               )}
               {/* Webinars */}
@@ -504,7 +504,7 @@ export default function PublicProfilePage() {
           {/* Sessions + Reviews — only when at least one published/approved session exists */}
           {sessions.length > 0 && (
             <Section>
-              <SectionTitle>Sessions</SectionTitle>
+              <SectionTitle>Webinars</SectionTitle>
               <div style={{ display: "flex", borderBottom: `1px solid ${C.border}`, marginBottom: "1.25rem" }}>
                 {(["upcoming", "completed"] as const).map(t => (
                   <button key={t} onClick={() => setSessTab(t)} style={{ padding: "0.55rem 1.1rem", fontSize: "0.82rem", fontWeight: sessTab === t ? 600 : 500, color: sessTab === t ? C.leaf : C.inkMuted, cursor: "pointer", background: "none", border: "none", borderBottom: `2px solid ${sessTab === t ? C.leaf : "transparent"}`, marginBottom: -1, fontFamily: C.ff, display: "flex", alignItems: "center", gap: "0.3rem" }}>
@@ -517,12 +517,12 @@ export default function PublicProfilePage() {
               </div>
               {sessTab === "upcoming" && (
                 upcoming.length === 0
-                  ? <p style={{ fontSize: "0.82rem", color: C.inkMuted, padding: "1rem 0" }}>No upcoming sessions right now.</p>
+                  ? <p style={{ fontSize: "0.82rem", color: C.inkMuted, padding: "1rem 0" }}>No upcoming webinars right now.</p>
                   : upcoming.map((s, i) => <SessionRow key={s.id} s={s} idx={i} total={upcoming.length} isRegistered={registeredIds.has(s.id)} isOwner={viewerId === data.profile.id} isMobile={isMobile} />)
               )}
               {sessTab === "completed" && (
                 completed.length === 0
-                  ? <p style={{ fontSize: "0.82rem", color: C.inkMuted, padding: "1rem 0" }}>No completed sessions yet.</p>
+                  ? <p style={{ fontSize: "0.82rem", color: C.inkMuted, padding: "1rem 0" }}>No completed webinars yet.</p>
                   : completed.map((s, i) => <SessionRow key={s.id} s={s} idx={i} total={completed.length} isPast isRegistered={registeredIds.has(s.id)} isOwner={viewerId === data.profile.id} isMobile={isMobile} />)
               )}
             </Section>
@@ -531,7 +531,7 @@ export default function PublicProfilePage() {
           {/* Reviews — only when at least one published/approved session exists */}
           {sessions.length > 0 && (
             <Section>
-              <SectionTitle>Student Reviews</SectionTitle>
+              <SectionTitle>Attendee Reviews</SectionTitle>
 
               {/* Write a review — logged in, not own profile, within cooldown window */}
               {isLoggedIn && !isOwnProfile && showReviewForm && (
@@ -540,7 +540,7 @@ export default function PublicProfilePage() {
                   <StarPicker value={reviewRating} onChange={setReviewRating} />
                   <textarea
                     value={reviewComment} onChange={e => setReviewComment(e.target.value)}
-                    placeholder="Share your experience with this teacher…"
+                    placeholder="Share your experience with this speaker…"
                     rows={3}
                     style={{ width: "100%", marginTop: "0.75rem", padding: "0.65rem 0.85rem", fontFamily: C.ff, fontSize: "0.82rem", color: C.ink, border: `1.5px solid ${C.border}`, borderRadius: 8, outline: "none", resize: "vertical" as const, background: C.white }}
                   />
@@ -551,7 +551,7 @@ export default function PublicProfilePage() {
                     <span style={{ flexShrink: 0, fontSize: "0.9rem", marginTop: "0.05rem" }}>💡</span>
                     <span>
                       <strong>Review carefully.</strong> Once submitted, your review and rating are <strong>permanent</strong> — they cannot be edited or deleted.
-                      You may leave one review per teacher every <strong>7 days</strong>.
+                      You may leave one review per speaker every <strong>7 days</strong>.
                     </span>
                   </div>
 
@@ -644,7 +644,7 @@ export default function PublicProfilePage() {
                 { val: avgRating ?? "–",                      lbl: "Avg Rating" },
                 { val: String(reviews.length),                lbl: "Reviews" },
                 { val: subCount > 999 ? `${(subCount/1000).toFixed(1)}K` : String(subCount), lbl: "Subscribers" },
-                { val: String(sessions.length),               lbl: "Sessions" },
+                { val: String(sessions.length),               lbl: "Webinars" },
               ].map(({ val, lbl }) => (
                 <div key={lbl} style={{ background: C.cream, borderRadius: C.rs, padding: "0.85rem 0.75rem", textAlign: "center" }}>
                   <div style={{ fontFamily: C.ffD, fontSize: "1.3rem", fontWeight: 700, color: C.ink, lineHeight: 1.1 }}>{val}</div>

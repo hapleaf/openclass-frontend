@@ -357,7 +357,7 @@ export default function SessionDetailPage() {
     <>{fonts}<Header activeLink="live" />
       <div style={{ paddingTop: 64, minHeight: "100vh", background: "#faf7f2", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "1rem", fontFamily: "'DM Sans', sans-serif" }}>
         <p style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "1.4rem", color: "#0f1410" }}>Session not found</p>
-        <Link href="/live" style={{ color: "#1d6b3c", textDecoration: "none", fontSize: "0.875rem" }}>← Back to Live Classes</Link>
+        <Link href="/live" style={{ color: "#1d6b3c", textDecoration: "none", fontSize: "0.875rem" }}>← Back to Webinars</Link>
       </div>
     </>
   );
@@ -442,7 +442,7 @@ export default function SessionDetailPage() {
             {/* Nav row */}
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", paddingTop: "1.25rem" }}>
               <Link href="/live" style={{ display: "inline-flex", alignItems: "center", gap: "0.3rem", color: "#6b7a72", fontSize: "0.8rem", textDecoration: "none" }}>
-                ← Live Classes
+                ← Webinars
               </Link>
               <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
                 {status === "live" && (
@@ -1124,7 +1124,7 @@ export default function SessionDetailPage() {
 
             <div style={{ marginTop: "1rem", textAlign: "center" }}>
               <Link href="/live" style={{ fontSize: "0.78rem", color: "#6b7a72", textDecoration: "none" }}>
-                ← Browse all sessions
+                ← Browse all webinars
               </Link>
             </div>
           </div>

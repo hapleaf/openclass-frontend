@@ -42,7 +42,7 @@ export default function TermsPage() {
           </div>
 
           <Section title="1. Acceptance">
-            <p>By creating an account or using OpenClass, you agree to these Terms. If you're using the platform on behalf of an organisation, you represent that you have authority to bind that organisation.</p>
+            <p>By creating an account or using OpenWebinar, you agree to these Terms. If you're using the platform on behalf of an organisation, you represent that you have authority to bind that organisation.</p>
           </Section>
 
           <Section title="2. Your account">
@@ -50,22 +50,22 @@ export default function TermsPage() {
             <p>One person may not maintain multiple accounts. Accounts are non-transferable.</p>
           </Section>
 
-          <Section title="3. Teacher responsibilities">
-            <p>Teachers agree to: provide accurate information about their sessions, show up for scheduled sessions, teach content that is legal, factual, and respectful, and not use the platform to market paid services in a way that misleads students.</p>
-            <p>Repeated no-shows, misleading session descriptions, or inappropriate content may result in account suspension.</p>
+          <Section title="3. Speaker responsibilities">
+            <p>Speakers agree to: provide accurate information about their webinars, show up for scheduled sessions, present content that is legal, factual, and respectful, and not use the platform to market paid services in a way that misleads attendees.</p>
+            <p>Repeated no-shows, misleading webinar descriptions, or inappropriate content may result in account suspension.</p>
           </Section>
 
-          <Section title="4. Student conduct">
-            <p>Students agree to treat teachers and other participants with respect. Disrupting sessions, harassment, or abuse of the platform's registration system (e.g., reserving spots with no intent to attend) may result in suspension.</p>
+          <Section title="4. Attendee conduct">
+            <p>Attendees agree to treat speakers and other participants with respect. Disrupting webinars, harassment, or abuse of the platform's registration system (e.g., reserving spots with no intent to attend) may result in suspension.</p>
           </Section>
 
           <Section title="5. Content">
-            <p>Teachers retain ownership of their content. By hosting on OpenClass, you grant us a limited licence to display and stream your sessions to registered participants.</p>
-            <p>You may not post or stream content that is defamatory, obscene, discriminatory, or violates any applicable law. We reserve the right to remove sessions or content at our discretion.</p>
+            <p>Speakers retain ownership of their content. By hosting on OpenWebinar, you grant us a limited licence to display and stream your webinars to registered attendees.</p>
+            <p>You may not post or stream content that is defamatory, obscene, discriminatory, or violates any applicable law. We reserve the right to remove webinars or content at our discretion.</p>
           </Section>
 
           <Section title="6. Platform availability">
-            <p>OpenClass is provided "as is." We aim for high availability but do not guarantee uninterrupted service. We are not liable for missed sessions due to technical issues outside our control.</p>
+            <p>OpenWebinar is provided "as is." We aim for high availability but do not guarantee uninterrupted service. We are not liable for missed webinars due to technical issues outside our control.</p>
           </Section>
 
           <Section title="7. Termination">
@@ -81,7 +81,10 @@ export default function TermsPage() {
           </Section>
 
           <div style={{ borderTop: `1px solid ${T.border}`, paddingTop: "1.75rem", marginTop: "1rem" }}>
-            <p style={{ fontSize: "0.875rem", color: T.inkMuted }}>Questions? <Link href="/contact" style={{ color: T.leaf, textDecoration: "none", fontWeight: 500 }}>Contact us →</Link> · Also read our <Link href="/privacy" style={{ color: T.leaf, textDecoration: "none", fontWeight: 500 }}>Privacy Policy →</Link></p>
+            <p style={{ fontSize: "0.875rem", color: T.inkMuted }}>
+              Questions? Email us at <a href="mailto:support@open-webinar.com" style={{ color: T.leaf, textDecoration: "none", fontWeight: 500 }}>support@open-webinar.com</a> or <Link href="/contact" style={{ color: T.leaf, textDecoration: "none", fontWeight: 500 }}>use our contact form →</Link>
+            </p>
+            <p style={{ fontSize: "0.875rem", color: T.inkMuted, marginTop: "0.5rem" }}>Also read our <Link href="/privacy" style={{ color: T.leaf, textDecoration: "none", fontWeight: 500 }}>Privacy Policy →</Link></p>
           </div>
         </div>
         <Footer />

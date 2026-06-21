@@ -4,6 +4,7 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
 import Header from "@/components/common/HeadFoot/header";
+import Footer from "@/components/common/HeadFoot/footer";
 import { getStudentDashboard, StudentDashboardData, FollowedTeacher, fullName, initials, shortName, computeExpertiseLevel, makeProfileSlug } from "@/lib/profile";
 import { PublicSessionData } from "@/lib/session";
 
@@ -197,17 +198,17 @@ export default function StudentDashboardPage() {
                 </h1>
                 <p style={{ fontSize: "0.9rem", color: "rgba(255,255,255,0.5)", maxWidth: 480 }}>
                   {thisWeek > 0
-                    ? `You have ${thisWeek} registered session${thisWeek > 1 ? "s" : ""} coming up this week. Keep learning!`
+                    ? `You have ${thisWeek} registered webinar${thisWeek > 1 ? "s" : ""} coming up this week. Keep learning!`
                     : registeredSessions.length > 0
-                      ? `You have ${registeredSessions.length} registered session${registeredSessions.length > 1 ? "s" : ""}. They'll appear in your schedule.`
-                      : "Start your learning journey — browse live classes and register for free."}
+                      ? `You have ${registeredSessions.length} registered webinar${registeredSessions.length > 1 ? "s" : ""}. They'll appear in your schedule.`
+                      : "Start your journey — browse free webinars and register to save your spot."}
                 </p>
                 <div style={{ display: "flex", gap: "0.75rem", marginTop: "1.5rem", flexWrap: "wrap" }}>
                   <Link href="/live" style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", padding: "0.5rem 1.1rem", borderRadius: 100, fontFamily: T.ff, fontSize: "0.82rem", fontWeight: 600, background: T.leaf, color: T.white, textDecoration: "none" }}>
-                    Browse Live Classes
+                    Browse Webinars
                   </Link>
                   <Link href="/teachers" style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", padding: "0.5rem 1.1rem", borderRadius: 100, fontFamily: T.ff, fontSize: "0.82rem", fontWeight: 600, background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.75)", border: "1px solid rgba(255,255,255,0.15)", textDecoration: "none" }}>
-                    Discover Teachers
+                    Discover Speakers
                   </Link>
                 </div>
               </div>
@@ -219,7 +220,7 @@ export default function StudentDashboardPage() {
                 { icon: "📅", bg: T.skyLight,  label: "Registered",    value: registeredSessions.length, sub: `${thisWeek} this week` },
                 { icon: "✅", bg: T.leafLight, label: "Completed",     value: 0,              sub: "total sessions" },
                 { icon: "⏱",  bg: T.sunLight,  label: "Learning Hours", value: "0h",          sub: "across all sessions" },
-                { icon: "🔥", bg: T.clayLight, label: "Following",     value: stats.following, sub: "teachers subscribed" },
+                { icon: "🔥", bg: T.clayLight, label: "Following",     value: stats.following, sub: "speakers subscribed" },
               ].map(s => (
                 <div key={s.label} style={{ background: T.white, border: `1px solid ${T.border}`, borderRadius: T.r, padding: "1.1rem 1.25rem", display: "flex", alignItems: "center", gap: "0.9rem", transition: "box-shadow 0.2s, transform 0.2s" }}
                   onMouseEnter={e => { const el = e.currentTarget as HTMLDivElement; el.style.boxShadow = "0 4px 16px rgba(15,20,16,0.07)"; el.style.transform = "translateY(-1px)"; }}
@@ -237,7 +238,7 @@ export default function StudentDashboardPage() {
             {/* ── My Registered Sessions ──────────────────────── */}
             <div style={{ display: "flex", flexDirection: isMobile ? "column" : "row", alignItems: isMobile ? "flex-start" : "center", justifyContent: "space-between", gap: "0.75rem", marginBottom: "1.1rem" }}>
               <div style={{ fontFamily: T.ffd, fontSize: "1.25rem", fontWeight: 700, letterSpacing: "-0.01em", color: T.ink }}>
-                My Registered Sessions
+                My Registered Webinars
                 <div style={{ width: 32, height: 3, background: T.leaf, borderRadius: 2, marginTop: "0.35rem" }} />
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
@@ -248,18 +249,18 @@ export default function StudentDashboardPage() {
                   {refreshingSessions ? "Refreshing…" : "Refresh"}
                 </button>
                 <Link href="/live" style={{ fontSize: "0.8rem", fontWeight: 500, color: T.leaf, textDecoration: "none", display: "flex", alignItems: "center", gap: "0.3rem" }}>
-                  Find More Classes →
+                  Find More Webinars →
                 </Link>
               </div>
             </div>
             {registeredSessions.length === 0 ? (
               <div style={{ background: T.white, border: `1px solid ${T.border}`, borderRadius: T.r, padding: "2.5rem", textAlign: "center", marginBottom: "1.75rem" }}>
-                <p style={{ fontFamily: T.ffd, fontSize: "1rem", color: T.inkSoft, marginBottom: "0.4rem" }}>No registered sessions yet.</p>
+                <p style={{ fontFamily: T.ffd, fontSize: "1rem", color: T.inkSoft, marginBottom: "0.4rem" }}>No registered webinars yet.</p>
                 <p style={{ fontSize: "0.85rem", color: T.inkMuted, marginBottom: "1rem" }}>
-                  Browse live classes and hit <strong>Register Free</strong> to save a session here.
+                  Browse free webinars and hit <strong>Register Free</strong> to save your spot here.
                 </p>
                 <Link href="/live" style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", padding: "0.5rem 1.1rem", borderRadius: 100, fontFamily: T.ff, fontSize: "0.82rem", fontWeight: 600, background: T.leaf, color: T.white, textDecoration: "none" }}>
-                  Browse Live Classes
+                  Browse Webinars
                 </Link>
               </div>
             ) : (
@@ -268,7 +269,7 @@ export default function StudentDashboardPage() {
               <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginBottom: "1rem", flexWrap: "wrap" as const }}>
                 <div style={{ flex: 1, minWidth: 180, display: "flex", alignItems: "center", gap: "0.5rem", background: T.white, border: `1.5px solid ${T.border}`, borderRadius: 100, padding: "0.42rem 0.9rem" }}>
                   <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke={T.inkMuted} strokeWidth={2.2}><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-                  <input value={regSearch} onChange={e => setRegSearch(e.target.value)} placeholder="Search by title or teacher…" style={{ border: "none", outline: "none", background: "transparent", fontFamily: T.ff, fontSize: "0.82rem", color: T.ink, width: "100%" }} />
+                  <input value={regSearch} onChange={e => setRegSearch(e.target.value)} placeholder="Search by title or speaker…" style={{ border: "none", outline: "none", background: "transparent", fontFamily: T.ff, fontSize: "0.82rem", color: T.ink, width: "100%" }} />
                   {regSearch && <button onClick={() => setRegSearch("")} style={{ background: "none", border: "none", cursor: "pointer", color: T.inkMuted, fontSize: "0.9rem", lineHeight: 1, padding: 0 }}>✕</button>}
                 </div>
                 <div style={{ display: "flex", background: T.cream, border: `1px solid ${T.border}`, borderRadius: 100, padding: "0.2rem" }}>
@@ -298,7 +299,6 @@ export default function StudentDashboardPage() {
                   const typeBg = s.type === "webinar" ? T.leafLight : T.skyLight;
                   const typeColor = s.type === "webinar" ? T.leaf : T.sky;
                   const API = process.env.NEXT_PUBLIC_API_URL ?? "";
-                  const teacherSlug = makeProfileSlug({ id: s.user.id, firstName: s.user.firstName ?? undefined, lastName: s.user.lastName ?? undefined });
                   const teacherLvl = computeExpertiseLevel(s.user.sessionCount ?? 0, s.user.reviewCount ?? 0, s.user.avgRating ?? null);
                   const registered = s._count?.registrations ?? 0;
                   const limit = s.audienceLimit;
@@ -475,12 +475,12 @@ export default function StudentDashboardPage() {
             )}
             <style>{`@keyframes pulse-dot{0%,100%{opacity:1}50%{opacity:0.4}}@keyframes oc-spin{to{transform:rotate(360deg)}}`}</style>
 
-            {/* ── Teachers You Follow ─────────────────────────── */}
-            <SectionHeader title="Teachers You Follow" linkHref="/teachers" linkLabel="Browse All" />
+            {/* ── Speakers You Follow ─────────────────────────── */}
+            <SectionHeader title="Speakers You Follow" linkHref="/teachers" linkLabel="Browse All" />
             {followedTeachers.length === 0 ? (
               <div style={{ background: T.white, border: `1px solid ${T.border}`, borderRadius: T.r, padding: "2rem", textAlign: "center", marginBottom: "1.75rem" }}>
-                <p style={{ fontFamily: T.ffd, fontSize: "1rem", color: T.inkSoft, marginBottom: "0.4rem" }}>You haven't followed any teachers yet.</p>
-                <Link href="/teachers" style={{ fontSize: "0.875rem", color: T.leaf, fontWeight: 600, textDecoration: "none" }}>Browse Teachers →</Link>
+                <p style={{ fontFamily: T.ffd, fontSize: "1rem", color: T.inkSoft, marginBottom: "0.4rem" }}>You haven't followed any speakers yet.</p>
+                <Link href="/teachers" style={{ fontSize: "0.875rem", color: T.leaf, fontWeight: 600, textDecoration: "none" }}>Browse Speakers →</Link>
               </div>
             ) : (
               <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "1rem", marginBottom: "1.75rem" }}>
@@ -538,11 +538,11 @@ export default function StudentDashboardPage() {
                 <div style={{ fontFamily: T.ffd, fontSize: "1.05rem", fontWeight: 700, color: T.white, marginBottom: "0.5rem" }}>Keep Growing</div>
                 <div style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.5)", lineHeight: 1.55, marginBottom: "1.1rem" }}>
                   {stats.following > 0
-                    ? `You follow ${stats.following} teacher${stats.following > 1 ? "s" : ""}. Check out their upcoming sessions and keep learning.`
-                    : "Discover expert teachers across maths, science, engineering, languages and more — all free."}
+                    ? `You follow ${stats.following} speaker${stats.following > 1 ? "s" : ""}. Check out their upcoming webinars and keep learning.`
+                    : "Discover expert speakers across maths, science, engineering, languages and more — all free webinars."}
                 </div>
                 <Link href="/teachers" style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", padding: "0.55rem 1.1rem", borderRadius: T.rs, fontFamily: T.ff, fontSize: "0.82rem", fontWeight: 600, background: T.leaf, color: T.white, textDecoration: "none" }}>
-                  {stats.following > 0 ? "Browse Sessions →" : "Find Teachers →"}
+                  {stats.following > 0 ? "Browse Webinars →" : "Find Speakers →"}
                 </Link>
               </div>
             </div>
@@ -550,11 +550,11 @@ export default function StudentDashboardPage() {
             {/* Recommended sessions */}
             <div style={{ background: T.white, border: `1px solid ${T.border}`, borderRadius: T.r, padding: "1.25rem" }}>
               <div style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: T.inkMuted, marginBottom: "1rem" }}>
-                {followedTeachers.length > 0 ? "From Teachers You Follow" : "Recommended for You"}
+                {followedTeachers.length > 0 ? "From Speakers You Follow" : "Recommended for You"}
               </div>
               {upcomingSessions.length === 0 ? (
                 <p style={{ fontSize: "0.82rem", color: T.inkMuted, textAlign: "center", padding: "0.75rem 0" }}>
-                  {stats.following > 0 ? "No upcoming sessions yet." : "Follow teachers to see their sessions here."}
+                  {stats.following > 0 ? "No upcoming webinars yet." : "Follow speakers to see their webinars here."}
                 </p>
               ) : upcomingSessions.slice(0, 4).map((s, i) => (
                 <div key={s.id} onClick={() => window.open(`/session/${s.id}`, "_blank")} style={{ display: "flex", alignItems: "center", gap: "0.75rem", padding: "0.6rem 0", borderBottom: i < Math.min(upcomingSessions.length, 4) - 1 ? `1px solid ${T.border}` : "none", cursor: "pointer" }}>
@@ -598,6 +598,7 @@ export default function StudentDashboardPage() {
           </aside>
         </div>
       </div>
+      <Footer />
     </>
   );
 }

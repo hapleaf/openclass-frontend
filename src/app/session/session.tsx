@@ -877,7 +877,7 @@ export default function SessionPage() {
             </button>
             <button className="btn-cancel-link" onClick={() => router.push('/profile')}>Cancel</button>
             <div className="submit-note">
-              <span>🛡️</span> Published sessions go live only after the OpenClass Moderator Team reviews and approves them.
+              <span>🛡️</span> Published webinars go live only after the OpenWebinar Moderator Team reviews and approves them.
             </div>
           </div>
         </div>

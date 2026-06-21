@@ -19,19 +19,19 @@ export default function Footer() {
           <div className="oc-footer-grid" style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: "3rem", marginBottom: "3rem" }}>
             <div>
               <h3 style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "1.4rem", fontWeight: 700, marginBottom: "0.75rem" }}>
-                Open<span style={{ color: "#7ed9a4" }}>Class</span>
+                Open<span style={{ color: "#7ed9a4" }}>Webinar</span>
               </h3>
               <p style={{ fontSize: "0.875rem", color: "rgba(250,247,242,0.55)", maxWidth: 280, lineHeight: 1.7 }}>
-                A purpose-driven platform where teachers teach freely and students learn freely. Education is a right, not a privilege.
+                The world's only free webinar hub. Host webinars, build your reputation, and reach a global audience — at zero cost.
               </p>
               <div style={{ marginTop: "1.25rem" }}>
                 <span style={{ fontSize: "0.78rem", color: "rgba(250,247,242,0.4)" }}>Built with love in India 🇮🇳</span>
               </div>
             </div>
             {([
-              { title: "Learn", links: [["Live Classes", "/live"], ["Upcoming Schedule", "/live"], ["Browse by Subject", "/live"], ["Teachers", "/teachers"]] },
-              { title: "Teach", links: [["Apply to Teach", "/login"], ["Teacher Dashboard", "/dashboard"], ["Host a Webinar", "/session"], ["My Sessions", "/my-sessions"]] },
-              { title: "About", links: [["Our Mission", "/about"], ["How We're Funded", "/about#funding"], ["Expertise Levels", "/expertise"], ["Contact Us", "/contact"]] },
+              { title: "Discover", links: [["Browse Webinars", "/live"], ["Upcoming Schedule", "/live"], ["Browse by Subject", "/live"], ["Speakers", "/teachers"]] },
+              { title: "Host",     links: [["Apply to Speak", "/login"], ["Speaker Dashboard", "/dashboard"], ["Host a Webinar", "/session"], ["My Webinars", "/my-sessions"]] },
+              { title: "About",    links: [["Our Mission", "/about"], ["How We're Funded", "/about#funding"], ["Expertise Levels", "/expertise"], ["Contact Us", "/contact"]] },
             ] as { title: string; links: [string, string][] }[]).map(col => (
               <div key={col.title}>
                 <h4 style={{ fontSize: "0.8rem", fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "rgba(250,247,242,0.45)", marginBottom: "1rem" }}>
@@ -50,7 +50,7 @@ export default function Footer() {
             ))}
           </div>
           <div className="oc-footer-bottom" style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: "1.5rem", display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: "0.8rem", color: "rgba(250,247,242,0.35)" }}>
-            <span>© 2025 OpenClass · Free forever, for everyone.</span>
+            <span>© 2026 OpenWebinar · A product of Hapleaf Technologies Private Limited (CIN: U72900KA2021PTC148827) · Free webinars, for everyone.</span>
             <div style={{ display: "flex", gap: "1.5rem" }}>
               <Link href="/privacy" className="oc-footer-link" style={{ textDecoration: "none", color: "rgba(250,247,242,0.35)", transition: "color 0.2s" }}>Privacy</Link>
               <Link href="/terms" className="oc-footer-link" style={{ textDecoration: "none", color: "rgba(250,247,242,0.35)", transition: "color 0.2s" }}>Terms</Link>

@@ -4,6 +4,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import Header from "@/components/common/HeadFoot/header";
+import Footer from "@/components/common/HeadFoot/footer";
 import { getProfile, updateProfile, uploadAvatar, clearProfileCache, getCategories, getDashboard, getPublicProfile, ProfileData, CategoryData, ReviewData, fullName, initials as profileInitials, makeProfileSlug, computeExpertiseLevel } from "@/lib/profile";
 import { getMySessions, deleteSession, cancelSession, SessionData } from "@/lib/session";
 
@@ -495,9 +496,9 @@ export default function ProfilePage() {
               {/* Sessions */}
               <div style={{ background: T.white, border: `1px solid ${T.border}`, borderRadius: T.r, overflow: "hidden", marginBottom: "1.25rem" }}>
                 <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", padding: "1.25rem 1.5rem 0" }}>
-                  <SectionTitle>My Sessions</SectionTitle>
+                  <SectionTitle>My Webinars</SectionTitle>
                   <Link href="/session" style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", padding: "0.45rem 1rem", borderRadius: T.rs, background: T.leaf, color: T.white, fontFamily: T.ff, fontSize: "0.78rem", fontWeight: 600, textDecoration: "none" }}>
-                    + New Session
+                    + New Webinar
                   </Link>
                 </div>
                 {/* tabs */}
@@ -628,7 +629,7 @@ export default function ProfilePage() {
                                 sessTab === "upcoming" && (
                                   <button onClick={() => handleCancel(s.id)} disabled={cancellingId === s.id}
                                     style={{ padding: "0.4rem 0.85rem", borderRadius: T.rs, fontFamily: T.ff, fontSize: "0.78rem", fontWeight: 600, border: "1.5px solid #fce8ef", background: "#fce8ef", color: "#9b2c4e", cursor: cancellingId === s.id ? "default" : "pointer", opacity: cancellingId === s.id ? 0.5 : 1, whiteSpace: "nowrap" as const }}>
-                                    {cancellingId === s.id ? "…" : "Cancel Session"}
+                                    {cancellingId === s.id ? "…" : "Cancel Webinar"}
                                   </button>
                                 )
                               ) : (
@@ -702,7 +703,7 @@ export default function ProfilePage() {
 
               {/* Reviews */}
               <div style={{ ...sectionCard, marginBottom: 0 }}>
-                <SectionTitle>Student Reviews</SectionTitle>
+                <SectionTitle>Attendee Reviews</SectionTitle>
                 {REVIEWS.map((r, i) => (
                   <div key={i} style={{ padding: "1rem 0", borderBottom: i < REVIEWS.length - 1 ? `1px solid ${T.border}` : "none" }}>
                     <div style={{ display: "flex", alignItems: "center", gap: "0.65rem", marginBottom: "0.5rem" }}>
@@ -1014,6 +1015,7 @@ export default function ProfilePage() {
           {toast}
         </div>
       )}
+      <Footer />
     </div>
   );
 }

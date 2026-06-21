@@ -139,7 +139,7 @@ export default function MySessionsPage() {
   }, []);
 
   async function handleDelete(id: number) {
-    if (!confirm("Delete this session? This cannot be undone.")) return;
+    if (!confirm("Delete this webinar? This cannot be undone.")) return;
     setDeletingId(id);
     try {
       await deleteSession(id);
@@ -149,7 +149,7 @@ export default function MySessionsPage() {
   }
 
   async function handleCancel(id: number) {
-    if (!confirm("Cancel this session? Students will no longer be able to join. This cannot be undone.")) return;
+    if (!confirm("Cancel this webinar? Attendees will no longer be able to join. This cannot be undone.")) return;
     setCancellingId(id);
     try {
       await cancelSession(id);
@@ -196,19 +196,19 @@ export default function MySessionsPage() {
             <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", marginBottom: "0.5rem" }}>
               <Link href="/dashboard" style={{ color: "rgba(255,255,255,0.45)", fontSize: "0.78rem", textDecoration: "none" }}>Dashboard</Link>
               <span style={{ color: "rgba(255,255,255,0.25)", fontSize: "0.78rem" }}>›</span>
-              <span style={{ color: "#7ed9a4", fontSize: "0.78rem", fontWeight: 600 }}>My Sessions</span>
+              <span style={{ color: "#7ed9a4", fontSize: "0.78rem", fontWeight: 600 }}>My Webinars</span>
             </div>
             <div style={{ display: "flex", alignItems: "flex-end", justifyContent: "space-between", gap: "1rem", flexWrap: "wrap" }}>
               <div>
                 <h1 style={{ fontFamily: T.ffD, fontSize: "clamp(1.4rem,2.5vw,1.9rem)", fontWeight: 700, color: "#fff", letterSpacing: "-0.02em", lineHeight: 1.15 }}>
-                  My Sessions
+                  My Webinars
                 </h1>
                 <p style={{ color: "rgba(255,255,255,0.5)", fontSize: "0.85rem", marginTop: "0.3rem" }}>
-                  All your live classes and webinars in one place.
+                  All your webinars in one place.
                 </p>
               </div>
               <Link href="/session" style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", padding: "0.55rem 1.25rem", borderRadius: 100, background: T.leaf, color: "#fff", fontFamily: T.ff, fontSize: "0.85rem", fontWeight: 600, textDecoration: "none", whiteSpace: "nowrap", flexShrink: 0 }}>
-                + New Session
+                + New Webinar
               </Link>
             </div>
           </div>
@@ -245,11 +245,11 @@ export default function MySessionsPage() {
 
             <div style={{ padding: "0.5rem 1.25rem 1.25rem" }}>
               {loading ? (
-                <div style={{ textAlign: "center", padding: "3rem", color: T.inkMuted }}>Loading sessions…</div>
+                <div style={{ textAlign: "center", padding: "3rem", color: T.inkMuted }}>Loading webinars…</div>
               ) : filtered.length === 0 ? (
                 <div style={{ textAlign: "center", padding: "3rem 1rem", color: T.inkMuted }}>
                   <p style={{ fontFamily: T.ffD, fontSize: "1.1rem", color: T.inkSoft, marginBottom: "0.5rem" }}>
-                    {tab === "draft" ? "No drafts yet." : tab === "upcoming" ? "No upcoming sessions." : tab === "rejected" ? "No rejected sessions." : "No completed sessions yet."}
+                    {tab === "draft" ? "No drafts yet." : tab === "upcoming" ? "No upcoming webinars." : tab === "rejected" ? "No rejected webinars." : "No completed webinars yet."}
                   </p>
                   {tab !== "completed" && (
                     <Link href="/session" style={{ color: T.leaf, fontWeight: 600, textDecoration: "none", fontSize: "0.875rem" }}>
@@ -357,7 +357,7 @@ export default function MySessionsPage() {
                             tab === "upcoming" && (
                               <button onClick={() => handleCancel(s.id)} disabled={cancellingId === s.id}
                                 style={{ padding: "0.4rem 0.85rem", borderRadius: T.rs, fontFamily: T.ff, fontSize: "0.78rem", fontWeight: 600, border: "1.5px solid #fce8ef", background: "#fce8ef", color: "#9b2c4e", cursor: cancellingId === s.id ? "default" : "pointer", opacity: cancellingId === s.id ? 0.5 : 1, whiteSpace: "nowrap" as const }}>
-                                {cancellingId === s.id ? "…" : "Cancel Session"}
+                                {cancellingId === s.id ? "…" : "Cancel Webinar"}
                               </button>
                             )
                           ) : (
@@ -418,7 +418,7 @@ export default function MySessionsPage() {
                             ) : joinOpen ? "🎬 Join Now" : "🔒 Opens Soon"}
                           </button>
                           <span style={{ fontSize: "0.72rem", color: T.inkMuted }}>
-                            {joinOpen && isLive ? "Session is live · closes 30 min after end" :
+                            {joinOpen && isLive ? "Webinar is live · closes 30 min after end" :
                              joinOpen ? `Room opens 30 min early · starts at ${d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}` :
                              beforeOpen ? `Room opens at ${openLabel} (30 min before start)` : ""}
                           </span>

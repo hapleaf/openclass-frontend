@@ -8,21 +8,21 @@ import { getCategories, type CategoryData } from "@/lib/profile";
 const CAT_CACHE_KEY = "oc_categories_cache";
 
 const FEATURES = [
-  { icon: "📡", bg: "#d4ead9", title: "Live Streaming", desc: "HD live classes directly from any device — no special software needed. Teachers go live in minutes." },
-  { icon: "🎙️", bg: "#ddeaf8", title: "Webinar Format", desc: "Host structured webinars with slides, presentations, and interactive polls — ideal for larger audiences." },
-  { icon: "💬", bg: "#fdf3e0", title: "Live Chat & Q&A", desc: "Students comment and ask questions in real-time during every session. Teachers respond live — true classroom energy, online." },
-  { icon: "⭐", bg: "#f8ede5", title: "Session Ratings", desc: "After every class, students rate the session and leave comments. Teachers build reputation through genuine feedback." },
-  { icon: "🔔", bg: "#f0ebff", title: "Subscribe to Teachers", desc: "Follow any teacher and get notified the moment they schedule or go live. Build your own learning feed." },
-  { icon: "🤝", bg: "#e1f5f0", title: "Teacher Profiles", desc: "Every teacher has a rich profile — bio, subjects, ratings, past sessions, and upcoming schedule. Know who you're learning from." },
-  { icon: "✍️", bg: "#d4ead9", title: "Direct Messaging", desc: "Students can message teachers directly — ask doubts, seek guidance, or continue a conversation after class." },
-  { icon: "📼", bg: "#ddeaf8", title: "Auto Replay Archive", desc: "Every session is automatically saved and publicly accessible. Learn anytime, not just when live." },
-  { icon: "🌐", bg: "#fdf3e0", title: "Multi-language Support", desc: "Classes in Hindi, Tamil, Bengali, Telugu, Kannada, English and more. Learning in your mother tongue." },
+  { icon: "🎙️", bg: "#d4ead9", title: "Host Free Webinars", desc: "Launch a webinar in minutes — no studio, no software, no cost. Just you, your knowledge, and an audience ready to learn." },
+  { icon: "📡", bg: "#ddeaf8", title: "HD Live Streaming", desc: "Crystal-clear live streaming directly from your browser. Share your screen, present slides, and speak to hundreds at once." },
+  { icon: "💬", bg: "#fdf3e0", title: "Live Chat & Q&A", desc: "Attendees ask questions and react in real-time during every webinar. Teachers respond live — true classroom energy, online." },
+  { icon: "⭐", bg: "#f8ede5", title: "Reputation System", desc: "Every webinar earns ratings and reviews. Great hosts rise naturally through genuine audience feedback, not paid promotion." },
+  { icon: "🔍", bg: "#f0ebff", title: "Discovery Engine", desc: "Get found by thousands of learners searching your expertise. OpenWebinar puts your knowledge in front of the right audience." },
+  { icon: "🤝", bg: "#e1f5f0", title: "Speaker Profiles", desc: "Build a rich public profile — bio, expertise, star ratings, past webinars, and your upcoming schedule. Your digital stage." },
+  { icon: "📼", bg: "#d4ead9", title: "Auto Replay Archive", desc: "Every webinar is saved and publicly accessible. Your content keeps working for you long after the session ends." },
+  { icon: "💰", bg: "#ddeaf8", title: "Earn from Webinars (Soon)", desc: "Start free to build your audience and reputation. When you're ready, charge for premium sessions. Your expertise, your revenue." },
+  { icon: "🌐", bg: "#fdf3e0", title: "Global Audience", desc: "Reach viewers across India and the world — not just your city. Webinars break geography. Your audience has no ceiling." },
 ];
 
 const TESTIMONIALS = [
-  { quote: "I live in a small town in Bihar with no coaching center nearby. OpenClass gave me access to the same teachers my peers in Delhi have. I cleared my Class 12 boards with distinction.", name: "Arjun Kumar", role: "Student, Sitamarhi, Bihar", initials: "AK", bg: "#1d6b3c" },
-  { quote: "I retired from teaching after 30 years and worried my knowledge would just fade away. Now I teach 3,000 students every week from my home. OpenClass gave me purpose again.", name: "Prof. Sudha Rao", role: "Retired Educator, Mysuru", initials: "SR", bg: "#1a4f7a" },
-  { quote: "My daughter has autism and traditional classrooms are difficult for her. With OpenClass, she learns at her own pace with replays. For the first time she loves studying.", name: "Pallavi Mathur", role: "Parent, Pune, Maharashtra", initials: "PM", bg: "#c45b2a" },
+  { quote: "I live in a small town in Bihar with no coaching center nearby. OpenWebinar gave me access to the same experts my peers in Delhi have. Free, live, and interactive — nothing else comes close.", name: "Arjun Kumar", role: "Webinar Attendee, Sitamarhi", initials: "AK", bg: "#1d6b3c" },
+  { quote: "I retired from teaching after 30 years and worried my knowledge would just fade away. Now I host webinars for 3,000 people every week from my home. OpenWebinar gave me purpose again.", name: "Prof. Sudha Rao", role: "Webinar Host, Mysuru", initials: "SR", bg: "#1a4f7a" },
+  { quote: "YouTube has my videos but nobody finds them. On OpenWebinar I get real attendees, real questions, and real ratings. My reputation here opened consulting opportunities I never expected.", name: "Pallavi Mathur", role: "Business Strategy Host, Pune", initials: "PM", bg: "#c45b2a" },
 ];
 
 type ChatMsg = { av: string; bg: string; avColor?: string; name: string; text: string; pinned?: boolean };
@@ -34,13 +34,13 @@ const INIT_CHAT: ChatMsg[] = [
   { av: "SR", bg: "#1a4f7a", name: "Shruti R.", text: "This is so clear!! Thank you Prof. Rao 🙌" },
   { av: "PJ", bg: "#c45b2a", name: "Priya J.", text: "What's the difference between eigenvalue and eigenvector?" },
   { av: "NM", bg: "#8b5cf6", name: "Nikhil M.", text: "For CBSE students — is this in Class 12?", pinned: true },
-  { av: "DL", bg: "#e8a020", avColor: "#402810", name: "Divya L.", text: "👏👏👏 best class this week" },
+  { av: "DL", bg: "#e8a020", avColor: "#402810", name: "Divya L.", text: "👏👏👏 best webinar this week" },
 ];
 
 const INIT_DM: DmMsg[] = [
-  { text: "Hi! Great question in today's class about eigenvectors 🎉", isMe: false, time: "2:14 PM" },
+  { text: "Hi! Great question in today's webinar about eigenvectors 🎉", isMe: false, time: "2:14 PM" },
   { text: "Thank you ma'am! I had a follow-up — can eigenvalues be negative?", isMe: true, time: "2:16 PM" },
-  { text: "Absolutely yes! A negative eigenvalue means the transformation flips the direction. I'll cover this in Thursday's session 📚", isMe: false, time: "2:19 PM" },
+  { text: "Absolutely yes! A negative eigenvalue means the transformation flips the direction. I'll cover this in Thursday's webinar 📚", isMe: false, time: "2:19 PM" },
 ];
 
 const RATE_LABELS = ["", "1 — Poor", "2 — Fair", "3 — Good", "4 out of 5 — Great!", "5 — Excellent!"];
@@ -155,35 +155,35 @@ export default function HomePage() {
 
         <div style={{ position: "relative", zIndex: 1, maxWidth: 820, margin: "0 auto", width: "100%" }}>
           <div className="eyebrow-dot fade-up d1" style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "#d4ead9", color: "#1d6b3c", fontSize: "0.8rem", fontWeight: 500, letterSpacing: "0.05em", textTransform: "uppercase", padding: "0.35rem 0.85rem", borderRadius: 100, marginBottom: "1.75rem" }}>
-            Free live classes · Open to all · No limits
+            Free webinars · Build reputation · Get discovered
           </div>
 
           <h1 className="fade-up d2" style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "clamp(2.4rem,6vw,5rem)", fontWeight: 700, lineHeight: 1.05, letterSpacing: "-0.03em", color: "#0f1410", marginBottom: "1rem" }}>
-            Education<br /><em style={{ fontStyle: "italic", color: "#1d6b3c" }}>for everyone,</em><br />limited for none.
+            The world's only<br /><em style={{ fontStyle: "italic", color: "#1d6b3c" }}>free webinar hub.</em>
           </h1>
 
           <p className="fade-up d3" style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "clamp(1rem,2vw,1.35rem)", fontWeight: 300, fontStyle: "italic", color: "#3a4140", marginBottom: "1.75rem", letterSpacing: "0.01em" }}>
-            Teaching freely. Learning freely. Always.
+            Host freely. Grow freely. Always.
           </p>
 
-          <p className="fade-up d3" style={{ fontSize: "1rem", color: "#6b7a72", maxWidth: 520, margin: "0 auto 2.5rem", lineHeight: 1.8 }}>
-            OpenClass connects passionate teachers with eager learners — through live classes, webinars, and workshops. Open your browser, pick a class, and start learning right now.
+          <p className="fade-up d3" style={{ fontSize: "1rem", color: "#6b7a72", maxWidth: 560, margin: "0 auto 2.5rem", lineHeight: 1.8 }}>
+            OpenWebinar is the world's first dedicated platform for free webinars. Share your expertise, build a real reputation, and reach a global audience — at zero cost. Paid sessions coming soon for those ready to monetize.
           </p>
 
-          {/* ₹0 Forever callout */}
+          {/* Zero cost callout */}
           <div className="fade-up d4" style={{ display: "inline-flex", alignItems: "center", gap: "1.5rem", background: "#fff", border: "1.5px solid #e2ded6", borderRadius: 16, padding: "1.1rem 2rem", marginBottom: "2.5rem", flexWrap: "wrap", justifyContent: "center" }}>
             <div style={{ display: "flex", alignItems: "baseline", gap: "0.25rem" }}>
-              <span style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "1.4rem", fontWeight: 700, color: "#1d6b3c" }}>₹</span>
-              <span style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "3.2rem", fontWeight: 700, lineHeight: 1, color: "#1d6b3c", letterSpacing: "-0.04em" }}>0</span>
+              <span style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "3.2rem", fontWeight: 700, lineHeight: 1, color: "#1d6b3c", letterSpacing: "-0.04em" }}>Zero</span>
+              <span style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "1.6rem", fontWeight: 300, color: "#1d6b3c", marginLeft: "0.35rem" }}>cost.</span>
             </div>
             <div className="price-divider" style={{ width: 1, height: 40, background: "#e2ded6", flexShrink: 0 }} />
             <div style={{ fontSize: "0.8rem", fontWeight: 500, color: "#6b7a72", textAlign: "left", lineHeight: 1.4 }}>
-              <strong style={{ display: "block", fontSize: "0.95rem", color: "#0f1410" }}>Forever free.</strong>
-              Not a trial. Not freemium.<br />Just free — today, tomorrow, always.
+              <strong style={{ display: "block", fontSize: "0.95rem", color: "#0f1410" }}>Forever free to host.</strong>
+              Not a trial. Not freemium.<br />Free today — earn tomorrow.
             </div>
             <div className="price-divider" style={{ width: 1, height: 40, background: "#e2ded6", flexShrink: 0 }} />
             <div style={{ display: "flex", flexDirection: "column", gap: "0.3rem", alignItems: "flex-start" }}>
-              {["Free forever", "No credit card", "No hidden fees"].map(p => (
+              {["Free to host & attend", "No credit card", "Paid tiers coming soon"].map(p => (
                 <span key={p} style={{ display: "flex", alignItems: "center", gap: "0.4rem", fontSize: "0.8rem", color: "#3a4140" }}>
                   <span style={{ color: "#1d6b3c", fontWeight: 700 }}>✓</span>{p}
                 </span>
@@ -195,17 +195,17 @@ export default function HomePage() {
           <div className="fade-up d4" style={{ display: "flex", gap: "1rem", flexWrap: "wrap", alignItems: "center", justifyContent: "center" }}>
             <Link href="/live" className="btn-primary-hover" style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "#1d6b3c", color: "#fff", padding: "0.9rem 2rem", borderRadius: 100, fontWeight: 500, fontSize: "0.95rem", textDecoration: "none", transition: "background 0.2s, transform 0.15s" }}>
               <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><circle cx="12" cy="12" r="10"/><polygon points="10,8 16,12 10,16" fill="currentColor" stroke="none"/></svg>
-              Join a live class
+              Browse webinars
             </Link>
             <Link href="/login" className="btn-secondary-hover" style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "transparent", color: "#3a4140", padding: "0.9rem 2rem", borderRadius: 100, fontWeight: 500, fontSize: "0.95rem", textDecoration: "none", border: "1.5px solid #e2ded6", transition: "border-color 0.2s, color 0.2s" }}>
               <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M12 20h9M16.5 3.5a2.121 2.121 0 013 3L7 19l-4 1 1-4L16.5 3.5z"/></svg>
-              Start teaching
+              Host a webinar
             </Link>
           </div>
 
           {/* Stats */}
           <div className="fade-up d5" style={{ display: "flex", gap: "2rem", marginTop: "3rem", paddingTop: "3rem", borderTop: "1px solid #e2ded6", justifyContent: "center", flexWrap: "wrap" }}>
-            {[["12K+","Teachers sharing"],["340K+","Students learning"],["80+","Subjects covered"],["₹0","Cost, forever"]].map(([num, label]) => (
+            {[["12K+","Speakers hosting"],["340K+","Attendees learning"],["80+","Topics covered"],["$0","Cost, forever"]].map(([num, label]) => (
               <div key={label} style={{ textAlign: "center" }}>
                 <div style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "clamp(1.4rem,3vw,2rem)", fontWeight: 700, color: "#0f1410", lineHeight: 1 }}>{num}</div>
                 <div style={{ fontSize: "0.8rem", color: "#6b7a72", marginTop: "0.3rem" }}>{label}</div>
@@ -220,13 +220,25 @@ export default function HomePage() {
         <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
         <div style={{ position: "relative", zIndex: 1, maxWidth: 820, margin: "0 auto" }}>
           <h2 className="anim-item" style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "clamp(1.8rem,4.5vw,3.5rem)", fontWeight: 300, lineHeight: 1.25, letterSpacing: "-0.02em", marginBottom: "1.5rem", color: "#faf7f2" }}>
-            Knowledge should never be locked<br />behind a <em style={{ fontStyle: "italic", color: "#7ed9a4" }}>paywall.</em>
+            Better than YouTube<br />for <em style={{ fontStyle: "italic", color: "#7ed9a4" }}>webinars.</em>
           </h2>
-          <p className="anim-item" style={{ fontSize: "1.05rem", color: "rgba(250,247,242,0.65)", maxWidth: 600, margin: "0 auto" }}>
-            We believe that a child in a village and a student in a city deserve the same quality of teaching. OpenClass makes that real — one free class at a time.
+          <p className="anim-item" style={{ fontSize: "1.05rem", color: "rgba(250,247,242,0.65)", maxWidth: 640, margin: "0 auto 2rem" }}>
+            YouTube is built for passive watching. OpenWebinar is built for live interaction, real-time Q&A, and genuine reputation — a discovery engine where your expertise gets the audience it deserves.
           </p>
-          <div className="anim-item" style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem", justifyContent: "center", marginTop: "2.5rem" }}>
-            {["Open to all", "No fees ever", "No ads", "Any device, anywhere", "Any language", "Real teachers, real humans"].map(pill => (
+          <div className="anim-item" style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "1rem", maxWidth: 720, margin: "0 auto 2.5rem" }}>
+            {[
+              ["YouTube", "Upload and pray for views. No interaction. No reputation. No discovery."],
+              ["Zoom / Meet", "Great for meetings. Not built for discovery or public webinars."],
+              ["OpenWebinar", "Live, interactive, discoverable — with a reputation system that rewards quality."],
+            ].map(([title, desc]) => (
+              <div key={title} style={{ background: title === "OpenWebinar" ? "rgba(29,107,60,0.15)" : "rgba(255,255,255,0.05)", border: `1px solid ${title === "OpenWebinar" ? "rgba(126,217,164,0.3)" : "rgba(255,255,255,0.08)"}`, borderRadius: 12, padding: "1.25rem" }}>
+                <div style={{ fontSize: "0.8rem", fontWeight: 700, color: title === "OpenWebinar" ? "#7ed9a4" : "rgba(250,247,242,0.5)", marginBottom: "0.5rem", letterSpacing: "0.04em" }}>{title}</div>
+                <div style={{ fontSize: "0.82rem", color: "rgba(250,247,242,0.65)", lineHeight: 1.6 }}>{desc}</div>
+              </div>
+            ))}
+          </div>
+          <div className="anim-item" style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem", justifyContent: "center" }}>
+            {["Live & interactive", "Real-time Q&A", "Reputation system", "Discovery engine", "Free forever", "No ads"].map(pill => (
               <span key={pill} style={{ background: "rgba(255,255,255,0.08)", color: "rgba(250,247,242,0.85)", fontSize: "0.85rem", padding: "0.4rem 1rem", borderRadius: 100, border: "1px solid rgba(255,255,255,0.12)" }}>{pill}</span>
             ))}
           </div>
@@ -237,20 +249,20 @@ export default function HomePage() {
       <section id="how" className="section-pad" style={{ padding: "6rem 2rem" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <div style={sectionTag}>How it works</div>
-          <h2 style={sectionTitle}>Simple for teachers.<br />Simple for students.</h2>
-          <p style={sectionSub}>Simple setup. Direct access. Just pure, meaningful education.</p>
+          <h2 style={sectionTitle}>Simple to host.<br />Simple to attend.</h2>
+          <p style={sectionSub}>From idea to live webinar in minutes. Attendees join with a single click — no app, no account needed.</p>
           <div className="grid-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "2rem" }}>
-            {/* Teacher panel */}
+            {/* Host panel */}
             <div style={{ background: "#fff", border: "1px solid #e2ded6", borderRadius: 16, padding: "2rem" }}>
               <div style={{ fontSize: "0.75rem", fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "#1d6b3c", marginBottom: "1.5rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
                 <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M12 3L1 9l11 6 9-4.91V17h2V9L12 3z"/><path d="M5 13.18v4L12 21l7-3.82v-4L12 17l-7-3.82z"/></svg>
-                For Teachers
+                For Hosts / Speakers
               </div>
               {[
-                ["Share your link",      "Request a free class slot from our team. We'll give you a unique streaming link in 24h."],
-                ["Choose your format",   "Live class, webinar, Q&A session, or recorded talk — teach how you want."],
-                ["Go live, change lives","Stream directly from any device. Students from around the world join instantly and learn together."],
-                ["Build your community", "Return weekly. Regulars follow your upcoming schedule. Your impact compounds."],
+                ["Create your profile",    "Sign up, complete your speaker profile, and describe your expertise. Attendees will find you through search."],
+                ["Schedule a webinar",     "Pick a topic, set a date, add a description and banner. Your webinar is discoverable immediately."],
+                ["Go live, build repute",  "Stream from any device. Get real-time Q&A, live chat, and ratings after every session."],
+                ["Grow your audience",     "Subscribers follow your schedule. Your expertise level rises with every great webinar you host."],
               ].map(([title, desc], i) => (
                 <div key={title} className="anim-item" style={{ display: "flex", gap: "1rem", marginBottom: i < 3 ? "1.5rem" : 0, alignItems: "flex-start" }}>
                   <div style={{ width: 32, height: 32, flexShrink: 0, borderRadius: "50%", background: "#d4ead9", color: "#1d6b3c", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.8rem", fontWeight: 600 }}>{i + 1}</div>
@@ -258,17 +270,17 @@ export default function HomePage() {
                 </div>
               ))}
             </div>
-            {/* Student panel */}
+            {/* Attendee panel */}
             <div style={{ background: "#fff", border: "1px solid #e2ded6", borderRadius: 16, padding: "2rem" }}>
               <div style={{ fontSize: "0.75rem", fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "#1a4f7a", marginBottom: "1.5rem", display: "flex", alignItems: "center", gap: "0.5rem" }}>
                 <svg width="14" height="14" fill="currentColor" viewBox="0 0 24 24"><path d="M17 12h-5v5h5v-5zM16 1v2H8V1H6v2H5c-1.11 0-1.99.9-1.99 2L3 19c0 1.1.89 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2h-1V1h-2zm3 18H5V8h14v11z"/></svg>
-                For Students
+                For Attendees
               </div>
               {[
-                ["Browse & discover",            "Explore live and upcoming classes. Visit teacher profiles to see their background, ratings, and upcoming schedule."],
-                ["Subscribe to teachers you love","Hit Subscribe on any teacher profile. Get notified the moment they go live or schedule something new."],
-                ["Engage during the session",     "Chat live, ask questions, react in real-time. Every voice matters in an OpenClass session."],
-                ["Rate & message after class",    "Leave a star rating and comment after every session. Message teachers directly for doubts or deeper conversation."],
+                ["Browse & discover",              "Explore live and upcoming webinars. Filter by topic, speaker, or time. Find exactly what you want to learn."],
+                ["Subscribe to speakers you love", "Follow any speaker and get notified the moment they schedule or go live. Build your own learning feed."],
+                ["Engage during the webinar",      "Chat live, ask questions, react in real-time. Every voice matters — it's a conversation, not a lecture."],
+                ["Rate & message after",           "Leave a star rating after every webinar. Message speakers directly for doubts or deeper conversation."],
               ].map(([title, desc], i) => (
                 <div key={title} className="anim-item" style={{ display: "flex", gap: "1rem", marginBottom: i < 3 ? "1.5rem" : 0, alignItems: "flex-start" }}>
                   <div style={{ width: 32, height: 32, flexShrink: 0, borderRadius: "50%", background: "#ddeaf8", color: "#1a4f7a", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.8rem", fontWeight: 600 }}>{i + 1}</div>
@@ -284,8 +296,8 @@ export default function HomePage() {
       <div className="section-pad" style={{ background: "#fff", padding: "6rem 2rem", borderTop: "1px solid #e2ded6", borderBottom: "1px solid #e2ded6" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <div style={sectionTag}>Features</div>
-          <h2 style={sectionTitle}>Built for the purpose of teaching,<br />not profit.</h2>
-          <p style={sectionSub}>Every feature exists to remove friction between a teacher's knowledge and a student's curiosity.</p>
+          <h2 style={sectionTitle}>Everything a webinar platform<br />should have — and nothing it shouldn't.</h2>
+          <p style={sectionSub}>Every feature is built to close the gap between a speaker's knowledge and an audience's curiosity.</p>
           <div className="grid-3col" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "2rem" }}>
             {FEATURES.map(f => (
               <div key={f.title} className="anim-item feature-card-hover" style={{ padding: "1.75rem", borderRadius: 16, border: "1px solid #e2ded6", transition: "border-color 0.2s, transform 0.2s" }}>
@@ -298,19 +310,19 @@ export default function HomePage() {
         </div>
       </div>
 
-      {/* ── STUDENT EXPERIENCE ────────────────────────────────────── */}
+      {/* ── ATTENDEE EXPERIENCE ────────────────────────────────────── */}
       <section className="section-pad" style={{ padding: "6rem 2rem", background: "#fff", borderTop: "1px solid #e2ded6" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-          <div style={sectionTag}>Student Experience</div>
-          <h2 style={sectionTitle}>Every tool you need<br />to learn deeply.</h2>
-          <p style={sectionSub}>OpenClass puts students in control — rate sessions, chat live, follow teachers, and build direct connections with the people teaching you.</p>
+          <div style={sectionTag}>Attendee Experience</div>
+          <h2 style={sectionTitle}>Every tool you need<br />to engage deeply.</h2>
+          <p style={sectionSub}>OpenWebinar puts attendees in control — rate sessions, chat live, follow speakers, and build direct connections with the people teaching you.</p>
 
           {/* Tabs */}
           <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap", marginBottom: "2rem" }}>
             {([
               { id: "chat",    label: "💬 Live Chat" },
-              { id: "rate",    label: "⭐ Rate Session" },
-              { id: "profile", label: "🤝 Teacher Profile" },
+              { id: "rate",    label: "⭐ Rate Webinar" },
+              { id: "profile", label: "🤝 Speaker Profile" },
               { id: "message", label: "✍️ Direct Message" },
             ] as { id: ExpTab; label: string }[]).map(tab => (
               <button key={tab.id} onClick={() => setActiveTab(tab.id)}
@@ -326,9 +338,9 @@ export default function HomePage() {
             <div className="grid-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "3rem", alignItems: "start" }}>
               <div>
                 <h3 style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "1.5rem", fontWeight: 700, letterSpacing: "-0.02em", marginBottom: "0.85rem" }}>Comment & ask questions live</h3>
-                <p style={{ color: "#3a4140", lineHeight: 1.75, marginBottom: "1.25rem" }}>During every class or webinar, the live chat runs alongside the stream. Ask doubts, react to what the teacher says, and learn from other students' questions too. Teachers can pin important questions and respond in real time.</p>
+                <p style={{ color: "#3a4140", lineHeight: 1.75, marginBottom: "1.25rem" }}>During every webinar, the live chat runs alongside the stream. Ask doubts, react to what the speaker says, and learn from other attendees' questions too. Speakers can pin important questions and respond in real time.</p>
                 <ul style={{ listStyle: "none", padding: 0, display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                  {["Emoji reactions during the session", "Teacher can highlight and answer questions", "Chat history saved with the replay"].map(p => (
+                  {["Emoji reactions during the session", "Speaker can highlight and answer questions", "Chat history saved with the replay"].map(p => (
                     <li key={p} style={{ display: "flex", alignItems: "center", gap: "0.6rem", fontSize: "0.875rem", color: "#3a4140" }}>
                       <span style={{ color: "#1d6b3c", fontWeight: 700 }}>✓</span>{p}
                     </li>
@@ -338,7 +350,7 @@ export default function HomePage() {
               <div style={{ background: "#fff", border: "1.5px solid #e2ded6", borderRadius: 16, overflow: "hidden", boxShadow: "0 8px 32px rgba(15,20,16,0.08)" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", padding: "0.75rem 1rem", background: "#0f1410", color: "#fff", fontSize: "0.8rem", fontWeight: 500 }}>
                   <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#ef4444", flexShrink: 0 }} />
-                  Live Chat — Linear Algebra
+                  Live — Linear Algebra Webinar
                   <span style={{ marginLeft: "auto", fontSize: "0.72rem", color: "rgba(255,255,255,0.5)" }}>1,204 watching</span>
                 </div>
                 <div ref={chatRef} style={{ padding: "0.75rem 1rem", display: "flex", flexDirection: "column", gap: "0.6rem", maxHeight: 220, overflowY: "auto" }}>
@@ -362,10 +374,10 @@ export default function HomePage() {
           {activeTab === "rate" && (
             <div className="grid-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "3rem", alignItems: "start" }}>
               <div>
-                <h3 style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "1.5rem", fontWeight: 700, letterSpacing: "-0.02em", marginBottom: "0.85rem" }}>Rate every session honestly</h3>
-                <p style={{ color: "#3a4140", lineHeight: 1.75, marginBottom: "1.25rem" }}>After a class ends, students can leave a star rating (1–5) and a written comment. This builds a transparent reputation system — great teachers rise naturally through genuine feedback, not paid promotion.</p>
+                <h3 style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "1.5rem", fontWeight: 700, letterSpacing: "-0.02em", marginBottom: "0.85rem" }}>Rate every webinar honestly</h3>
+                <p style={{ color: "#3a4140", lineHeight: 1.75, marginBottom: "1.25rem" }}>After a webinar ends, attendees can leave a star rating (1–5) and a written comment. This builds a transparent reputation system — great speakers rise naturally through genuine feedback, not paid promotion. Your rating is your brand.</p>
                 <ul style={{ listStyle: "none", padding: 0, display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                  {["1–5 star rating per session", "Written review visible on teacher profile", "Average rating shown on all class cards"].map(p => (
+                  {["1–5 star rating per webinar", "Written review visible on speaker profile", "Average rating shown on all webinar cards"].map(p => (
                     <li key={p} style={{ display: "flex", alignItems: "center", gap: "0.6rem", fontSize: "0.875rem", color: "#3a4140" }}>
                       <span style={{ color: "#1d6b3c", fontWeight: 700 }}>✓</span>{p}
                     </li>
@@ -373,7 +385,7 @@ export default function HomePage() {
                 </ul>
               </div>
               <div style={{ background: "#fff", border: "1.5px solid #e2ded6", borderRadius: 16, overflow: "hidden", boxShadow: "0 8px 32px rgba(15,20,16,0.08)" }}>
-                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", padding: "0.75rem 1rem", background: "#0f1410", color: "#fff", fontSize: "0.8rem", fontWeight: 500 }}>Rate this session</div>
+                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", padding: "0.75rem 1rem", background: "#0f1410", color: "#fff", fontSize: "0.8rem", fontWeight: 500 }}>Rate this webinar</div>
                 <div style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "1rem", fontWeight: 700, padding: "1rem 1rem 0.15rem", color: "#0f1410" }}>Linear Algebra: Eigenvalues & Eigenvectors</div>
                 <div style={{ fontSize: "0.78rem", color: "#6b7a72", padding: "0 1rem 0.75rem" }}>Prof. Ananya Rao · Mathematics</div>
                 <div style={{ display: "flex", gap: "0.35rem", padding: "0 1rem 0.5rem", cursor: "pointer" }}>
@@ -401,14 +413,14 @@ export default function HomePage() {
             </div>
           )}
 
-          {/* ── Teacher Profile panel ── */}
+          {/* ── Speaker Profile panel ── */}
           {activeTab === "profile" && (
             <div className="grid-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "3rem", alignItems: "start" }}>
               <div>
-                <h3 style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "1.5rem", fontWeight: 700, letterSpacing: "-0.02em", marginBottom: "0.85rem" }}>Know your teacher deeply</h3>
-                <p style={{ color: "#3a4140", lineHeight: 1.75, marginBottom: "1.25rem" }}>Every teacher on OpenClass has a full public profile — their background, qualifications, subjects they teach, average rating, total students taught, and a complete history of past sessions with replays. Subscribe in one tap.</p>
+                <h3 style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "1.5rem", fontWeight: 700, letterSpacing: "-0.02em", marginBottom: "0.85rem" }}>Know your speaker deeply</h3>
+                <p style={{ color: "#3a4140", lineHeight: 1.75, marginBottom: "1.25rem" }}>Every speaker on OpenWebinar has a full public profile — their background, expertise, average rating, total attendees, and a complete history of past webinars with replays. Follow in one tap to never miss a session.</p>
                 <ul style={{ listStyle: "none", padding: 0, display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                  {["Full bio and teaching background", "Upcoming schedule at a glance", "All past sessions with replays"].map(p => (
+                  {["Full bio and speaking background", "Upcoming webinar schedule at a glance", "All past webinars with replays"].map(p => (
                     <li key={p} style={{ display: "flex", alignItems: "center", gap: "0.6rem", fontSize: "0.875rem", color: "#3a4140" }}>
                       <span style={{ color: "#1d6b3c", fontWeight: 700 }}>✓</span>{p}
                     </li>
@@ -422,19 +434,19 @@ export default function HomePage() {
                     <div style={{ fontWeight: 700, fontSize: "0.9rem", color: "#0f1410" }}>Prof. Ananya Rao</div>
                     <div style={{ fontSize: "0.75rem", color: "#6b7a72", marginBottom: "0.4rem" }}>Mathematics · IIT Bombay (Retd.)</div>
                     <div style={{ display: "flex", flexWrap: "wrap", gap: "0.3rem" }}>
-                      {[["⭐ 4.9 Rating","#d4ead9","#1d6b3c"],["🥇 34K students","#ddeaf8","#1a4f7a"],["📚 148 sessions","#f8ede5","#c45b2a"]].map(([label,bg,tc]) => (
+                      {[["⭐ 4.9 Rating","#d4ead9","#1d6b3c"],["🥇 34K attendees","#ddeaf8","#1a4f7a"],["📡 148 webinars","#f8ede5","#c45b2a"]].map(([label,bg,tc]) => (
                         <span key={label} style={{ fontSize: "0.68rem", fontWeight: 500, padding: "0.15rem 0.5rem", borderRadius: 100, background: bg as string, color: tc as string }}>{label}</span>
                       ))}
                     </div>
                   </div>
                   <button onClick={() => setIsSubscribed(v => !v)} className="sub-btn-hover" style={{ flexShrink: 0, background: isSubscribed ? "#d4ead9" : "#1d6b3c", color: isSubscribed ? "#1d6b3c" : "#fff", border: "none", borderRadius: 100, padding: "0.4rem 0.85rem", fontSize: "0.78rem", fontWeight: 600, cursor: "pointer", fontFamily: "'DM Sans', sans-serif", transition: "background 0.2s" }}>
-                    {isSubscribed ? "✓ Subscribed" : "+ Subscribe"}
+                    {isSubscribed ? "✓ Following" : "+ Follow"}
                   </button>
                 </div>
                 <div style={{ fontSize: "0.78rem", color: "#3a4140", fontStyle: "italic", padding: "0.85rem 1rem", borderBottom: "1px solid #e2ded6", lineHeight: 1.6 }}>
-                  "I've spent 30 years teaching at IIT Bombay. Now I want to reach every student in India — not just those who can afford premium coaching. Mathematics is for everyone."
+                  "I spent 30 years teaching at IIT Bombay. Now I want to reach every student in India — not just those who can afford premium coaching. Mathematics is for everyone."
                 </div>
-                <div style={{ fontSize: "0.68rem", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#6b7a72", padding: "0.75rem 1rem 0.4rem" }}>Upcoming sessions</div>
+                <div style={{ fontSize: "0.68rem", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#6b7a72", padding: "0.75rem 1rem 0.4rem" }}>Upcoming webinars</div>
                 {[
                   { dot: "#1d6b3c", title: "Differential Equations: Introduction", time: "Today · 5:00 PM IST", btn: "Join Free" },
                   { dot: "#1a4f7a", title: "Linear Algebra: Matrix Operations",    time: "Tomorrow · 4:00 PM IST", btn: "Remind Me" },
@@ -456,10 +468,10 @@ export default function HomePage() {
           {activeTab === "message" && (
             <div className="grid-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "3rem", alignItems: "start" }}>
               <div>
-                <h3 style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "1.5rem", fontWeight: 700, letterSpacing: "-0.02em", marginBottom: "0.85rem" }}>Talk to your teacher directly</h3>
-                <p style={{ color: "#3a4140", lineHeight: 1.75, marginBottom: "1.25rem" }}>Have a doubt that wasn't answered in class? Want to discuss a topic in more depth? Students can send direct messages to any teacher on OpenClass. Teachers respond at their own pace — real human connection, not a chatbot.</p>
+                <h3 style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "1.5rem", fontWeight: 700, letterSpacing: "-0.02em", marginBottom: "0.85rem" }}>Talk to your speaker directly</h3>
+                <p style={{ color: "#3a4140", lineHeight: 1.75, marginBottom: "1.25rem" }}>Have a question that wasn't answered during the webinar? Want to go deeper on a topic? Attendees can send direct messages to any speaker on OpenWebinar. Speakers respond at their own pace — real human connection, not a chatbot.</p>
                 <ul style={{ listStyle: "none", padding: 0, display: "flex", flexDirection: "column", gap: "0.5rem" }}>
-                  {["One-on-one message thread per teacher", "Teachers can manage their inbox easily", "Share notes, images, or links in chat"].map(p => (
+                  {["One-on-one message thread per speaker", "Speakers manage their inbox easily", "Share notes, images, or links in chat"].map(p => (
                     <li key={p} style={{ display: "flex", alignItems: "center", gap: "0.6rem", fontSize: "0.875rem", color: "#3a4140" }}>
                       <span style={{ color: "#1d6b3c", fontWeight: 700 }}>✓</span>{p}
                     </li>
@@ -496,9 +508,9 @@ export default function HomePage() {
       {categories.length > 0 && (
         <section id="subjects" className="section-pad" style={{ padding: "6rem 2rem" }}>
           <div style={{ maxWidth: 1100, margin: "0 auto" }}>
-            <div style={sectionTag}>Subjects</div>
-            <h2 style={sectionTitle}>Every subject, taught with love.</h2>
-            <p style={sectionSub}>From UPSC prep to yoga philosophy — if knowledge matters, it belongs here.</p>
+            <div style={sectionTag}>Topics</div>
+            <h2 style={sectionTitle}>Every topic, hosted with expertise.</h2>
+            <p style={sectionSub}>From UPSC prep to yoga philosophy — if knowledge matters, there's a webinar for it here.</p>
             <div style={{ display: "flex", flexWrap: "wrap", gap: "0.75rem" }}>
               {categories.map(cat => (
                 <button key={cat.id} onClick={() => setActiveSubject(cat.name)}
@@ -516,7 +528,7 @@ export default function HomePage() {
       <section className="section-pad" style={{ padding: "6rem 2rem", background: "#faf7f2" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <div style={sectionTag}>Stories</div>
-          <h2 style={{ ...sectionTitle, marginBottom: "3rem" }}>Education changes lives.<br />These are the proof.</h2>
+          <h2 style={{ ...sectionTitle, marginBottom: "3rem" }}>Webinars change lives.<br />These are the proof.</h2>
           <div className="grid-3col" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1.5rem" }}>
             {TESTIMONIALS.map(t => (
               <div key={t.name} className="anim-item" style={{ background: "#fff", border: "1px solid #e2ded6", borderRadius: 16, padding: "1.75rem" }}>
@@ -535,20 +547,20 @@ export default function HomePage() {
       </section>
 
       {/* ── DUAL CTA ──────────────────────────────────────────────── */}
-      <section id="teach" className="section-pad" style={{ padding: "6rem 2rem" }}>
+      <section id="host" className="section-pad" style={{ padding: "6rem 2rem" }}>
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <div className="grid-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "2rem" }}>
             <div className="anim-item dual-cta-card" style={{ background: "#0f1410", color: "#faf7f2", borderRadius: 16, padding: "3rem 2.5rem", position: "relative", overflow: "hidden" }}>
-              <h3 style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "1.8rem", fontWeight: 700, marginBottom: "0.75rem", letterSpacing: "-0.02em" }}>Share what you know.</h3>
-              <p style={{ fontSize: "0.95rem", color: "rgba(250,247,242,0.65)", marginBottom: "2rem", lineHeight: 1.7 }}>You don't need a studio or a degree in education. You need knowledge and the will to share it. We handle the rest.</p>
-              <Link href="/login" style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "#fff", color: "#0f1410", padding: "0.75rem 1.5rem", borderRadius: 100, fontWeight: 500, fontSize: "0.9rem", textDecoration: "none" }}>Apply to teach →</Link>
-              <div style={{ position: "absolute", right: "1.5rem", bottom: "-0.5rem", fontFamily: "'Fraunces', Georgia, serif", fontSize: "8rem", fontWeight: 700, opacity: 0.07, lineHeight: 1, pointerEvents: "none" }}>✏</div>
+              <h3 style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "1.8rem", fontWeight: 700, marginBottom: "0.75rem", letterSpacing: "-0.02em" }}>Share your expertise.</h3>
+              <p style={{ fontSize: "0.95rem", color: "rgba(250,247,242,0.65)", marginBottom: "2rem", lineHeight: 1.7 }}>You don't need a studio or a production team. You need knowledge and the will to share it. Host free, build your reputation, earn later.</p>
+              <Link href="/login" style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "#fff", color: "#0f1410", padding: "0.75rem 1.5rem", borderRadius: 100, fontWeight: 500, fontSize: "0.9rem", textDecoration: "none" }}>Host a webinar →</Link>
+              <div style={{ position: "absolute", right: "1.5rem", bottom: "-0.5rem", fontFamily: "'Fraunces', Georgia, serif", fontSize: "8rem", fontWeight: 700, opacity: 0.07, lineHeight: 1, pointerEvents: "none" }}>🎙</div>
             </div>
             <div className="anim-item dual-cta-card" style={{ background: "#d4ead9", color: "#0f1410", borderRadius: 16, padding: "3rem 2.5rem", position: "relative", overflow: "hidden" }}>
-              <h3 style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "1.8rem", fontWeight: 700, marginBottom: "0.75rem", letterSpacing: "-0.02em" }}>Learn anything, right now.</h3>
-              <p style={{ fontSize: "0.95rem", color: "#3a4140", marginBottom: "2rem", lineHeight: 1.7 }}>Browse hundreds of live and upcoming classes. Pick a subject, click join, and start learning in seconds. That's all it takes.</p>
-              <Link href="/live" style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "#1d6b3c", color: "#fff", padding: "0.75rem 1.5rem", borderRadius: 100, fontWeight: 500, fontSize: "0.9rem", textDecoration: "none" }}>See live classes →</Link>
-              <div style={{ position: "absolute", right: "1.5rem", bottom: "-0.5rem", fontFamily: "'Fraunces', Georgia, serif", fontSize: "8rem", fontWeight: 700, opacity: 0.07, lineHeight: 1, pointerEvents: "none" }}>📚</div>
+              <h3 style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "1.8rem", fontWeight: 700, marginBottom: "0.75rem", letterSpacing: "-0.02em" }}>Attend any webinar, free.</h3>
+              <p style={{ fontSize: "0.95rem", color: "#3a4140", marginBottom: "2rem", lineHeight: 1.7 }}>Browse hundreds of live and upcoming webinars. Pick a topic, click join, and start learning in seconds. No subscriptions. No paywalls.</p>
+              <Link href="/live" style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "#1d6b3c", color: "#fff", padding: "0.75rem 1.5rem", borderRadius: 100, fontWeight: 500, fontSize: "0.9rem", textDecoration: "none" }}>Browse webinars →</Link>
+              <div style={{ position: "absolute", right: "1.5rem", bottom: "-0.5rem", fontFamily: "'Fraunces', Georgia, serif", fontSize: "8rem", fontWeight: 700, opacity: 0.07, lineHeight: 1, pointerEvents: "none" }}>📡</div>
             </div>
           </div>
         </div>
@@ -559,25 +571,21 @@ export default function HomePage() {
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <div className="footer-grid" style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: "3rem", marginBottom: "3rem" }}>
             <div>
-              <h3 style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "1.4rem", fontWeight: 700, marginBottom: "0.75rem" }}>Open<span style={{ color: "#7ed9a4" }}>Class</span></h3>
-              <p style={{ fontSize: "0.875rem", color: "rgba(250,247,242,0.55)", maxWidth: 280, lineHeight: 1.7 }}>A purpose-driven platform where teachers teach freely and students learn freely. Education is a right, not a privilege.</p>
+              <h3 style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "1.4rem", fontWeight: 700, marginBottom: "0.75rem" }}>Open<span style={{ color: "#7ed9a4" }}>Webinar</span></h3>
+              <p style={{ fontSize: "0.875rem", color: "rgba(250,247,242,0.55)", maxWidth: 280, lineHeight: 1.7 }}>The world's only free webinar hub. Host webinars, build your reputation, and reach a global audience — at zero cost.</p>
               <div style={{ marginTop: "1.25rem" }}><span style={{ fontSize: "0.78rem", color: "rgba(250,247,242,0.4)" }}>Built with love in India 🇮🇳</span></div>
             </div>
             {[
-              { title: "Learn",  links: [["Live Classes","/live"],["Upcoming Schedule","/live"],["Browse by Subject","/live"],["Teachers","/teachers"]] },
-              { title: "Teach",  links: [["Apply to Teach","/login"],["Teacher Dashboard","/dashboard"],["Host a Webinar","/session"],["My Sessions","/my-sessions"]] },
-              { title: "About",  links: [["Our Mission","/about"],["How We're Funded","/about#funding"],["Expertise Levels","/expertise"],["Contact Us","/contact"]] },
+              { title: "Discover", links: [["Browse Webinars","/live"],["Upcoming Schedule","/live"],["Browse by Topic","/live"],["Speakers","/teachers"]] },
+              { title: "Host",     links: [["Apply to Speak","/login"],["Speaker Dashboard","/dashboard"],["Host a Webinar","/session"],["My Webinars","/my-sessions"]] },
+              { title: "About",    links: [["Our Mission","/about"],["How We're Funded","/about#funding"],["Expertise Levels","/expertise"],["Contact Us","/contact"]] },
             ].map(col => (
               <div key={col.title}>
                 <h4 style={{ fontSize: "0.8rem", fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "rgba(250,247,242,0.45)", marginBottom: "1rem" }}>{col.title}</h4>
                 <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
                   {col.links.map(([label, href]) => (
                     <li key={label} style={{ marginBottom: "0.6rem" }}>
-                      {href ? (
-                        <Link href={href} className="footer-link-hover" style={{ textDecoration: "none", fontSize: "0.875rem", color: "rgba(250,247,242,0.65)", transition: "color 0.2s" }}>{label}</Link>
-                      ) : (
-                        <span style={{ fontSize: "0.875rem", color: "rgba(250,247,242,0.65)", cursor: "default" }}>{label}</span>
-                      )}
+                      <Link href={href} className="footer-link-hover" style={{ textDecoration: "none", fontSize: "0.875rem", color: "rgba(250,247,242,0.65)", transition: "color 0.2s" }}>{label}</Link>
                     </li>
                   ))}
                 </ul>
@@ -585,7 +593,7 @@ export default function HomePage() {
             ))}
           </div>
           <div className="footer-bottom" style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: "1.5rem", display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: "0.8rem", color: "rgba(250,247,242,0.35)" }}>
-            <span>© 2025 OpenClass · Free forever, for everyone.</span>
+            <span>© 2026 OpenWebinar · Free webinars, for everyone.</span>
             <div style={{ display: "flex", gap: "1.5rem" }}>
               <Link href="/privacy" className="footer-link-hover" style={{ textDecoration: "none", color: "rgba(250,247,242,0.35)", transition: "color 0.2s" }}>Privacy</Link>
               <Link href="/terms" className="footer-link-hover" style={{ textDecoration: "none", color: "rgba(250,247,242,0.35)", transition: "color 0.2s" }}>Terms</Link>

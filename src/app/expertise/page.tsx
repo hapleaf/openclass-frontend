@@ -13,9 +13,9 @@ const T = {
 };
 
 const CRITERIA_ROWS = [
-  { label: "Sessions conducted", key: "minSessions" as const, suffix: "+" },
-  { label: "Learner reviews",    key: "minReviews"  as const, suffix: "+" },
-  { label: "Avg star rating",    key: "minRating"   as const, suffix: "★" },
+  { label: "Webinars hosted",   key: "minSessions" as const, suffix: "+" },
+  { label: "Attendee reviews",  key: "minReviews"  as const, suffix: "+" },
+  { label: "Avg star rating",   key: "minRating"   as const, suffix: "★" },
 ];
 
 function LevelCard({ lvl, index }: { lvl: ExpertiseLevelMeta; index: number }) {
@@ -93,13 +93,13 @@ export default function ExpertisePage() {
           <div style={{ position: "relative", maxWidth: 640, margin: "0 auto" }}>
             <div style={{ fontSize: "2.5rem", marginBottom: "0.75rem" }}>🏅</div>
             <h1 style={{ fontFamily: T.ffD, fontSize: "clamp(1.8rem, 4vw, 2.6rem)", fontWeight: 700, color: "#fff", lineHeight: 1.15, marginBottom: "1rem", letterSpacing: "-0.02em" }}>
-              OpenClass Expertise Levels
+              OpenWebinar Speaker Levels
             </h1>
             <p style={{ fontSize: "1rem", color: "rgba(255,255,255,0.75)", lineHeight: 1.7, maxWidth: 520, margin: "0 auto 1.5rem" }}>
-              Every teacher on OpenClass earns a badge that reflects their real track record — sessions taught, learner reviews, and star ratings. Here's how each level works.
+              Every host on OpenWebinar earns a badge that reflects their real track record — webinars hosted, attendee reviews, and star ratings. Earned, not bought.
             </p>
             <Link href="/teachers" style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", background: "rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.85)", fontSize: "0.85rem", fontWeight: 600, padding: "0.6rem 1.25rem", borderRadius: 100, textDecoration: "none", border: "1px solid rgba(255,255,255,0.2)", backdropFilter: "blur(8px)" }}>
-              Browse Teachers →
+              Browse Speakers →
             </Link>
           </div>
         </div>
@@ -108,9 +108,9 @@ export default function ExpertisePage() {
         <div style={{ background: T.white, borderBottom: `1px solid ${T.border}`, padding: "1.5rem 1.5rem" }}>
           <div style={{ maxWidth: 800, margin: "0 auto", display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1.5rem", textAlign: "center" }}>
             {[
-              { icon: "📅", title: "Sessions Conducted", body: "The number of approved, published sessions a teacher has hosted on OpenClass." },
-              { icon: "💬", title: "Learner Reviews", body: "Real feedback left by registered students after attending a session." },
-              { icon: "⭐", title: "Average Star Rating", body: "The mean of all star ratings across every review a teacher has received." },
+              { icon: "📡", title: "Webinars Hosted", body: "The number of approved, published webinars a host has conducted on OpenWebinar." },
+              { icon: "💬", title: "Attendee Reviews", body: "Real feedback left by attendees after watching and participating in a webinar." },
+              { icon: "⭐", title: "Average Star Rating", body: "The mean of all star ratings across every review a host has received on the platform." },
             ].map(item => (
               <div key={item.title}>
                 <div style={{ fontSize: "1.5rem", marginBottom: "0.4rem" }}>{item.icon}</div>
@@ -153,12 +153,12 @@ export default function ExpertisePage() {
                 a: "Yes. Badge levels reflect your current standing. If your average rating falls below a threshold due to new reviews, your badge will adjust accordingly.",
               },
               {
-                q: "Do draft or unapproved sessions count?",
-                a: "No. Only sessions that are published and approved by the OpenClass moderation team count toward your session tally.",
+                q: "Do draft or unapproved webinars count?",
+                a: "No. Only webinars that are published and approved by the OpenWebinar team count toward your webinar tally.",
               },
               {
                 q: "Is Level 1 shown on my profile?",
-                a: "Yes. All teachers display a badge — Level 1 (Newcomer) is shown proudly because every expert starts somewhere.",
+                a: "Yes. All hosts display a badge — Level 1 (Newcomer) is shown proudly because every expert starts somewhere.",
               },
             ].map((item, i) => (
               <div key={i} style={{ paddingBottom: "1.25rem", marginBottom: "1.25rem", borderBottom: i < 3 ? `1px solid ${T.border}` : undefined }}>

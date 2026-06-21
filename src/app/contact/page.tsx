@@ -112,9 +112,9 @@ export default function ContactPage() {
         <div style={{ maxWidth: 860, margin: "0 auto", padding: isMobile ? "0 1rem" : "0 2rem" }}>
           <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: "1rem", transform: "translateY(-1.75rem)" }}>
             {[
-              { icon: "📧", title: "Email", detail: "hello@openclass.in", sub: "For anything and everything" },
+              { icon: "📧", title: "Email", detail: "hello@open-webinar.com", sub: "For anything and everything" },
               { icon: "🐛", title: "Bug report", detail: "Use the form below", sub: "Include steps to reproduce" },
-              { icon: "🎙️", title: "Teach with us", detail: "hello@openclass.in", sub: "Tell us your subject & background" },
+              { icon: "🎙️", title: "Teach with us", detail: "hello@open-webinar.com", sub: "Tell us your subject & background" },
             ].map(c => (
               <div key={c.title} style={{ background: T.white, border: `1px solid ${T.border}`, borderRadius: 16, padding: "1.4rem 1.5rem", boxShadow: "0 4px 20px rgba(15,20,16,0.06)" }}>
                 <div style={{ fontSize: "1.5rem", marginBottom: "0.6rem" }}>{c.icon}</div>

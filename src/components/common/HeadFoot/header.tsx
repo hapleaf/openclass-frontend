@@ -153,7 +153,7 @@ export default function Header({
 
         {/* Logo */}
         <Link href="/" style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "1.4rem", fontWeight: 700, color: "#0f1410", letterSpacing: "-0.02em", textDecoration: "none", whiteSpace: "nowrap" }}>
-          Open<span style={{ color: "#1d6b3c" }}>Class</span>
+          Open<span style={{ color: "#1d6b3c" }}>Webinar</span>
         </Link>
 
         {isMobile ? (
@@ -194,16 +194,16 @@ export default function Header({
           <>
             <ul style={{ display: "flex", alignItems: "center", gap: "0.35rem", listStyle: "none", margin: "0 0 0 auto", padding: 0 }}>
               {isLoggedIn && <li><Link href={dashRole === "student" ? "/student-dashboard" : "/dashboard"} style={linkStyle(activeLink === "dashboard")}>Dashboard</Link></li>}
-              <li><Link href="/live" style={linkStyle(activeLink === "live")}>Live Classes / Webinars</Link></li>
-              <li><Link href="/teachers" style={linkStyle(activeLink === "teachers")}>Teachers</Link></li>
-              {isLoggedIn && userRole !== "Student" && dashRole !== "student" && <li><Link href="/my-sessions" style={linkStyle(activeLink === "sessions")}>My Sessions</Link></li>}
+              <li><Link href="/live" style={linkStyle(activeLink === "live")}>Webinars</Link></li>
+              <li><Link href="/teachers" style={linkStyle(activeLink === "teachers")}>Speakers</Link></li>
+              {isLoggedIn && userRole !== "Student" && dashRole !== "student" && <li><Link href="/my-sessions" style={linkStyle(activeLink === "sessions")}>My Webinars</Link></li>}
               {isLoggedIn && (
                 <li style={{ position: "relative" }}
                   onMouseEnter={() => setRoleHover(true)}
                   onMouseLeave={() => setRoleHover(false)}>
                   <button onClick={switchRole} style={{ display: "flex", alignItems: "center", gap: "0.4rem", textDecoration: "none", fontSize: "0.78rem", fontWeight: 600, color: "#1a4f7a", background: "#ddeaf8", border: "1.5px solid #b8d4ee", padding: "0.35rem 0.85rem", borderRadius: 100, fontFamily: "'DM Sans', sans-serif", whiteSpace: "nowrap" as const, cursor: "pointer" }}>
                     <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2} style={{ flexShrink: 0 }}><path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4" /></svg>
-                    {dashRole === "student" ? "Switch to Teacher" : "Switch to Student"}
+                    {dashRole === "student" ? "Switch to Speaker" : "Switch to Attendee"}
                   </button>
 
                   {roleHover && (
@@ -211,16 +211,16 @@ export default function Header({
                       <div style={{ position: "absolute", top: -7, left: "50%", transform: "translateX(-50%)", width: 12, height: 12, background: "#fff", border: "1.5px solid #e2ded6", borderBottom: "none", borderRight: "none", rotate: "45deg" }} />
                       {dashRole === "student" ? (
                         <>
-                          <div style={{ fontSize: "0.82rem", fontWeight: 700, color: "#0f1410", marginBottom: "0.4rem" }}>Switch to Teacher view</div>
+                          <div style={{ fontSize: "0.82rem", fontWeight: 700, color: "#0f1410", marginBottom: "0.4rem" }}>Switch to Speaker view</div>
                           <div style={{ fontSize: "0.76rem", color: "#3a4140", lineHeight: 1.55 }}>
-                            You are currently in <strong>Student mode</strong>. Switching to Teacher view lets you host sessions, manage your upcoming webinars and live classes, track registrations, and build your teaching profile.
+                            You are currently in <strong>Attendee mode</strong>. Switching to Speaker view lets you host webinars, manage your schedule, track registrations, and build your speaker profile.
                           </div>
                         </>
                       ) : (
                         <>
-                          <div style={{ fontSize: "0.82rem", fontWeight: 700, color: "#0f1410", marginBottom: "0.4rem" }}>Switch to Student view</div>
+                          <div style={{ fontSize: "0.82rem", fontWeight: 700, color: "#0f1410", marginBottom: "0.4rem" }}>Switch to Attendee view</div>
                           <div style={{ fontSize: "0.76rem", color: "#3a4140", lineHeight: 1.55 }}>
-                            You are currently in <strong>Teacher mode</strong>. Switching to Student view lets you browse and join sessions as a learner — discover live classes and webinars from other teachers, register, and track your learning journey.
+                            You are currently in <strong>Speaker mode</strong>. Switching to Attendee view lets you browse and join webinars — discover sessions from other speakers, register, and track your learning journey.
                           </div>
                         </>
                       )}
@@ -298,14 +298,14 @@ export default function Header({
             </Link>
           )}
           <Link href="/live" onClick={() => setMenuOpen(false)} style={mobileLinkStyle(activeLink === "live")}>
-            Live Classes / Webinars
+            Webinars
           </Link>
           <Link href="/teachers" onClick={() => setMenuOpen(false)} style={mobileLinkStyle(activeLink === "teachers")}>
-            Teachers
+            Speakers
           </Link>
           {isLoggedIn && userRole !== "Student" && dashRole !== "student" && (
             <Link href="/my-sessions" onClick={() => setMenuOpen(false)} style={mobileLinkStyle(activeLink === "sessions")}>
-              My Sessions
+              My Webinars
             </Link>
           )}
 
@@ -313,7 +313,7 @@ export default function Header({
           {isLoggedIn && (
             <button onClick={switchRole} style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "0.9rem", fontWeight: 600, color: "#1a4f7a", background: "#ddeaf8", border: "1.5px solid #b8d4ee", padding: "0.7rem 1rem", borderRadius: 12, fontFamily: "'DM Sans', sans-serif", cursor: "pointer", margin: "0.25rem 0", textAlign: "left" }}>
               <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2} style={{ flexShrink: 0 }}><path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4" /></svg>
-              {dashRole === "student" ? "Switch to Teacher" : "Switch to Student"}
+              {dashRole === "student" ? "Switch to Speaker" : "Switch to Attendee"}
             </button>
           )}
 

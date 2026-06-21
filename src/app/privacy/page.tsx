@@ -38,22 +38,22 @@ export default function PrivacyPage() {
         <div style={{ maxWidth: 720, margin: "0 auto", padding: "3rem 2rem 4rem" }}>
 
           <div style={{ background: T.leafLight, border: "1px solid rgba(29,107,60,0.2)", borderRadius: 12, padding: "1rem 1.25rem", marginBottom: "2.5rem", fontSize: "0.875rem", color: "#1d6b3c", lineHeight: 1.6 }}>
-            <strong>Short version:</strong> We collect only what we need to run the platform. We never sell your data. We never show ads. Sessions are live — not recorded by default.
+            <strong>Short version:</strong> We collect only what we need to run the platform. We never sell your data. We never show ads. Webinars are live — not recorded by default.
           </div>
 
           <Section title="1. What we collect">
-            <p>When you create an account, we collect your name and email address. Teachers may optionally add a bio, profile photo, social links, and expertise tags. Students may save session registrations and follow teachers.</p>
-            <p>We collect basic usage data (pages visited, session join times) to improve the platform. This data is not linked to third-party ad networks.</p>
+            <p>When you create an account, we collect your name and email address. Speakers may optionally add a bio, profile photo, social links, and expertise tags. Attendees may save webinar registrations and follow speakers.</p>
+            <p>We collect basic usage data (pages visited, webinar join times) to improve the platform. This data is not linked to third-party ad networks.</p>
           </Section>
 
           <Section title="2. How we use your data">
-            <p>Your information is used to: provide the platform (login, session access, notifications), personalise your experience (teacher recommendations, schedule), and communicate with you about your account or sessions you've registered for.</p>
+            <p>Your information is used to: provide the platform (login, webinar access, notifications), personalise your experience (speaker recommendations, schedule), and communicate with you about your account or webinars you've registered for.</p>
             <p>We do not use your data for advertising, we do not build ad profiles, and we do not share your personal information with third parties for their marketing.</p>
           </Section>
 
-          <Section title="3. Live sessions & recordings">
-            <p>OpenClass sessions are live and are not recorded by default. Teachers may choose to record their own sessions using third-party tools, but OpenClass does not store session recordings on our servers unless a teacher explicitly uploads one as an intro video.</p>
-            <p>Chat messages during a session are ephemeral and are not stored after the session ends.</p>
+          <Section title="3. Live webinars & recordings">
+            <p>OpenWebinar sessions are live and are not recorded by default. Speakers may choose to record their own webinars using third-party tools, but OpenWebinar does not store webinar recordings on our servers unless a speaker explicitly uploads one as an intro video.</p>
+            <p>Chat messages during a webinar are ephemeral and are not stored after the session ends.</p>
           </Section>
 
           <Section title="4. Cookies">
@@ -61,7 +61,7 @@ export default function PrivacyPage() {
           </Section>
 
           <Section title="5. Data storage & security">
-            <p>Your data is stored on servers in India. We use industry-standard encryption in transit (HTTPS) and at rest. Passwords are never stored in plain text.</p>
+            <p>Your data is stored on secure servers. We use industry-standard encryption in transit (HTTPS) and at rest. Passwords are never stored in plain text.</p>
           </Section>
 
           <Section title="6. Your rights">
@@ -73,7 +73,9 @@ export default function PrivacyPage() {
           </Section>
 
           <div style={{ borderTop: `1px solid ${T.border}`, paddingTop: "1.75rem", marginTop: "1rem" }}>
-            <p style={{ fontSize: "0.875rem", color: T.inkMuted }}>Questions about this policy? <Link href="/contact" style={{ color: T.leaf, textDecoration: "none", fontWeight: 500 }}>Contact us →</Link></p>
+            <p style={{ fontSize: "0.875rem", color: T.inkMuted }}>
+              Questions about this policy? Email us at <a href="mailto:support@open-webinar.com" style={{ color: T.leaf, textDecoration: "none", fontWeight: 500 }}>support@open-webinar.com</a> or <Link href="/contact" style={{ color: T.leaf, textDecoration: "none", fontWeight: 500 }}>use our contact form →</Link>
+            </p>
           </div>
         </div>
         <Footer />
