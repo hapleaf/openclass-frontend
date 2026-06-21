@@ -10,8 +10,12 @@ import {
   getSessionStats, getUserStats, searchSessions, updateSessionSchedule, getSessionAuditLog,
   searchUsers, updateAdminUser, getLoginEngagement, getTopTeachers, getTopStudents, getSubscriberInsights,
   getContactMessages, getContactThread, replyToContact, markContactRead, deleteContactMessage,
+  recordingRunManually, recordingQueueStatus, recordingGetUploaded, recordingGetLogs,
+  infraTestS3, infraTestBunny, infraTestFfmpeg, infraTestLiveKit, infraTestRedis, getSystemStats,
+  SystemStats, recordingScanDisk, recordingSyncS3, storageMigrateUrls,
   AdminOverview, PendingSession, SessionStats, UserStats, SessionRow, AuditLogEntry, AdminUser,
   EngagementRow, TopTeachers, TopStudentRow, SubscriberTeacherRow, ContactMessage,
+  InfraTestResult, RecordingQueueStatus, UploadedSession, RecordingLogEntry,
 } from "@/lib/admin";
 
 /* ── tokens ── */
@@ -27,7 +31,7 @@ const T = {
   ff: "'DM Sans', sans-serif", ffd: "'Fraunces', Georgia, serif",
 };
 
-type Tab = "overview" | "approval" | "sessions" | "users" | "insights" | "messages";
+type Tab = "overview" | "approval" | "sessions" | "users" | "insights" | "messages" | "recordings";
 
 export const REJECTION_REASONS: { value: string; label: string; desc: string }[] = [
   { value: "REJECTED_QUALITY",       label: "Content Quality",         desc: "Content does not meet platform standards" },
@@ -248,6 +252,29 @@ export default function AdminPage() {
   const debounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
   const userDebounceRef = useRef<ReturnType<typeof setTimeout> | null>(null);
 
+  // Recordings tab
+  const [recQueue, setRecQueue]         = useState<RecordingQueueStatus | null>(null);
+  const [recUploaded, setRecUploaded]   = useState<UploadedSession[] | null>(null);
+  const [recLogs, setRecLogs]           = useState<RecordingLogEntry[] | null>(null);
+  const [recLogsLoading, setRecLogsLoading] = useState(false);
+  const [recRunning, setRecRunning]     = useState(false);
+  const [infraS3, setInfraS3]           = useState<InfraTestResult | null>(null);
+  const [infraBunny, setInfraBunny]     = useState<InfraTestResult | null>(null);
+  const [infraFfmpeg, setInfraFfmpeg]   = useState<InfraTestResult | null>(null);
+  const [infraS3Loading, setInfraS3Loading]       = useState(false);
+  const [infraBunnyLoading, setInfraBunnyLoading] = useState(false);
+  const [infraFfmpegLoading, setInfraFfmpegLoading] = useState(false);
+  const [infraLiveKit, setInfraLiveKit]             = useState<InfraTestResult | null>(null);
+  const [infraRedis, setInfraRedis]                 = useState<InfraTestResult | null>(null);
+  const [infraLiveKitLoading, setInfraLiveKitLoading] = useState(false);
+  const [infraRedisLoading, setInfraRedisLoading]     = useState(false);
+  const [sysStats, setSysStats]         = useState<SystemStats | null>(null);
+  const [sysStatsLoading, setSysStatsLoading] = useState(false);
+  const [procSort, setProcSort] = useState<{ col: "cpu" | "mem" | "user" | "pid" | "command"; dir: 1 | -1 }>({ col: "cpu", dir: -1 });
+  const [scanDiskRunning, setScanDiskRunning]       = useState(false);
+  const [syncS3Running, setSyncS3Running]           = useState(false);
+  const [migrateUrlsRunning, setMigrateUrlsRunning] = useState(false);
+
   const showToast = (msg: string, ok = true) => {
     setToast({ msg, ok });
     setTimeout(() => setToast(null), 3000);
@@ -328,6 +355,15 @@ export default function AdminPage() {
       setSubscriberInsights(subs);
     }).catch(() => {}).finally(() => setEngagementLoading(false));
   }, [tab, insightsLoaded]);
+
+  /* load recordings tab data on enter */
+  useEffect(() => {
+    if (tab !== "recordings") return;
+    recordingQueueStatus().then(setRecQueue).catch(() => {});
+    recordingGetUploaded().then(setRecUploaded).catch(() => {});
+    setRecLogsLoading(true);
+    recordingGetLogs().then(setRecLogs).catch(() => {}).finally(() => setRecLogsLoading(false));
+  }, [tab]);
 
   /* outcome chart date filter */
   useEffect(() => {
@@ -587,6 +623,7 @@ export default function AdminPage() {
           {tabBtn("users", "👥 Users")}
           {tabBtn("insights", "💡 Insights")}
           {tabBtn("messages", "✉️ Messages")}
+          {tabBtn("recordings", "🎬 Recordings")}
         </div>
 
         {loading && tab === "overview" ? (
@@ -1684,6 +1721,337 @@ export default function AdminPage() {
                     )}
                   </>
                 )}
+              </div>
+            )}
+
+            {/* ── RECORDINGS ── */}
+            {tab === "recordings" && (
+              <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+
+                {/* Infrastructure health checks */}
+                <div style={{ background: T.white, border: `1px solid ${T.border}`, borderRadius: T.r, padding: "1.25rem 1.5rem" }}>
+                  <div style={{ fontFamily: T.ffd, fontSize: "1rem", fontWeight: 700, color: T.ink, marginBottom: "1rem" }}>Infrastructure Health</div>
+                  <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: "1rem" }}>
+                    {/* S3 */}
+                    <div style={{ border: `1px solid ${T.border}`, borderRadius: T.rs, padding: "1rem" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.6rem" }}>
+                        <div style={{ fontWeight: 700, fontSize: "0.85rem", color: T.ink }}>iDrive S3</div>
+                        <button disabled={infraS3Loading}
+                          onClick={async () => { setInfraS3Loading(true); setInfraS3(null); const r = await infraTestS3().catch(e => ({ ok: false, message: (e as Error).message })); setInfraS3(r); setInfraS3Loading(false); }}
+                          style={{ padding: "0.3rem 0.9rem", borderRadius: T.rs, border: "none", background: T.sky, color: T.white, fontWeight: 700, fontSize: "0.75rem", cursor: infraS3Loading ? "not-allowed" : "pointer", opacity: infraS3Loading ? 0.6 : 1, fontFamily: T.ff }}>
+                          {infraS3Loading ? "Testing…" : "Test"}
+                        </button>
+                      </div>
+                      {infraS3 ? (
+                        <div style={{ fontSize: "0.78rem", color: infraS3.ok ? T.leaf : T.red, background: infraS3.ok ? T.leafLight : T.redLight, padding: "0.5rem 0.75rem", borderRadius: 6 }}>
+                          {infraS3.ok ? "✅" : "❌"} {infraS3.message}
+                          {infraS3.detail && <div style={{ color: T.inkMuted, marginTop: "0.2rem" }}>{infraS3.detail}</div>}
+                        </div>
+                      ) : <div style={{ fontSize: "0.75rem", color: T.inkMuted }}>Press Test to check connectivity</div>}
+                    </div>
+
+                    {/* Bunny CDN */}
+                    <div style={{ border: `1px solid ${T.border}`, borderRadius: T.rs, padding: "1rem" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.6rem" }}>
+                        <div style={{ fontWeight: 700, fontSize: "0.85rem", color: T.ink }}>Bunny CDN</div>
+                        <button disabled={infraBunnyLoading}
+                          onClick={async () => { setInfraBunnyLoading(true); setInfraBunny(null); const r = await infraTestBunny().catch(e => ({ ok: false, message: (e as Error).message })); setInfraBunny(r); setInfraBunnyLoading(false); }}
+                          style={{ padding: "0.3rem 0.9rem", borderRadius: T.rs, border: "none", background: T.sky, color: T.white, fontWeight: 700, fontSize: "0.75rem", cursor: infraBunnyLoading ? "not-allowed" : "pointer", opacity: infraBunnyLoading ? 0.6 : 1, fontFamily: T.ff }}>
+                          {infraBunnyLoading ? "Testing…" : "Test"}
+                        </button>
+                      </div>
+                      {infraBunny ? (
+                        <div style={{ fontSize: "0.78rem", color: infraBunny.ok ? T.leaf : T.red, background: infraBunny.ok ? T.leafLight : T.redLight, padding: "0.5rem 0.75rem", borderRadius: 6 }}>
+                          {infraBunny.ok ? "✅" : "❌"} {infraBunny.message}
+                          {infraBunny.detail && <div style={{ color: T.inkMuted, marginTop: "0.2rem" }}>{infraBunny.detail}</div>}
+                        </div>
+                      ) : <div style={{ fontSize: "0.75rem", color: T.inkMuted }}>Press Test to check signed URL fetch</div>}
+                    </div>
+
+                    {/* ffmpeg */}
+                    <div style={{ border: `1px solid ${T.border}`, borderRadius: T.rs, padding: "1rem" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.6rem" }}>
+                        <div style={{ fontWeight: 700, fontSize: "0.85rem", color: T.ink }}>ffmpeg</div>
+                        <button disabled={infraFfmpegLoading}
+                          onClick={async () => { setInfraFfmpegLoading(true); setInfraFfmpeg(null); const r = await infraTestFfmpeg().catch(e => ({ ok: false, message: (e as Error).message })); setInfraFfmpeg(r); setInfraFfmpegLoading(false); }}
+                          style={{ padding: "0.3rem 0.9rem", borderRadius: T.rs, border: "none", background: T.sky, color: T.white, fontWeight: 700, fontSize: "0.75rem", cursor: infraFfmpegLoading ? "not-allowed" : "pointer", opacity: infraFfmpegLoading ? 0.6 : 1, fontFamily: T.ff }}>
+                          {infraFfmpegLoading ? "Testing…" : "Test"}
+                        </button>
+                      </div>
+                      {infraFfmpeg ? (
+                        <div style={{ fontSize: "0.78rem", color: infraFfmpeg.ok ? T.leaf : T.red, background: infraFfmpeg.ok ? T.leafLight : T.redLight, padding: "0.5rem 0.75rem", borderRadius: 6 }}>
+                          {infraFfmpeg.ok ? "✅" : "❌"} {infraFfmpeg.message}
+                          {infraFfmpeg.detail && <div style={{ color: T.inkMuted, marginTop: "0.2rem", fontSize: "0.7rem", wordBreak: "break-all" as const }}>{infraFfmpeg.detail}</div>}
+                        </div>
+                      ) : <div style={{ fontSize: "0.75rem", color: T.inkMuted }}>Press Test to verify installation</div>}
+                    </div>
+
+                    {/* LiveKit */}
+                    <div style={{ border: `1px solid ${T.border}`, borderRadius: T.rs, padding: "1rem" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.6rem" }}>
+                        <div style={{ fontWeight: 700, fontSize: "0.85rem", color: T.ink }}>LiveKit Egress</div>
+                        <button disabled={infraLiveKitLoading}
+                          onClick={async () => { setInfraLiveKitLoading(true); setInfraLiveKit(null); const r = await infraTestLiveKit().catch(e => ({ ok: false, message: (e as Error).message })); setInfraLiveKit(r); setInfraLiveKitLoading(false); }}
+                          style={{ padding: "0.3rem 0.9rem", borderRadius: T.rs, border: "none", background: T.sky, color: T.white, fontWeight: 700, fontSize: "0.75rem", cursor: infraLiveKitLoading ? "not-allowed" : "pointer", opacity: infraLiveKitLoading ? 0.6 : 1, fontFamily: T.ff }}>
+                          {infraLiveKitLoading ? "Testing…" : "Test"}
+                        </button>
+                      </div>
+                      {infraLiveKit ? (
+                        <div style={{ fontSize: "0.78rem", color: infraLiveKit.ok ? T.leaf : T.red, background: infraLiveKit.ok ? T.leafLight : T.redLight, padding: "0.5rem 0.75rem", borderRadius: 6 }}>
+                          {infraLiveKit.ok ? "✅" : "❌"} {infraLiveKit.message}
+                          {infraLiveKit.detail && <div style={{ color: T.inkMuted, marginTop: "0.2rem" }}>{infraLiveKit.detail}</div>}
+                        </div>
+                      ) : <div style={{ fontSize: "0.75rem", color: T.inkMuted }}>Press Test to verify LiveKit server</div>}
+                    </div>
+
+                    {/* Redis */}
+                    <div style={{ border: `1px solid ${T.border}`, borderRadius: T.rs, padding: "1rem" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.6rem" }}>
+                        <div style={{ fontWeight: 700, fontSize: "0.85rem", color: T.ink }}>Redis</div>
+                        <button disabled={infraRedisLoading}
+                          onClick={async () => { setInfraRedisLoading(true); setInfraRedis(null); const r = await infraTestRedis().catch(e => ({ ok: false, message: (e as Error).message })); setInfraRedis(r); setInfraRedisLoading(false); }}
+                          style={{ padding: "0.3rem 0.9rem", borderRadius: T.rs, border: "none", background: T.sky, color: T.white, fontWeight: 700, fontSize: "0.75rem", cursor: infraRedisLoading ? "not-allowed" : "pointer", opacity: infraRedisLoading ? 0.6 : 1, fontFamily: T.ff }}>
+                          {infraRedisLoading ? "Testing…" : "Test"}
+                        </button>
+                      </div>
+                      {infraRedis ? (
+                        <div style={{ fontSize: "0.78rem", color: infraRedis.ok ? T.leaf : T.red, background: infraRedis.ok ? T.leafLight : T.redLight, padding: "0.5rem 0.75rem", borderRadius: 6 }}>
+                          {infraRedis.ok ? "✅" : "❌"} {infraRedis.message}
+                          {infraRedis.detail && <div style={{ color: T.inkMuted, marginTop: "0.2rem" }}>{infraRedis.detail}</div>}
+                        </div>
+                      ) : <div style={{ fontSize: "0.75rem", color: T.inkMuted }}>Press Test to verify Redis connectivity</div>}
+                    </div>
+                  </div>
+                </div>
+
+                {/* System Stats */}
+                <div style={{ background: T.white, border: `1px solid ${T.border}`, borderRadius: T.r, padding: "1.25rem 1.5rem" }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1rem" }}>
+                    <div style={{ fontFamily: T.ffd, fontSize: "1rem", fontWeight: 700, color: T.ink }}>System Resources</div>
+                    <button disabled={sysStatsLoading} onClick={async () => { setSysStatsLoading(true); try { setSysStats(await getSystemStats()); } catch { /* ignore */ } finally { setSysStatsLoading(false); } }}
+                      style={{ padding: "0.4rem 1rem", borderRadius: T.rs, border: `1px solid ${T.border}`, background: T.white, color: T.ink, fontWeight: 700, fontSize: "0.8rem", cursor: sysStatsLoading ? "not-allowed" : "pointer", opacity: sysStatsLoading ? 0.6 : 1, fontFamily: T.ff }}>
+                      {sysStatsLoading ? "Loading…" : "🔄 Refresh"}
+                    </button>
+                  </div>
+                  {sysStats ? (
+                    <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+                      {/* CPU + Memory + Disk row */}
+                      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr 1fr", gap: "0.75rem" }}>
+                        {/* CPU */}
+                        <div style={{ background: T.cream, borderRadius: T.rs, padding: "0.9rem 1rem" }}>
+                          <div style={{ fontSize: "0.7rem", fontWeight: 700, color: T.inkMuted, textTransform: "uppercase" as const, letterSpacing: "0.06em", marginBottom: "0.4rem" }}>CPU</div>
+                          <div style={{ fontSize: "0.8rem", color: T.ink, fontWeight: 600, marginBottom: "0.25rem" }}>{sysStats.cpu.cores} cores</div>
+                          <div style={{ fontSize: "0.72rem", color: T.inkSoft, marginBottom: "0.5rem", wordBreak: "break-all" as const }}>{sysStats.cpu.model}</div>
+                          <div style={{ fontSize: "0.82rem", fontWeight: 700, color: sysStats.cpu.usedPercent > 85 ? T.red : T.leaf, marginBottom: "0.25rem" }}>
+                            {sysStats.cpu.usedPercent}% used
+                          </div>
+                          <div style={{ height: 6, background: T.border, borderRadius: 3, marginBottom: "0.4rem" }}>
+                            <div style={{ height: 6, borderRadius: 3, width: `${sysStats.cpu.usedPercent}%`, background: sysStats.cpu.usedPercent > 85 ? T.red : T.leaf, transition: "width 0.3s" }} />
+                          </div>
+                          <div style={{ fontSize: "0.7rem", color: T.inkMuted }}>Load avg (1m / 5m / 15m)</div>
+                          <div style={{ fontSize: "0.78rem", fontWeight: 600, color: sysStats.cpu.loadAvg[0] > sysStats.cpu.cores * 0.8 ? T.red : T.inkSoft }}>
+                            {sysStats.cpu.loadAvg.map(l => l.toFixed(2)).join(" / ")}
+                          </div>
+                        </div>
+                        {/* Memory */}
+                        <div style={{ background: T.cream, borderRadius: T.rs, padding: "0.9rem 1rem" }}>
+                          <div style={{ fontSize: "0.7rem", fontWeight: 700, color: T.inkMuted, textTransform: "uppercase" as const, letterSpacing: "0.06em", marginBottom: "0.4rem" }}>Memory</div>
+                          <div style={{ fontSize: "0.82rem", fontWeight: 700, color: sysStats.memory.usedPercent > 85 ? T.red : T.ink, marginBottom: "0.4rem" }}>
+                            {sysStats.memory.usedPercent}% used
+                          </div>
+                          <div style={{ height: 6, background: T.border, borderRadius: 3, marginBottom: "0.4rem" }}>
+                            <div style={{ height: 6, borderRadius: 3, width: `${sysStats.memory.usedPercent}%`, background: sysStats.memory.usedPercent > 85 ? T.red : T.leaf, transition: "width 0.3s" }} />
+                          </div>
+                          <div style={{ fontSize: "0.72rem", color: T.inkSoft }}>{sysStats.memory.usedMB.toLocaleString()} MB / {sysStats.memory.totalMB.toLocaleString()} MB</div>
+                        </div>
+                        {/* Disk */}
+                        <div style={{ background: T.cream, borderRadius: T.rs, padding: "0.9rem 1rem" }}>
+                          <div style={{ fontSize: "0.7rem", fontWeight: 700, color: T.inkMuted, textTransform: "uppercase" as const, letterSpacing: "0.06em", marginBottom: "0.4rem" }}>Disk ({sysStats.disk.mount})</div>
+                          <div style={{ fontSize: "0.82rem", fontWeight: 700, color: parseInt(sysStats.disk.usePercent) > 85 ? T.red : T.ink, marginBottom: "0.4rem" }}>
+                            {sysStats.disk.usePercent} used
+                          </div>
+                          <div style={{ height: 6, background: T.border, borderRadius: 3, marginBottom: "0.4rem" }}>
+                            <div style={{ height: 6, borderRadius: 3, width: sysStats.disk.usePercent, background: parseInt(sysStats.disk.usePercent) > 85 ? T.red : T.leaf, transition: "width 0.3s" }} />
+                          </div>
+                          <div style={{ fontSize: "0.72rem", color: T.inkSoft }}>{sysStats.disk.used} / {sysStats.disk.size} — {sysStats.disk.avail} free</div>
+                        </div>
+                      </div>
+                      {/* Uptime + platform */}
+                      <div style={{ fontSize: "0.72rem", color: T.inkMuted }}>
+                        Platform: <strong>{sysStats.platform}</strong> · Uptime: <strong>{Math.floor(sysStats.uptime / 3600)}h {Math.floor((sysStats.uptime % 3600) / 60)}m</strong>
+                      </div>
+                      {/* Process table */}
+                      <div>
+                        <div style={{ fontSize: "0.7rem", fontWeight: 700, color: T.inkMuted, textTransform: "uppercase" as const, letterSpacing: "0.06em", marginBottom: "0.5rem" }}>
+                          Top Processes — click column to sort
+                        </div>
+                        <div style={{ overflowX: "auto" as const }}>
+                          <table style={{ width: "100%", borderCollapse: "collapse" as const, fontSize: "0.72rem", fontFamily: "monospace" }}>
+                            <thead>
+                              <tr style={{ background: T.cream }}>
+                                {([ ["user","USER"], ["pid","PID"], ["cpu","CPU%"], ["mem","MEM%"], ["command","COMMAND"] ] as [typeof procSort["col"], string][]).map(([col, label]) => {
+                                  const active = procSort.col === col;
+                                  return (
+                                    <th key={col} onClick={() => setProcSort(s => s.col === col ? { col, dir: s.dir === 1 ? -1 : 1 } : { col, dir: col === "cpu" || col === "mem" ? -1 : 1 })}
+                                      style={{ textAlign: "left" as const, padding: "0.3rem 0.5rem", color: active ? T.ink : T.inkMuted, fontWeight: 700, whiteSpace: "nowrap" as const, cursor: "pointer", userSelect: "none" as const }}>
+                                      {label} {active ? (procSort.dir === -1 ? "▼" : "▲") : "⇅"}
+                                    </th>
+                                  );
+                                })}
+                              </tr>
+                            </thead>
+                            <tbody>
+                              {[...sysStats.processes.rows].sort((a, b) => {
+                                const col = procSort.col;
+                                const av = col === "cpu" || col === "mem" || col === "pid" ? parseFloat(a[col]) : a[col];
+                                const bv = col === "cpu" || col === "mem" || col === "pid" ? parseFloat(b[col]) : b[col];
+                                return (av < bv ? -1 : av > bv ? 1 : 0) * procSort.dir;
+                              }).map((r, i) => (
+                                <tr key={i} style={{ borderTop: `1px solid ${T.border}` }}>
+                                  <td style={{ padding: "0.3rem 0.5rem", color: T.inkSoft }}>{r.user}</td>
+                                  <td style={{ padding: "0.3rem 0.5rem", color: T.inkSoft }}>{r.pid}</td>
+                                  <td style={{ padding: "0.3rem 0.5rem", color: parseFloat(r.cpu) > 50 ? T.red : T.ink, fontWeight: parseFloat(r.cpu) > 10 ? 700 : 400 }}>{r.cpu}</td>
+                                  <td style={{ padding: "0.3rem 0.5rem", color: parseFloat(r.mem) > 20 ? T.red : T.ink, fontWeight: parseFloat(r.mem) > 10 ? 700 : 400 }}>{r.mem}</td>
+                                  <td style={{ padding: "0.3rem 0.5rem", color: T.ink, maxWidth: 260, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{r.command}</td>
+                                </tr>
+                              ))}
+                            </tbody>
+                          </table>
+                        </div>
+                      </div>
+                    </div>
+                  ) : (
+                    <div style={{ fontSize: "0.8rem", color: T.inkMuted }}>Press Refresh to load system stats</div>
+                  )}
+                </div>
+
+                {/* Queue status + Run Now */}
+                <div style={{ background: T.white, border: `1px solid ${T.border}`, borderRadius: T.r, padding: "1.25rem 1.5rem" }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1rem" }}>
+                    <div style={{ fontFamily: T.ffd, fontSize: "1rem", fontWeight: 700, color: T.ink }}>Upload Queue</div>
+                    <div style={{ display: "flex", gap: "0.5rem" }}>
+                      <button onClick={() => recordingQueueStatus().then(setRecQueue).catch(() => {})}
+                        style={{ padding: "0.4rem 1rem", borderRadius: T.rs, border: `1px solid ${T.border}`, background: T.white, color: T.inkSoft, fontWeight: 600, fontSize: "0.8rem", cursor: "pointer", fontFamily: T.ff }}>
+                        Refresh
+                      </button>
+                      <button disabled={scanDiskRunning}
+                        onClick={async () => {
+                          setScanDiskRunning(true);
+                          try {
+                            const r = await recordingScanDisk();
+                            showToast(`Imported ${r.created} file${r.created !== 1 ? 's' : ''}, skipped ${r.skipped}`, true);
+                            setTimeout(() => recordingQueueStatus().then(setRecQueue).catch(() => {}), 1000);
+                          } catch (e: unknown) { showToast((e as Error).message, false); }
+                          finally { setScanDiskRunning(false); }
+                        }}
+                        style={{ padding: "0.4rem 1.1rem", borderRadius: T.rs, border: `1px solid ${T.border}`, background: T.white, color: T.ink, fontWeight: 700, fontSize: "0.8rem", cursor: scanDiskRunning ? "not-allowed" : "pointer", opacity: scanDiskRunning ? 0.6 : 1, fontFamily: T.ff }}>
+                        {scanDiskRunning ? "Scanning…" : "🔍 Scan Disk"}
+                      </button>
+                      <button disabled={syncS3Running}
+                        onClick={async () => {
+                          setSyncS3Running(true);
+                          try {
+                            const r = await recordingSyncS3();
+                            showToast(`Synced ${r.created} from S3, skipped ${r.skipped}`, true);
+                            setTimeout(() => Promise.all([recordingQueueStatus().then(setRecQueue), recordingGetUploaded().then(setRecUploaded)]).catch(() => {}), 1000);
+                          } catch (e: unknown) { showToast((e as Error).message, false); }
+                          finally { setSyncS3Running(false); }
+                        }}
+                        style={{ padding: "0.4rem 1.1rem", borderRadius: T.rs, border: `1px solid ${T.border}`, background: T.white, color: T.ink, fontWeight: 700, fontSize: "0.8rem", cursor: syncS3Running ? "not-allowed" : "pointer", opacity: syncS3Running ? 0.6 : 1, fontFamily: T.ff }}>
+                        {syncS3Running ? "Syncing…" : "☁️ Sync S3"}
+                      </button>
+                      <button disabled={migrateUrlsRunning}
+                        onClick={async () => {
+                          setMigrateUrlsRunning(true);
+                          try {
+                            const r = await storageMigrateUrls();
+                            showToast(`Migrated: ${r.banners} banners, ${r.videos} videos, ${r.avatars} avatars`, true);
+                          } catch (e: unknown) { showToast((e as Error).message, false); }
+                          finally { setMigrateUrlsRunning(false); }
+                        }}
+                        style={{ padding: "0.4rem 1.1rem", borderRadius: T.rs, border: `1px solid ${T.border}`, background: T.white, color: T.ink, fontWeight: 700, fontSize: "0.8rem", cursor: migrateUrlsRunning ? "not-allowed" : "pointer", opacity: migrateUrlsRunning ? 0.6 : 1, fontFamily: T.ff }}>
+                        {migrateUrlsRunning ? "Migrating…" : "🔁 Migrate URLs"}
+                      </button>
+                      <button disabled={recRunning || !!recQueue?.isRunning}
+                        onClick={async () => {
+                          setRecRunning(true);
+                          try {
+                            const r = await recordingRunManually();
+                            showToast(r.message, r.ok);
+                            setTimeout(() => recordingQueueStatus().then(setRecQueue).catch(() => {}), 2000);
+                          } catch (e: unknown) { showToast((e as Error).message, false); }
+                          finally { setRecRunning(false); }
+                        }}
+                        style={{ padding: "0.4rem 1.1rem", borderRadius: T.rs, border: "none", background: T.leaf, color: T.white, fontWeight: 700, fontSize: "0.8rem", cursor: (recRunning || recQueue?.isRunning) ? "not-allowed" : "pointer", opacity: (recRunning || recQueue?.isRunning) ? 0.6 : 1, fontFamily: T.ff }}>
+                        {recRunning || recQueue?.isRunning ? "Running…" : "▶ Run Now"}
+                      </button>
+                    </div>
+                  </div>
+                  {recQueue ? (
+                    <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(2,1fr)" : "repeat(4,1fr)", gap: "0.75rem" }}>
+                      {([
+                        { label: "Pending", value: recQueue.pendingTotal, color: recQueue.pendingTotal > 0 ? T.sun : T.leaf },
+                        { label: "On Disk", value: recQueue.pendingOnDisk, color: T.sky },
+                        { label: "Sessions Uploaded", value: recQueue.uploadedSessions, color: T.leaf },
+                        { label: "Total Recordings", value: recQueue.totalRecordings, color: T.ink },
+                      ] as { label: string; value: number; color: string }[]).map(s => (
+                        <div key={s.label} style={{ background: T.cream, borderRadius: T.rs, padding: "0.75rem 1rem" }}>
+                          <div style={{ fontSize: "1.4rem", fontWeight: 800, color: s.color, fontFamily: T.ffd }}>{s.value}</div>
+                          <div style={{ fontSize: "0.72rem", color: T.inkMuted, marginTop: "0.15rem" }}>{s.label}</div>
+                        </div>
+                      ))}
+                    </div>
+                  ) : <div style={{ color: T.inkMuted, fontSize: "0.82rem" }}>Loading…</div>}
+                  {recQueue && (
+                    <div style={{ marginTop: "0.75rem", fontSize: "0.72rem", color: T.inkMuted }}>
+                      Cron: <code style={{ background: T.cream, padding: "0.1rem 0.4rem", borderRadius: 4 }}>{recQueue.cronExpression}</code>
+                      {" · "}Status: <span style={{ color: recQueue.isRunning ? T.sun : T.leaf, fontWeight: 600 }}>{recQueue.isRunning ? "Running" : "Idle"}</span>
+                    </div>
+                  )}
+                </div>
+
+                {/* Uploaded sessions */}
+                {recUploaded && recUploaded.length > 0 && (
+                  <div style={{ background: T.white, border: `1px solid ${T.border}`, borderRadius: T.r, padding: "1.25rem 1.5rem" }}>
+                    <div style={{ fontFamily: T.ffd, fontSize: "1rem", fontWeight: 700, color: T.ink, marginBottom: "1rem" }}>Uploaded to S3 ({recUploaded.length})</div>
+                    <div style={{ display: "flex", flexDirection: "column", gap: "0.4rem", maxHeight: 280, overflowY: "auto" as const }}>
+                      {recUploaded.map(u => (
+                        <div key={u.id} style={{ display: "flex", alignItems: "center", gap: "0.75rem", padding: "0.5rem 0.75rem", background: T.cream, borderRadius: T.rs, fontSize: "0.8rem" }}>
+                          <span style={{ fontWeight: 700, color: T.leaf, flexShrink: 0 }}>✅</span>
+                          <span style={{ fontWeight: 600, color: T.ink, flexShrink: 0 }}>Session {u.sessionId}</span>
+                          <span style={{ color: T.inkMuted, flex: 1, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>{u.s3Key}</span>
+                          <span style={{ color: T.inkMuted, flexShrink: 0, fontSize: "0.7rem" }}>{new Date(u.createdAt).toLocaleDateString()}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+
+                {/* Processing logs */}
+                <div style={{ background: T.white, border: `1px solid ${T.border}`, borderRadius: T.r, padding: "1.25rem 1.5rem" }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1rem" }}>
+                    <div style={{ fontFamily: T.ffd, fontSize: "1rem", fontWeight: 700, color: T.ink }}>Processing Logs</div>
+                    <button onClick={() => { setRecLogsLoading(true); recordingGetLogs().then(setRecLogs).catch(() => {}).finally(() => setRecLogsLoading(false)); }}
+                      style={{ padding: "0.3rem 0.85rem", borderRadius: T.rs, border: `1px solid ${T.border}`, background: T.white, color: T.inkSoft, fontWeight: 600, fontSize: "0.78rem", cursor: "pointer", fontFamily: T.ff }}>
+                      Refresh
+                    </button>
+                  </div>
+                  {recLogsLoading ? (
+                    <div style={{ color: T.inkMuted, fontSize: "0.82rem" }}>Loading…</div>
+                  ) : recLogs && recLogs.length > 0 ? (
+                    <div style={{ background: "#0f1410", borderRadius: T.rs, padding: "0.85rem 1rem", maxHeight: 360, overflowY: "auto" as const, fontFamily: "monospace", fontSize: "0.75rem", display: "flex", flexDirection: "column", gap: "0.2rem" }}>
+                      {recLogs.map((entry, i) => (
+                        <div key={i} style={{ color: entry.level === "error" ? "#ff6b6b" : entry.level === "warn" ? "#ffd93d" : "#a8d5b5" }}>
+                          <span style={{ opacity: 0.5, marginRight: "0.6rem" }}>{new Date(entry.ts).toLocaleTimeString()}</span>
+                          {entry.msg}
+                        </div>
+                      ))}
+                    </div>
+                  ) : (
+                    <div style={{ color: T.inkMuted, fontSize: "0.82rem" }}>No logs yet — logs appear once the cron runs or you click Run Now</div>
+                  )}
+                </div>
+
               </div>
             )}
           </>

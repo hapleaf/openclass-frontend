@@ -121,6 +121,14 @@ export interface SessionReview {
   createdAt: string;
 }
 
+export interface SessionRecording {
+  id: number;
+  filename: string;
+  s3Key?: string | null;
+  hlsUrl?: string | null;
+  createdAt: string;
+}
+
 export interface PublicSessionData extends SessionData {
   user: {
     id: number;
@@ -135,6 +143,7 @@ export interface PublicSessionData extends SessionData {
     reviewCount?: number;
   };
   reviews?: SessionReview[];
+  recordings?: SessionRecording[];
 }
 
 export async function getPublicSessions(): Promise<PublicSessionData[]> {
@@ -170,7 +179,7 @@ export async function deleteSession(id: number): Promise<void> {
   if (!res.ok) { const json = await res.json(); throw new Error(json.message || 'Failed to delete session'); }
 }
 
-export async function getSessionRecording(id: number): Promise<{ recordingUrl: string | null; processing: boolean }> {
+export async function getSessionRecording(id: number): Promise<{ recordings: string[]; processing: boolean }> {
   const res = await fetch(`${process.env.NEXT_PUBLIC_API_URL}/live/${id}/recording`);
   const json = await res.json();
   if (!res.ok) throw new Error(json.message || 'Failed to fetch recording');

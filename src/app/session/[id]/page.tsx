@@ -8,10 +8,38 @@ import Footer from "@/components/common/HeadFoot/footer";
 import {
   PublicSessionData, SessionReview,
   getMyRegistrationIds, toggleRegistration,
-  getSessionRecording, getCaptcha,
+  getSessionRecording, getPublicSession, getCaptcha,
 } from "@/lib/session";
 import { apiFetch } from "@/lib/api";
 import { makeProfileSlug, computeExpertiseLevel } from "@/lib/profile";
+
+function HlsPlayer({ src, label }: { src: string; label?: string }) {
+  const videoRef = useRef<HTMLVideoElement>(null);
+  useEffect(() => {
+    if (!src || !videoRef.current) return;
+    const video = videoRef.current;
+    // Safari has native HLS support
+    if (video.canPlayType("application/vnd.apple.mpegurl")) {
+      video.src = src;
+      return;
+    }
+    // All other browsers use hls.js
+    let hls: import("hls.js").default | null = null;
+    import("hls.js").then(({ default: Hls }) => {
+      if (!Hls.isSupported()) { video.src = src; return; }
+      hls = new Hls({ enableWorker: true });
+      hls.loadSource(src);
+      hls.attachMedia(video);
+    });
+    return () => { hls?.destroy(); };
+  }, [src]);
+  return (
+    <div>
+      {label && <div style={{ fontSize: "0.72rem", fontWeight: 600, color: "rgba(255,255,255,0.4)", marginBottom: "0.5rem" }}>{label}</div>}
+      <video ref={videoRef} controls style={{ width: "100%", borderRadius: 12, maxHeight: 480, display: "block", background: "#000" }} />
+    </div>
+  );
+}
 
 type Status = "live" | "upcoming" | "closed";
 
@@ -70,13 +98,19 @@ const QUALITY_FLAG_META: Record<string, { label: string; bg: string; color: stri
   LOW_ATTENDANCE:     { label: "Low Attendance",  bg: "#fdf3e0", color: "#b5470e" },
 };
 
+function resolveRecordingUrl(url: string): string {
+  if (url.startsWith("http")) return url;
+  return `${process.env.NEXT_PUBLIC_API_URL}/uploads/recordings/${url}`;
+}
+
 function getEmbedInfo(url: string): { kind: "video" | "embed"; src: string } {
-  const ytMatch = url.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
+  const resolved = resolveRecordingUrl(url);
+  const ytMatch = resolved.match(/(?:youtube\.com\/watch\?v=|youtu\.be\/)([a-zA-Z0-9_-]+)/);
   if (ytMatch) return { kind: "embed", src: `https://www.youtube.com/embed/${ytMatch[1]}?rel=0` };
-  const vimeoMatch = url.match(/vimeo\.com\/(\d+)/);
+  const vimeoMatch = resolved.match(/vimeo\.com\/(\d+)/);
   if (vimeoMatch) return { kind: "embed", src: `https://player.vimeo.com/video/${vimeoMatch[1]}` };
-  if (/\.(mp4|webm|ogg|mov)(\?.*)?$/i.test(url)) return { kind: "video", src: url };
-  return { kind: "embed", src: url };
+  if (/\.(mp4|webm|ogg|mov)(\?.*)?$/i.test(resolved)) return { kind: "video", src: resolved };
+  return { kind: "embed", src: resolved };
 }
 
 function StarInput({ value, onChange }: { value: number; onChange: (v: number) => void }) {
@@ -184,15 +218,15 @@ export default function SessionDetailPage() {
     finally { setRegisterLoading(false); }
   }
 
-  // Poll for recording URL after session ends.
+  // Poll for recording after session ends.
   // Keeps retrying for up to ~5 min (20 × 15s) to handle the EGRESS_ENDING encoding
   // delay that occurs between stopEgress() and the file being finalised.
   useEffect(() => {
     if (!session) return;
-    if (session.recordingUrl) { setRecordingProcessing(false); return; }
+    if ((session.recordings?.length ?? 0) > 0) { setRecordingProcessing(false); return; }
     const fromRec = typeof window !== "undefined" && new URLSearchParams(window.location.search).get("rec") === "1";
     // Only poll when the organizer arrived here straight from End Session (?rec=1).
-    // For all other visitors, if no recordingUrl exists there is nothing to wait for.
+    // For all other visitors, if no recordings exist there is nothing to wait for.
     if (!fromRec) { setRecordingProcessing(false); return; }
 
     let cancelled = false;
@@ -205,12 +239,18 @@ export default function SessionDetailPage() {
       try {
         const result = await getSessionRecording(id);
         if (cancelled) return;
-        if (result.recordingUrl) {
-          setSession(s => s ? { ...s, recordingUrl: result.recordingUrl } : s);
+        if (result.recordings.length > 0) {
+          // Reload full session so recordings include hlsUrl (S3) where available,
+          // falling back to local MP4 for any not yet processed.
+          try {
+            const fresh = await getPublicSession(id);
+            if (!cancelled) setSession(fresh);
+          } catch { /* keep existing session state */ }
           setRecordingProcessing(false);
         } else {
-          setRecordingProcessing(true);
-          setTimeout(poll, 15_000);
+          setRecordingProcessing(result.processing);
+          if (result.processing) setTimeout(poll, 15_000);
+          else setRecordingProcessing(false);
         }
       } catch {
         setTimeout(poll, 15_000);
@@ -218,7 +258,7 @@ export default function SessionDetailPage() {
     }
     void poll();
     return () => { cancelled = true; };
-  }, [session?.sessionStatus, session?.recordingUrl, session?.autoRecording, id]);
+  }, [session?.sessionStatus, session?.recordings, session?.autoRecording, id]);
 
   async function handleSubmitRating(e: React.FormEvent) {
     e.preventDefault();
@@ -496,7 +536,7 @@ export default function SessionDetailPage() {
         </div>
 
         {/* ── Recording processing banner ──────────────────────────────────────── */}
-        {!session.recordingUrl && recordingProcessing && (
+        {!(session.recordings?.length) && recordingProcessing && (
           <div style={{ background: "#0d1610", padding: "1.25rem 0" }}>
             <div className="sd-wrap">
               <div style={{ display: "flex", alignItems: "center", gap: "0.85rem", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 10, padding: "0.9rem 1.1rem" }}>
@@ -510,28 +550,39 @@ export default function SessionDetailPage() {
           </div>
         )}
 
-        {/* ── Recording player ─────────────────────────────────────────────────── */}
-        {session.recordingUrl && (() => {
-          const embed = getEmbedInfo(session.recordingUrl);
-          return (
-            <div style={{ background: "#0d1610" }}>
-              <div className="sd-wrap">
-                <div style={{ fontSize: "0.68rem", fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" as const, color: "#5a8a6a", marginBottom: "0.75rem" }}>
-                  ▶ Session Recording
-                </div>
-                {embed.kind === "video" ? (
-                  <video controls style={{ width: "100%", borderRadius: 12, maxHeight: 480, display: "block" }}>
-                    <source src={embed.src} type="video/mp4" />
-                  </video>
-                ) : (
-                  <div style={{ position: "relative", paddingBottom: "56.25%", height: 0, borderRadius: 12, overflow: "hidden" }}>
-                    <iframe src={embed.src} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: "none" }} />
-                  </div>
-                )}
+        {/* ── Recording player(s) ──────────────────────────────────────────────── */}
+        {(session.recordings?.length ?? 0) > 0 && (
+          <div style={{ background: "#0d1610" }}>
+            <div className="sd-wrap">
+              <div style={{ fontSize: "0.68rem", fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" as const, color: "#5a8a6a", marginBottom: "0.75rem" }}>
+                ▶ Session Recording{session.recordings!.length > 1 ? "s" : ""}
               </div>
+              {session.recordings!.map((rec, idx) => {
+                const partLabel = session.recordings!.length > 1 ? `Part ${idx + 1}` : undefined;
+                if (rec.hlsUrl) {
+                  return <div key={rec.id} style={{ marginBottom: idx < session.recordings!.length - 1 ? "1.5rem" : 0 }}><HlsPlayer src={rec.hlsUrl} label={partLabel} /></div>;
+                }
+                // Fallback: local MP4
+                const url = resolveRecordingUrl(rec.filename);
+                const embed = getEmbedInfo(url);
+                return (
+                  <div key={rec.id} style={{ marginBottom: idx < session.recordings!.length - 1 ? "1.5rem" : 0 }}>
+                    {partLabel && <div style={{ fontSize: "0.72rem", fontWeight: 600, color: "rgba(255,255,255,0.4)", marginBottom: "0.5rem" }}>{partLabel}</div>}
+                    {embed.kind === "video" ? (
+                      <video controls style={{ width: "100%", borderRadius: 12, maxHeight: 480, display: "block" }}>
+                        <source src={embed.src} type="video/mp4" />
+                      </video>
+                    ) : (
+                      <div style={{ position: "relative", paddingBottom: "56.25%", height: 0, borderRadius: 12, overflow: "hidden" }}>
+                        <iframe src={embed.src} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: "none" }} />
+                      </div>
+                      )}
+                    </div>
+                  );
+                })}
             </div>
-          );
-        })()}
+          </div>
+        )}
 
         {/* ── Body grid ────────────────────────────────────────────────────────── */}
         <div className="sd-wrap">

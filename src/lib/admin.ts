@@ -310,3 +310,129 @@ export async function deleteContactMessage(id: number): Promise<void> {
   const r = await adminFetch(`/contact/${id}`, { method: 'DELETE' });
   if (!r.ok) { const j = await r.json(); throw new Error(j.message || 'Failed'); }
 }
+
+/* ── Recording / Infra ──────────────────────────────────────────────── */
+
+export interface InfraTestResult {
+  ok: boolean;
+  message: string;
+  detail?: string;
+}
+
+export interface RecordingQueueStatus {
+  pendingTotal: number;
+  pendingOnDisk: number;
+  uploadedSessions: number;
+  totalRecordings: number;
+  isRunning: boolean;
+  cronExpression: string;
+}
+
+export interface UploadedSession {
+  id: number;
+  sessionId: number;
+  s3Key: string;
+  createdAt: string;
+  updatedAt: string;
+}
+
+export interface RecordingLogEntry {
+  ts: string;
+  msg: string;
+  level: 'info' | 'warn' | 'error';
+}
+
+export async function recordingRunManually(): Promise<{ ok: boolean; message: string }> {
+  const r = await adminFetch('/recordings/run', { method: 'POST' });
+  const j = await r.json();
+  if (!r.ok) throw new Error(j.message || 'Failed');
+  return j;
+}
+
+export async function recordingQueueStatus(): Promise<RecordingQueueStatus> {
+  const r = await adminFetch('/recordings/queue');
+  const j = await r.json();
+  if (!r.ok) throw new Error(j.message || 'Failed');
+  return j;
+}
+
+export async function recordingGetUploaded(): Promise<UploadedSession[]> {
+  const r = await adminFetch('/recordings/uploaded');
+  const j = await r.json();
+  if (!r.ok) throw new Error(j.message || 'Failed');
+  return j;
+}
+
+export async function recordingGetLogs(): Promise<RecordingLogEntry[]> {
+  const r = await adminFetch('/recordings/logs');
+  const j = await r.json();
+  if (!r.ok) throw new Error(j.message || 'Failed');
+  return j;
+}
+
+export async function infraTestS3(): Promise<InfraTestResult> {
+  const r = await adminFetch('/recordings/test/s3', { method: 'POST' });
+  const j = await r.json();
+  return j;
+}
+
+export async function infraTestBunny(): Promise<InfraTestResult> {
+  const r = await adminFetch('/recordings/test/bunny', { method: 'POST' });
+  const j = await r.json();
+  return j;
+}
+
+export async function infraTestFfmpeg(): Promise<InfraTestResult> {
+  const r = await adminFetch('/recordings/test/ffmpeg', { method: 'POST' });
+  const j = await r.json();
+  return j;
+}
+
+export async function infraTestLiveKit(): Promise<InfraTestResult> {
+  const r = await adminFetch('/recordings/test/livekit', { method: 'POST' });
+  const j = await r.json();
+  return j;
+}
+
+export async function infraTestRedis(): Promise<InfraTestResult> {
+  const r = await adminFetch('/recordings/test/redis', { method: 'POST' });
+  const j = await r.json();
+  return j;
+}
+
+export interface SystemStats {
+  platform: string;
+  uptime: number;
+  cpu: { model: string; cores: number; usedPercent: number; loadAvg: [number, number, number] };
+  memory: { totalMB: number; usedMB: number; freeMB: number; usedPercent: number };
+  disk: { filesystem: string; size: string; used: string; avail: string; usePercent: string; mount: string };
+  processes: { header: string; rows: { user: string; pid: string; cpu: string; mem: string; command: string }[] };
+}
+
+export async function getSystemStats(): Promise<SystemStats> {
+  const r = await adminFetch('/recordings/system');
+  const j = await r.json();
+  if (!r.ok) throw new Error(j.message || 'Failed');
+  return j;
+}
+
+export async function recordingScanDisk(): Promise<{ created: number; skipped: number; files: string[] }> {
+  const r = await adminFetch('/recordings/scan-disk', { method: 'POST' });
+  const j = await r.json();
+  if (!r.ok) throw new Error(j.message || 'Failed');
+  return j;
+}
+
+export async function recordingSyncS3(): Promise<{ created: number; skipped: number; rows: { sessionId: number; s3Key: string }[] }> {
+  const r = await adminFetch('/recordings/sync-s3', { method: 'POST' });
+  const j = await r.json();
+  if (!r.ok) throw new Error(j.message || 'Failed');
+  return j;
+}
+
+export async function storageMigrateUrls(): Promise<{ banners: number; videos: number; avatars: number }> {
+  const r = await adminFetch('/recordings/migrate-urls', { method: 'POST' });
+  const j = await r.json();
+  if (!r.ok) throw new Error(j.message || 'Failed');
+  return j;
+}
