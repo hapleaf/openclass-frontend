@@ -821,7 +821,7 @@ export default function JoinPage() {
         <div style={{ paddingTop: isMobile ? 73 : 80, display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: T.cream }}>
           <div style={{ textAlign: "center" }}>
             <div style={{ width: 48, height: 48, borderRadius: "50%", border: `4px solid ${T.leafLight}`, borderTopColor: T.leaf, animation: "spin 0.8s linear infinite", margin: "0 auto 1rem" }} />
-            <p style={{ color: T.inkMuted, fontFamily: "'DM Sans', sans-serif" }}>Loading session…</p>
+            <p style={{ color: T.inkMuted, fontFamily: "var(--font-dm-sans), sans-serif" }}>Loading session…</p>
           </div>
           <style>{`@keyframes spin { to { transform: rotate(360deg); } }`}</style>
         </div>
@@ -836,12 +836,12 @@ export default function JoinPage() {
         <div style={{ paddingTop: isMobile ? 73 : 80, display: "flex", alignItems: "center", justifyContent: "center", minHeight: "100vh", background: T.cream }}>
           <div style={{ textAlign: "center", maxWidth: 420, padding: "2rem" }}>
             <div style={{ fontSize: "2.5rem", marginBottom: "1rem" }}>⚠️</div>
-            <h2 style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "1.4rem", marginBottom: "0.75rem", color: T.ink }}>
+            <h2 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.4rem", marginBottom: "0.75rem", color: T.ink }}>
               {errorMsg || "Something went wrong"}
             </h2>
             <button
               onClick={() => router.back()}
-              style={{ background: T.leaf, color: T.white, border: "none", borderRadius: 100, padding: "0.6rem 1.5rem", fontFamily: "'DM Sans', sans-serif", fontWeight: 600, cursor: "pointer" }}
+              style={{ background: T.leaf, color: T.white, border: "none", borderRadius: 100, padding: "0.6rem 1.5rem", fontFamily: "var(--font-dm-sans), sans-serif", fontWeight: 600, cursor: "pointer" }}
             >
               ← Go back
             </button>
@@ -861,10 +861,10 @@ export default function JoinPage() {
               <div style={{ width: 56, height: 56, borderRadius: "50%", background: T.leafLight, display: "flex", alignItems: "center", justifyContent: "center", margin: "0 auto 1rem", fontSize: "1.5rem" }}>
                 🔒
               </div>
-              <h2 style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "1.4rem", color: T.ink, marginBottom: "0.5rem" }}>
+              <h2 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.4rem", color: T.ink, marginBottom: "0.5rem" }}>
                 Passcode Required
               </h2>
-              <p style={{ color: T.inkMuted, fontSize: "0.875rem", fontFamily: "'DM Sans', sans-serif" }}>
+              <p style={{ color: T.inkMuted, fontSize: "0.875rem", fontFamily: "var(--font-dm-sans), sans-serif" }}>
                 {session?.title || "This session"} is passcode-protected.
               </p>
             </div>
@@ -877,18 +877,18 @@ export default function JoinPage() {
                 placeholder="Enter session passcode"
                 style={{
                   width: "100%", padding: "0.75rem 1rem", border: `1.5px solid ${passcodeError ? "#c0392b" : T.border}`,
-                  borderRadius: T.radiusSm, fontFamily: "'DM Sans', sans-serif", fontSize: "0.9rem",
+                  borderRadius: T.radiusSm, fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "0.9rem",
                   outline: "none", color: T.ink, boxSizing: "border-box",
                 }}
                 autoFocus
               />
               {passcodeError && (
-                <p style={{ color: "#c0392b", fontSize: "0.78rem", marginTop: "0.4rem", fontFamily: "'DM Sans', sans-serif" }}>{passcodeError}</p>
+                <p style={{ color: "#c0392b", fontSize: "0.78rem", marginTop: "0.4rem", fontFamily: "var(--font-dm-sans), sans-serif" }}>{passcodeError}</p>
               )}
             </div>
             <button
               onClick={() => fetchToken(passcodeInput)}
-              style={{ width: "100%", background: T.leaf, color: T.white, border: "none", borderRadius: T.radiusSm, padding: "0.75rem", fontFamily: "'DM Sans', sans-serif", fontWeight: 600, fontSize: "0.9rem", cursor: "pointer" }}
+              style={{ width: "100%", background: T.leaf, color: T.white, border: "none", borderRadius: T.radiusSm, padding: "0.75rem", fontFamily: "var(--font-dm-sans), sans-serif", fontWeight: 600, fontSize: "0.9rem", cursor: "pointer" }}
             >
               Continue →
             </button>
@@ -906,10 +906,10 @@ export default function JoinPage() {
         <Header activeLink="live" />
         <div style={{ minHeight: "100vh", background: T.cream, display: "flex", alignItems: "center", justifyContent: "center", padding: isMobile ? "73px 1rem 2rem" : "80px 1rem 2rem" }}>
           <div style={{ background: T.white, borderRadius: T.radius, border: `1px solid ${T.border}`, padding: "2.5rem", width: "100%", maxWidth: 560, boxShadow: "0 8px 32px rgba(15,20,16,0.08)" }}>
-            <h2 style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "1.5rem", color: T.ink, marginBottom: "0.4rem" }}>
+            <h2 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.5rem", color: T.ink, marginBottom: "0.4rem" }}>
               {isOrg ? "Ready to host?" : "Almost there!"}
             </h2>
-            <p style={{ color: T.inkMuted, fontSize: "0.875rem", fontFamily: "'DM Sans', sans-serif", marginBottom: "1.75rem" }}>
+            <p style={{ color: T.inkMuted, fontSize: "0.875rem", fontFamily: "var(--font-dm-sans), sans-serif", marginBottom: "1.75rem" }}>
               {session?.title || "Session"} · {isOrg ? "You're hosting" : sessionType === "webinar" ? "Joining as viewer" : "Joining as audience"}
             </p>
 
@@ -918,26 +918,26 @@ export default function JoinPage() {
               <>
                 <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", padding: "0.9rem 1rem", borderRadius: T.radiusSm, background: T.leafLight, border: `1px solid rgba(29,107,60,0.2)`, marginBottom: "1.5rem" }}>
                   <span style={{ fontSize: "1.3rem" }}>{sessionType === "webinar" ? "📺" : "🎧"}</span>
-                  <div style={{ fontSize: "0.82rem", color: "#1a4a2e", fontFamily: "'DM Sans', sans-serif" }}>
+                  <div style={{ fontSize: "0.82rem", color: "#1a4a2e", fontFamily: "var(--font-dm-sans), sans-serif" }}>
                     <strong>{sessionType === "webinar" ? "Webinar mode" : "Audience mode"}</strong> — you'll watch and listen. Make sure your <strong>speaker</strong> is working.
                   </div>
                 </div>
 
                 {/* Speaker selection */}
                 <div style={{ marginBottom: "1.5rem" }}>
-                  <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 600, color: T.inkSoft, marginBottom: "0.5rem", fontFamily: "'DM Sans', sans-serif" }}>
+                  <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 600, color: T.inkSoft, marginBottom: "0.5rem", fontFamily: "var(--font-dm-sans), sans-serif" }}>
                     🔊 Speaker / Headphones
                   </label>
                   {audioOutputDevices.length > 0 ? (
                     <select
                       value={selectedOutputId}
                       onChange={(e) => setSelectedOutputId(e.target.value)}
-                      style={{ width: "100%", padding: "0.6rem 0.75rem", border: `1.5px solid ${T.border}`, borderRadius: T.radiusSm, fontFamily: "'DM Sans', sans-serif", fontSize: "0.85rem", color: T.ink, outline: "none", background: T.white }}
+                      style={{ width: "100%", padding: "0.6rem 0.75rem", border: `1.5px solid ${T.border}`, borderRadius: T.radiusSm, fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "0.85rem", color: T.ink, outline: "none", background: T.white }}
                     >
                       {audioOutputDevices.map((d) => <option key={d.deviceId} value={d.deviceId}>{d.label || `Speaker ${d.deviceId.slice(0, 8)}`}</option>)}
                     </select>
                   ) : (
-                    <div style={{ fontSize: "0.8rem", color: T.inkMuted, fontFamily: "'DM Sans', sans-serif", padding: "0.5rem 0" }}>
+                    <div style={{ fontSize: "0.8rem", color: T.inkMuted, fontFamily: "var(--font-dm-sans), sans-serif", padding: "0.5rem 0" }}>
                       Default system speaker will be used.
                     </div>
                   )}
@@ -945,18 +945,18 @@ export default function JoinPage() {
 
                 {/* ── Quick checks ── */}
                 <div style={{ marginBottom: "1.5rem", display: "flex", flexDirection: "column" as const, gap: "0.6rem" }}>
-                  <div style={{ fontSize: "0.8rem", fontWeight: 600, color: T.inkSoft, fontFamily: "'DM Sans', sans-serif", marginBottom: "0.15rem" }}>Quick checks</div>
+                  <div style={{ fontSize: "0.8rem", fontWeight: 600, color: T.inkSoft, fontFamily: "var(--font-dm-sans), sans-serif", marginBottom: "0.15rem" }}>Quick checks</div>
 
                   {/* Speaker test */}
                   <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
                     <button
                       onClick={testSpeaker}
                       disabled={speakerTestState === "playing"}
-                      style={{ padding: "0.4rem 0.9rem", borderRadius: 100, border: `1.5px solid ${speakerTestState === "ok" ? T.leaf : T.border}`, background: speakerTestState === "ok" ? T.leafLight : T.white, color: speakerTestState === "ok" ? T.leaf : T.inkSoft, fontFamily: "'DM Sans', sans-serif", fontSize: "0.8rem", fontWeight: 600, cursor: speakerTestState === "playing" ? "default" : "pointer", transition: "all 0.2s" }}
+                      style={{ padding: "0.4rem 0.9rem", borderRadius: 100, border: `1.5px solid ${speakerTestState === "ok" ? T.leaf : T.border}`, background: speakerTestState === "ok" ? T.leafLight : T.white, color: speakerTestState === "ok" ? T.leaf : T.inkSoft, fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "0.8rem", fontWeight: 600, cursor: speakerTestState === "playing" ? "default" : "pointer", transition: "all 0.2s" }}
                     >
                       {speakerTestState === "playing" ? "♪ Playing…" : speakerTestState === "ok" ? "✓ Speaker OK" : "🔊 Test Speaker"}
                     </button>
-                    {speakerTestState === "ok" && <span style={{ fontSize: "0.75rem", color: T.leaf, fontFamily: "'DM Sans', sans-serif" }}>Did you hear a tone?</span>}
+                    {speakerTestState === "ok" && <span style={{ fontSize: "0.75rem", color: T.leaf, fontFamily: "var(--font-dm-sans), sans-serif" }}>Did you hear a tone?</span>}
                   </div>
 
                   {/* Connection test */}
@@ -964,12 +964,12 @@ export default function JoinPage() {
                     <button
                       onClick={testConnection}
                       disabled={connTestState === "checking"}
-                      style={{ padding: "0.4rem 0.9rem", borderRadius: 100, border: `1.5px solid ${connTestState === "ok" ? T.leaf : connTestState === "error" ? "#c0392b" : T.border}`, background: connTestState === "ok" ? T.leafLight : connTestState === "error" ? "#fdecea" : T.white, color: connTestState === "ok" ? T.leaf : connTestState === "error" ? "#c0392b" : T.inkSoft, fontFamily: "'DM Sans', sans-serif", fontSize: "0.8rem", fontWeight: 600, cursor: connTestState === "checking" ? "default" : "pointer", transition: "all 0.2s" }}
+                      style={{ padding: "0.4rem 0.9rem", borderRadius: 100, border: `1.5px solid ${connTestState === "ok" ? T.leaf : connTestState === "error" ? "#c0392b" : T.border}`, background: connTestState === "ok" ? T.leafLight : connTestState === "error" ? "#fdecea" : T.white, color: connTestState === "ok" ? T.leaf : connTestState === "error" ? "#c0392b" : T.inkSoft, fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "0.8rem", fontWeight: 600, cursor: connTestState === "checking" ? "default" : "pointer", transition: "all 0.2s" }}
                     >
                       {connTestState === "checking" ? "Checking…" : connTestState === "ok" ? "✓ Server reachable" : connTestState === "error" ? "✗ Can't reach server" : "🌐 Test Connection"}
                     </button>
                     {connTestState === "error" && (
-                      <span style={{ fontSize: "0.72rem", color: "#c0392b", fontFamily: "'DM Sans', sans-serif" }}>LiveKit server may be offline</span>
+                      <span style={{ fontSize: "0.72rem", color: "#c0392b", fontFamily: "var(--font-dm-sans), sans-serif" }}>LiveKit server may be offline</span>
                     )}
                   </div>
                 </div>
@@ -981,7 +981,7 @@ export default function JoinPage() {
               <>
                 {/* Camera preview */}
                 <div style={{ marginBottom: "1.5rem" }}>
-                  <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 600, color: T.inkSoft, marginBottom: "0.5rem", fontFamily: "'DM Sans', sans-serif" }}>
+                  <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 600, color: T.inkSoft, marginBottom: "0.5rem", fontFamily: "var(--font-dm-sans), sans-serif" }}>
                     📷 Camera Preview
                   </label>
                   <div style={{ position: "relative", borderRadius: T.radiusSm, overflow: "hidden", background: "#0d1210", aspectRatio: "16/9" }}>
@@ -991,7 +991,7 @@ export default function JoinPage() {
                     <select
                       value={selectedVideoId}
                       onChange={(e) => setSelectedVideoId(e.target.value)}
-                      style={{ marginTop: "0.5rem", width: "100%", padding: "0.5rem 0.75rem", border: `1px solid ${T.border}`, borderRadius: T.radiusSm, fontFamily: "'DM Sans', sans-serif", fontSize: "0.82rem", color: T.ink, outline: "none" }}
+                      style={{ marginTop: "0.5rem", width: "100%", padding: "0.5rem 0.75rem", border: `1px solid ${T.border}`, borderRadius: T.radiusSm, fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "0.82rem", color: T.ink, outline: "none" }}
                     >
                       {videoDevices.map((d) => <option key={d.deviceId} value={d.deviceId}>{d.label || `Camera ${d.deviceId.slice(0, 8)}`}</option>)}
                     </select>
@@ -1000,7 +1000,7 @@ export default function JoinPage() {
 
                 {/* Microphone */}
                 <div style={{ marginBottom: "1.25rem" }}>
-                  <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 600, color: T.inkSoft, marginBottom: "0.5rem", fontFamily: "'DM Sans', sans-serif" }}>
+                  <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 600, color: T.inkSoft, marginBottom: "0.5rem", fontFamily: "var(--font-dm-sans), sans-serif" }}>
                     🎙️ Microphone
                   </label>
                   <div style={{ height: 8, background: T.border, borderRadius: 100, overflow: "hidden", marginBottom: "0.5rem" }}>
@@ -1010,7 +1010,7 @@ export default function JoinPage() {
                     <select
                       value={selectedAudioId}
                       onChange={(e) => setSelectedAudioId(e.target.value)}
-                      style={{ width: "100%", padding: "0.5rem 0.75rem", border: `1px solid ${T.border}`, borderRadius: T.radiusSm, fontFamily: "'DM Sans', sans-serif", fontSize: "0.82rem", color: T.ink, outline: "none" }}
+                      style={{ width: "100%", padding: "0.5rem 0.75rem", border: `1px solid ${T.border}`, borderRadius: T.radiusSm, fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "0.82rem", color: T.ink, outline: "none" }}
                     >
                       {audioDevices.map((d) => <option key={d.deviceId} value={d.deviceId}>{d.label || `Mic ${d.deviceId.slice(0, 8)}`}</option>)}
                     </select>
@@ -1020,13 +1020,13 @@ export default function JoinPage() {
                 {/* Speaker */}
                 {audioOutputDevices.length > 0 && (
                   <div style={{ marginBottom: "1.5rem" }}>
-                    <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 600, color: T.inkSoft, marginBottom: "0.5rem", fontFamily: "'DM Sans', sans-serif" }}>
+                    <label style={{ display: "block", fontSize: "0.8rem", fontWeight: 600, color: T.inkSoft, marginBottom: "0.5rem", fontFamily: "var(--font-dm-sans), sans-serif" }}>
                       🔊 Speaker
                     </label>
                     <select
                       value={selectedOutputId}
                       onChange={(e) => setSelectedOutputId(e.target.value)}
-                      style={{ width: "100%", padding: "0.5rem 0.75rem", border: `1px solid ${T.border}`, borderRadius: T.radiusSm, fontFamily: "'DM Sans', sans-serif", fontSize: "0.82rem", color: T.ink, outline: "none" }}
+                      style={{ width: "100%", padding: "0.5rem 0.75rem", border: `1px solid ${T.border}`, borderRadius: T.radiusSm, fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "0.82rem", color: T.ink, outline: "none" }}
                     >
                       {audioOutputDevices.map((d) => <option key={d.deviceId} value={d.deviceId}>{d.label || `Speaker ${d.deviceId.slice(0, 8)}`}</option>)}
                     </select>
@@ -1038,13 +1038,13 @@ export default function JoinPage() {
             <div style={{ display: "flex", gap: "0.75rem" }}>
               <button
                 onClick={() => router.back()}
-                style={{ flex: 1, background: "transparent", color: T.inkSoft, border: `1.5px solid ${T.border}`, borderRadius: T.radiusSm, padding: "0.75rem", fontFamily: "'DM Sans', sans-serif", fontWeight: 600, fontSize: "0.9rem", cursor: "pointer" }}
+                style={{ flex: 1, background: "transparent", color: T.inkSoft, border: `1.5px solid ${T.border}`, borderRadius: T.radiusSm, padding: "0.75rem", fontFamily: "var(--font-dm-sans), sans-serif", fontWeight: 600, fontSize: "0.9rem", cursor: "pointer" }}
               >
                 Cancel
               </button>
               <button
                 onClick={joinRoom}
-                style={{ flex: 2, background: T.leaf, color: T.white, border: "none", borderRadius: T.radiusSm, padding: "0.75rem", fontFamily: "'DM Sans', sans-serif", fontWeight: 600, fontSize: "0.9rem", cursor: "pointer" }}
+                style={{ flex: 2, background: T.leaf, color: T.white, border: "none", borderRadius: T.radiusSm, padding: "0.75rem", fontFamily: "var(--font-dm-sans), sans-serif", fontWeight: 600, fontSize: "0.9rem", cursor: "pointer" }}
               >
                 {isOrg ? "🎙️ Start Session" : sessionType === "webinar" ? "📺 Watch Now →" : "🎧 Join Session →"}
               </button>
@@ -1069,12 +1069,12 @@ export default function JoinPage() {
   return (
     <>
       <Header activeLink="live" />
-      <div style={{ paddingTop: isMobile ? 57 : 72, height: isMobile ? undefined : "100vh", minHeight: isMobile ? "100svh" : undefined, display: "flex", flexDirection: "column", background: "#f0f2f0", fontFamily: "'DM Sans', sans-serif", overflow: isMobile ? "auto" : "hidden" }}>
+      <div style={{ paddingTop: isMobile ? 57 : 72, height: isMobile ? undefined : "100vh", minHeight: isMobile ? "100svh" : undefined, display: "flex", flexDirection: "column", background: "#f0f2f0", fontFamily: "var(--font-dm-sans), sans-serif", overflow: isMobile ? "auto" : "hidden" }}>
 
         {/* ── Header bar ── */}
         <div style={{ background: "#141a15", padding: isMobile ? "0.5rem 0.75rem" : "0 1.5rem", minHeight: 52, height: "auto", display: "flex", alignItems: "center", gap: isMobile ? "0.5rem" : "1rem", flexShrink: 0, borderBottom: "1px solid rgba(255,255,255,0.06)", flexWrap: isMobile ? "wrap" as const : undefined }}>
           {/* Title */}
-          <div style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "0.95rem", fontWeight: 700, color: "#fff", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const, flex: 1 }}>
+          <div style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "0.95rem", fontWeight: 700, color: "#fff", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const, flex: 1 }}>
             {session?.title || tokenData?.sessionInfo.title}
           </div>
           {/* Timers */}
@@ -1089,7 +1089,7 @@ export default function JoinPage() {
           {/* Actions */}
           <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexShrink: 0 }}>
             {isOrg && !isRecording && (
-              <button onClick={startRecording} disabled={recordingLoading} style={{ background: recordingLoading ? "rgba(255,255,255,0.04)" : "rgba(255,255,255,0.08)", color: recordingLoading ? "rgba(255,255,255,0.4)" : "rgba(255,255,255,0.75)", border: "1px solid rgba(255,255,255,0.18)", borderRadius: 100, padding: "0.35rem 0.9rem", fontFamily: "'DM Sans', sans-serif", fontSize: "0.78rem", fontWeight: 600, cursor: recordingLoading ? "default" : "pointer", display: "flex", alignItems: "center", gap: "0.4rem", transition: "all 0.2s" }}>
+              <button onClick={startRecording} disabled={recordingLoading} style={{ background: recordingLoading ? "rgba(255,255,255,0.04)" : "rgba(255,255,255,0.08)", color: recordingLoading ? "rgba(255,255,255,0.4)" : "rgba(255,255,255,0.75)", border: "1px solid rgba(255,255,255,0.18)", borderRadius: 100, padding: "0.35rem 0.9rem", fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "0.78rem", fontWeight: 600, cursor: recordingLoading ? "default" : "pointer", display: "flex", alignItems: "center", gap: "0.4rem", transition: "all 0.2s" }}>
                 <div style={{ width: 7, height: 7, borderRadius: "50%", background: recordingLoading ? "rgba(239,68,68,0.4)" : "#ef4444", flexShrink: 0, animation: recordingLoading ? "pulse-live 0.8s infinite" : undefined }} />
                 {recordingLoading ? "Starting…" : isMobile ? "Rec" : "Start Recording"}
               </button>
@@ -1097,16 +1097,16 @@ export default function JoinPage() {
             {isOrg && isRecording && (
               <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", background: "rgba(239,68,68,0.15)", border: "1px solid rgba(239,68,68,0.3)", borderRadius: 100, padding: "0.35rem 0.9rem" }}>
                 <div style={{ width: 7, height: 7, borderRadius: "50%", background: "#ef4444", animation: "pulse-live 2s infinite", flexShrink: 0 }} />
-                <span style={{ fontSize: "0.78rem", fontWeight: 600, color: "#fc8a8a", fontFamily: "'DM Sans', sans-serif" }}>Recording</span>
+                <span style={{ fontSize: "0.78rem", fontWeight: 600, color: "#fc8a8a", fontFamily: "var(--font-dm-sans), sans-serif" }}>Recording</span>
               </div>
             )}
             {isOrg && (
-              <button onClick={() => setShowEndConfirm(true)} style={{ background: "rgba(255,255,255,0.07)", color: "rgba(255,255,255,0.65)", border: "1px solid rgba(255,255,255,0.14)", borderRadius: 100, padding: "0.35rem 0.9rem", fontFamily: "'DM Sans', sans-serif", fontSize: "0.78rem", fontWeight: 600, cursor: "pointer", transition: "all 0.15s" }}>
+              <button onClick={() => setShowEndConfirm(true)} style={{ background: "rgba(255,255,255,0.07)", color: "rgba(255,255,255,0.65)", border: "1px solid rgba(255,255,255,0.14)", borderRadius: 100, padding: "0.35rem 0.9rem", fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "0.78rem", fontWeight: 600, cursor: "pointer", transition: "all 0.15s" }}>
                 {isMobile ? "End" : "End Session"}
               </button>
             )}
             {!isOrg && (
-              <button onClick={leaveRoom} style={{ background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 100, padding: "0.35rem 0.9rem", fontFamily: "'DM Sans', sans-serif", fontSize: "0.78rem", fontWeight: 600, cursor: "pointer" }}>
+              <button onClick={leaveRoom} style={{ background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.6)", border: "1px solid rgba(255,255,255,0.12)", borderRadius: 100, padding: "0.35rem 0.9rem", fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "0.78rem", fontWeight: 600, cursor: "pointer" }}>
                 Leave
               </button>
             )}
@@ -1117,7 +1117,7 @@ export default function JoinPage() {
         {isOrg && showRecordTip && !isRecording && (
           <div style={{ background: "linear-gradient(90deg, #1e2d45, #162038)", padding: "0.55rem 1.25rem", display: "flex", alignItems: "center", gap: "0.75rem", flexShrink: 0, animation: "slideDown 0.35s ease", borderBottom: "1px solid rgba(255,255,255,0.06)" }}>
             <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#ef4444", flexShrink: 0, animation: "pulse-live 1.2s infinite" }} />
-            <span style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.85)", fontFamily: "'DM Sans', sans-serif", flex: 1 }}>
+            <span style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.85)", fontFamily: "var(--font-dm-sans), sans-serif", flex: 1 }}>
               🎙 Click <strong style={{ color: "#fff" }}>Start Recording</strong> to capture this session — you won't be able to recover it if you forget
             </span>
           </div>
@@ -1128,9 +1128,9 @@ export default function JoinPage() {
           <div style={{ background: "#141a15", padding: "0.45rem 1.25rem", display: "flex", alignItems: "center", gap: "0.75rem", flexShrink: 0, borderBottom: "1px solid rgba(255,255,255,0.06)", animation: "slideDown 0.35s ease" }}>
             <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", background: "rgba(239,68,68,0.14)", border: "1px solid rgba(239,68,68,0.28)", borderRadius: 100, padding: "0.18rem 0.6rem", flexShrink: 0 }}>
               <div style={{ width: 6, height: 6, borderRadius: "50%", background: "#ef4444", animation: "pulse-live 1.5s infinite" }} />
-              <span style={{ fontSize: "0.65rem", fontWeight: 700, color: "#fc8a8a", letterSpacing: "0.06em", fontFamily: "'DM Sans', sans-serif" }}>REC</span>
+              <span style={{ fontSize: "0.65rem", fontWeight: 700, color: "#fc8a8a", letterSpacing: "0.06em", fontFamily: "var(--font-dm-sans), sans-serif" }}>REC</span>
             </div>
-            <span style={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.5)", fontFamily: "'DM Sans', sans-serif", flex: 1 }}>
+            <span style={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.5)", fontFamily: "var(--font-dm-sans), sans-serif", flex: 1 }}>
               Recording in progress — press <strong style={{ color: "rgba(255,255,255,0.82)", fontWeight: 600 }}>End Session</strong> when done to save
             </span>
           </div>
@@ -1138,7 +1138,7 @@ export default function JoinPage() {
 
         {/* ── Room toast ── */}
         {roomToast && (
-          <div style={{ position: "fixed", top: isMobile ? 73 : 80, right: 16, zIndex: 999, padding: "0.65rem 1.1rem", borderRadius: 10, background: "#1d6b3c", color: "#fff", fontWeight: 600, fontSize: "0.85rem", boxShadow: "0 4px 20px rgba(0,0,0,0.25)", fontFamily: "'DM Sans', sans-serif", animation: "slideDown 0.3s ease" }}>
+          <div style={{ position: "fixed", top: isMobile ? 73 : 80, right: 16, zIndex: 999, padding: "0.65rem 1.1rem", borderRadius: 10, background: "#1d6b3c", color: "#fff", fontWeight: 600, fontSize: "0.85rem", boxShadow: "0 4px 20px rgba(0,0,0,0.25)", fontFamily: "var(--font-dm-sans), sans-serif", animation: "slideDown 0.3s ease" }}>
             {roomToast}
           </div>
         )}
@@ -1177,7 +1177,7 @@ export default function JoinPage() {
 
               {!isOrg && !hasRemoteVideo && !remoteScreenActive && (
                 <div style={{ position: "absolute", inset: 0, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "0.9rem" }}>
-                  <div style={{ width: 72, height: 72, borderRadius: "50%", background: "linear-gradient(135deg,#1d6b3c,#145c30)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "'Fraunces',Georgia,serif", fontSize: "1.35rem", fontWeight: 700, color: "#fff", boxShadow: "0 0 0 6px rgba(29,107,60,0.18)", overflow: "hidden" }}>
+                  <div style={{ width: 72, height: 72, borderRadius: "50%", background: "linear-gradient(135deg,#1d6b3c,#145c30)", display: "flex", alignItems: "center", justifyContent: "center", fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.35rem", fontWeight: 700, color: "#fff", boxShadow: "0 0 0 6px rgba(29,107,60,0.18)", overflow: "hidden" }}>
                     {session?.user.avatarUrl
                       ? <img src={`${process.env.NEXT_PUBLIC_API_URL ?? ""}${session.user.avatarUrl}`} alt={teacherName} style={{ width: "100%", height: "100%", objectFit: "cover", display: "block" }} />
                       : teacherInitials}
@@ -1219,7 +1219,7 @@ export default function JoinPage() {
                   {!pipVisible && (
                     <button
                       onClick={() => setPipVisible(true)}
-                      style={{ position: "absolute", top: "0.6rem", right: "0.6rem", background: "rgba(0,0,0,0.6)", border: "1px solid rgba(255,255,255,0.2)", borderRadius: 8, color: "#fff", fontSize: "0.7rem", fontWeight: 600, padding: "0.3rem 0.65rem", cursor: "pointer", zIndex: 20, fontFamily: "'DM Sans', sans-serif" }}
+                      style={{ position: "absolute", top: "0.6rem", right: "0.6rem", background: "rgba(0,0,0,0.6)", border: "1px solid rgba(255,255,255,0.2)", borderRadius: 8, color: "#fff", fontSize: "0.7rem", fontWeight: 600, padding: "0.3rem 0.65rem", cursor: "pointer", zIndex: 20, fontFamily: "var(--font-dm-sans), sans-serif" }}
                     >
                       📷 Camera
                     </button>
@@ -1282,7 +1282,7 @@ export default function JoinPage() {
                     setTimeout(() => setLinkCopied(false), 2000);
                   });
                 }}
-                style={{ display: "flex", alignItems: "center", gap: "0.35rem", background: linkCopied ? T.leafLight : T.cream, color: linkCopied ? T.leaf : T.inkMuted, border: `1px solid ${linkCopied ? "rgba(29,107,60,0.25)" : T.border}`, borderRadius: 100, padding: "0.25rem 0.7rem", fontFamily: "'DM Sans', sans-serif", fontSize: "0.72rem", fontWeight: 600, cursor: "pointer", flexShrink: 0, transition: "all 0.2s" }}
+                style={{ display: "flex", alignItems: "center", gap: "0.35rem", background: linkCopied ? T.leafLight : T.cream, color: linkCopied ? T.leaf : T.inkMuted, border: `1px solid ${linkCopied ? "rgba(29,107,60,0.25)" : T.border}`, borderRadius: 100, padding: "0.25rem 0.7rem", fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "0.72rem", fontWeight: 600, cursor: "pointer", flexShrink: 0, transition: "all 0.2s" }}
               >
                 {linkCopied ? (
                   <>✓ Copied!</>
@@ -1298,7 +1298,7 @@ export default function JoinPage() {
               <div style={{ display: "flex", borderBottom: `1px solid ${T.border}`, padding: "0 1.1rem" }}>
                 {(["about", "rate"] as const).map((t) => (
                   <button key={t} onClick={() => setActiveTab(t as "about" | "teacher" | "rate")}
-                    style={{ padding: "0.6rem 1rem", fontSize: "0.8rem", fontWeight: activeTab === t ? 600 : 500, color: activeTab === t ? T.leaf : T.inkMuted, border: "none", borderBottom: `2px solid ${activeTab === t ? T.leaf : "transparent"}`, marginBottom: -1, background: "none", cursor: "pointer", fontFamily: "'DM Sans',sans-serif" }}>
+                    style={{ padding: "0.6rem 1rem", fontSize: "0.8rem", fontWeight: activeTab === t ? 600 : 500, color: activeTab === t ? T.leaf : T.inkMuted, border: "none", borderBottom: `2px solid ${activeTab === t ? T.leaf : "transparent"}`, marginBottom: -1, background: "none", cursor: "pointer", fontFamily: "var(--font-dm-sans), sans-serif" }}>
                     {t === "about" ? "About" : "Rate"}
                   </button>
                 ))}
@@ -1324,8 +1324,8 @@ export default function JoinPage() {
                     <div style={{ display: "flex", gap: "0.3rem", marginBottom: "0.5rem" }}>
                       {[1,2,3,4,5].map((v) => <span key={v} onMouseEnter={() => setRatingHover(v)} onMouseLeave={() => setRatingHover(0)} onClick={() => setRatingValue(v)} style={{ fontSize: "1.5rem", color: v <= (ratingHover || ratingValue) ? T.sun : T.border, cursor: "pointer" }}>★</span>)}
                     </div>
-                    <textarea value={ratingComment} onChange={(e) => setRatingComment(e.target.value)} rows={3} placeholder="What could be improved? (optional)" style={{ width: "100%", border: `1.5px solid ${T.border}`, borderRadius: T.radiusSm, padding: "0.55rem 0.75rem", fontFamily: "'DM Sans',sans-serif", fontSize: "0.82rem", color: T.ink, resize: "none" as const, outline: "none", boxSizing: "border-box" as const }} />
-                    <button onClick={async () => { if (!ratingValue) return; try { await apiFetch(`/live/${sessionId}/rate`, { method: "POST", body: JSON.stringify({ rating: ratingValue, comment: ratingComment }) }); } catch {} setRatingSubmitted(true); }} style={{ marginTop: "0.5rem", background: T.leaf, color: "#fff", border: "none", borderRadius: T.radiusSm, padding: "0.5rem 1.1rem", fontFamily: "'DM Sans',sans-serif", fontSize: "0.82rem", fontWeight: 600, cursor: "pointer" }}>Submit Rating</button>
+                    <textarea value={ratingComment} onChange={(e) => setRatingComment(e.target.value)} rows={3} placeholder="What could be improved? (optional)" style={{ width: "100%", border: `1.5px solid ${T.border}`, borderRadius: T.radiusSm, padding: "0.55rem 0.75rem", fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "0.82rem", color: T.ink, resize: "none" as const, outline: "none", boxSizing: "border-box" as const }} />
+                    <button onClick={async () => { if (!ratingValue) return; try { await apiFetch(`/live/${sessionId}/rate`, { method: "POST", body: JSON.stringify({ rating: ratingValue, comment: ratingComment }) }); } catch {} setRatingSubmitted(true); }} style={{ marginTop: "0.5rem", background: T.leaf, color: "#fff", border: "none", borderRadius: T.radiusSm, padding: "0.5rem 1.1rem", fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "0.82rem", fontWeight: 600, cursor: "pointer" }}>Submit Rating</button>
                   </>
                 )}
               </div>
@@ -1343,7 +1343,7 @@ export default function JoinPage() {
                 { key: "poll",   label: "Poll",    badge: pollBadge && sideTab !== "poll" ? "!" : null },
               ] as { key: "chat"|"people"|"poll"; label: string; badge: string|number|null }[]).map(({ key, label, badge }) => (
                 <button key={key} onClick={() => { setSideTab(key); if (key === "poll") setPollBadge(false); }}
-                  style={{ flex: 1, padding: "0.7rem 0.5rem", fontSize: "0.8rem", fontWeight: sideTab === key ? 700 : 500, color: sideTab === key ? T.leaf : T.inkMuted, border: "none", borderBottom: `2px solid ${sideTab === key ? T.leaf : "transparent"}`, marginBottom: -1, background: "none", cursor: "pointer", fontFamily: "'DM Sans',sans-serif", display: "flex", alignItems: "center", justifyContent: "center", gap: "0.35rem" }}>
+                  style={{ flex: 1, padding: "0.7rem 0.5rem", fontSize: "0.8rem", fontWeight: sideTab === key ? 700 : 500, color: sideTab === key ? T.leaf : T.inkMuted, border: "none", borderBottom: `2px solid ${sideTab === key ? T.leaf : "transparent"}`, marginBottom: -1, background: "none", cursor: "pointer", fontFamily: "var(--font-dm-sans), sans-serif", display: "flex", alignItems: "center", justifyContent: "center", gap: "0.35rem" }}>
                   {label}
                   {badge !== null && <span style={{ fontSize: "0.65rem", fontWeight: 700, background: key === "poll" ? "#ef4444" : T.leafLight, color: key === "poll" ? "#fff" : T.leaf, padding: "0.1rem 0.45rem", borderRadius: 100, lineHeight: 1.4 }}>{badge}</span>}
                 </button>
@@ -1373,7 +1373,7 @@ export default function JoinPage() {
                     {["👏","🙌","🔥","💡","🙏"].map((e) => <button key={e} onClick={() => sendReaction(e)} style={{ background: T.cream, border: `1px solid ${T.border}`, borderRadius: 100, padding: "0.18rem 0.5rem", fontSize: "0.8rem", cursor: "pointer" }}>{e}</button>)}
                   </div>
                   <div style={{ display: "flex", gap: "0.4rem", alignItems: "flex-end" }}>
-                    <textarea value={chatInput} onChange={(e) => setChatInput(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendChat(); } }} placeholder="Ask a question…" rows={1} style={{ flex: 1, border: `1.5px solid ${T.border}`, borderRadius: T.radiusSm, padding: "0.5rem 0.75rem", fontFamily: "'DM Sans',sans-serif", fontSize: "0.82rem", color: T.ink, resize: "none" as const, outline: "none", lineHeight: 1.4, maxHeight: 80, minHeight: 36 }} />
+                    <textarea value={chatInput} onChange={(e) => setChatInput(e.target.value)} onKeyDown={(e) => { if (e.key === "Enter" && !e.shiftKey) { e.preventDefault(); sendChat(); } }} placeholder="Ask a question…" rows={1} style={{ flex: 1, border: `1.5px solid ${T.border}`, borderRadius: T.radiusSm, padding: "0.5rem 0.75rem", fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "0.82rem", color: T.ink, resize: "none" as const, outline: "none", lineHeight: 1.4, maxHeight: 80, minHeight: 36 }} />
                     <button onClick={sendChat} style={{ background: T.leaf, color: "#fff", border: "none", borderRadius: T.radiusSm, width: 36, height: 36, flexShrink: 0, display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer" }}>
                       <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg>
                     </button>
@@ -1437,25 +1437,25 @@ export default function JoinPage() {
                     <div style={{ fontSize: "1.75rem", marginBottom: "0.75rem" }}>📊</div>
                     <div style={{ fontSize: "0.85rem", fontWeight: 600, color: T.ink, marginBottom: "0.4rem" }}>Engage your audience</div>
                     <div style={{ fontSize: "0.78rem", color: T.inkMuted, marginBottom: "1.25rem", lineHeight: 1.6 }}>Launch a live poll — results update in real time for everyone.</div>
-                    <button onClick={() => setShowPollCreate(true)} style={{ background: T.leaf, color: "#fff", border: "none", borderRadius: 100, padding: "0.55rem 1.4rem", fontFamily: "'DM Sans',sans-serif", fontSize: "0.85rem", fontWeight: 600, cursor: "pointer" }}>Create Poll</button>
+                    <button onClick={() => setShowPollCreate(true)} style={{ background: T.leaf, color: "#fff", border: "none", borderRadius: 100, padding: "0.55rem 1.4rem", fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "0.85rem", fontWeight: 600, cursor: "pointer" }}>Create Poll</button>
                   </div>
                 )}
                 {isOrg && showPollCreate && (
                   <div>
                     <div style={{ fontSize: "0.78rem", fontWeight: 700, color: T.inkMuted, textTransform: "uppercase" as const, letterSpacing: "0.05em", marginBottom: "0.75rem" }}>New Poll</div>
-                    <input value={draftQuestion} onChange={(e) => setDraftQuestion(e.target.value)} placeholder="Your question…" style={{ width: "100%", padding: "0.65rem 0.75rem", borderRadius: 10, border: `1.5px solid ${T.border}`, fontFamily: "'DM Sans',sans-serif", fontSize: "0.85rem", color: T.ink, outline: "none", boxSizing: "border-box" as const, marginBottom: "0.75rem" }} />
+                    <input value={draftQuestion} onChange={(e) => setDraftQuestion(e.target.value)} placeholder="Your question…" style={{ width: "100%", padding: "0.65rem 0.75rem", borderRadius: 10, border: `1.5px solid ${T.border}`, fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "0.85rem", color: T.ink, outline: "none", boxSizing: "border-box" as const, marginBottom: "0.75rem" }} />
                     <div style={{ display: "flex", flexDirection: "column" as const, gap: "0.4rem", marginBottom: "0.75rem" }}>
                       {draftOptions.map((opt, i) => (
                         <div key={i} style={{ display: "flex", gap: "0.4rem" }}>
-                          <input value={opt} onChange={(e) => setDraftOptions((prev) => prev.map((o, j) => j === i ? e.target.value : o))} placeholder={`Option ${i + 1}`} style={{ flex: 1, padding: "0.5rem 0.7rem", borderRadius: 8, border: `1.5px solid ${T.border}`, fontFamily: "'DM Sans',sans-serif", fontSize: "0.82rem", color: T.ink, outline: "none" }} />
+                          <input value={opt} onChange={(e) => setDraftOptions((prev) => prev.map((o, j) => j === i ? e.target.value : o))} placeholder={`Option ${i + 1}`} style={{ flex: 1, padding: "0.5rem 0.7rem", borderRadius: 8, border: `1.5px solid ${T.border}`, fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "0.82rem", color: T.ink, outline: "none" }} />
                           {draftOptions.length > 2 && <button onClick={() => setDraftOptions((p) => p.filter((_, j) => j !== i))} style={{ background: "none", border: "none", color: T.inkMuted, cursor: "pointer", fontSize: "1rem", padding: "0 0.2rem" }}>✕</button>}
                         </div>
                       ))}
                     </div>
-                    {draftOptions.length < 5 && <button onClick={() => setDraftOptions((p) => [...p, ""])} style={{ background: "none", border: `1.5px dashed ${T.border}`, borderRadius: 8, padding: "0.4rem 0.9rem", fontFamily: "'DM Sans',sans-serif", fontSize: "0.78rem", color: T.inkMuted, cursor: "pointer", width: "100%", marginBottom: "0.9rem" }}>+ Add option</button>}
+                    {draftOptions.length < 5 && <button onClick={() => setDraftOptions((p) => [...p, ""])} style={{ background: "none", border: `1.5px dashed ${T.border}`, borderRadius: 8, padding: "0.4rem 0.9rem", fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "0.78rem", color: T.inkMuted, cursor: "pointer", width: "100%", marginBottom: "0.9rem" }}>+ Add option</button>}
                     <div style={{ display: "flex", gap: "0.5rem" }}>
-                      <button onClick={() => setShowPollCreate(false)} style={{ flex: 1, background: "none", border: `1.5px solid ${T.border}`, borderRadius: 100, padding: "0.5rem", fontFamily: "'DM Sans',sans-serif", fontSize: "0.8rem", color: T.inkSoft, cursor: "pointer" }}>Cancel</button>
-                      <button onClick={launchPoll} disabled={!draftQuestion.trim() || draftOptions.filter(o => o.trim()).length < 2} style={{ flex: 2, background: T.leaf, border: "none", borderRadius: 100, padding: "0.5rem", fontFamily: "'DM Sans',sans-serif", fontSize: "0.8rem", fontWeight: 700, color: "#fff", cursor: "pointer", opacity: (!draftQuestion.trim() || draftOptions.filter(o => o.trim()).length < 2) ? 0.5 : 1 }}>Launch Poll →</button>
+                      <button onClick={() => setShowPollCreate(false)} style={{ flex: 1, background: "none", border: `1.5px solid ${T.border}`, borderRadius: 100, padding: "0.5rem", fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "0.8rem", color: T.inkSoft, cursor: "pointer" }}>Cancel</button>
+                      <button onClick={launchPoll} disabled={!draftQuestion.trim() || draftOptions.filter(o => o.trim()).length < 2} style={{ flex: 2, background: T.leaf, border: "none", borderRadius: 100, padding: "0.5rem", fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "0.8rem", fontWeight: 700, color: "#fff", cursor: "pointer", opacity: (!draftQuestion.trim() || draftOptions.filter(o => o.trim()).length < 2) ? 0.5 : 1 }}>Launch Poll →</button>
                     </div>
                   </div>
                 )}
@@ -1463,7 +1463,7 @@ export default function JoinPage() {
                 {poll && (
                   <div>
                     <div style={{ fontSize: "0.68rem", fontWeight: 700, color: T.inkMuted, textTransform: "uppercase" as const, letterSpacing: "0.06em", marginBottom: "0.6rem" }}>Live Poll · {totalVotes} vote{totalVotes !== 1 ? "s" : ""}</div>
-                    <div style={{ fontFamily: "'Fraunces',Georgia,serif", fontSize: "1rem", fontWeight: 700, color: T.ink, marginBottom: "1rem", lineHeight: 1.4 }}>{poll.question}</div>
+                    <div style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1rem", fontWeight: 700, color: T.ink, marginBottom: "1rem", lineHeight: 1.4 }}>{poll.question}</div>
                     <div style={{ display: "flex", flexDirection: "column" as const, gap: "0.55rem" }}>
                       {poll.options.map((opt, i) => {
                         const pct = totalVotes > 0 ? Math.round((poll.votes[i] / totalVotes) * 100) : 0;
@@ -1485,7 +1485,7 @@ export default function JoinPage() {
                     </div>
                     {myVote !== null && <div style={{ marginTop: "0.85rem", fontSize: "0.78rem", color: T.leaf, fontWeight: 600, textAlign: "center" as const }}>✓ Vote recorded</div>}
                     {isOrg && (
-                      <button onClick={() => { setPoll(null); setMyVote(null); }} style={{ marginTop: "1rem", width: "100%", background: "none", border: `1.5px solid ${T.border}`, borderRadius: 100, padding: "0.45rem", fontFamily: "'DM Sans',sans-serif", fontSize: "0.78rem", color: T.inkMuted, cursor: "pointer" }}>End poll</button>
+                      <button onClick={() => { setPoll(null); setMyVote(null); }} style={{ marginTop: "1rem", width: "100%", background: "none", border: `1.5px solid ${T.border}`, borderRadius: 100, padding: "0.45rem", fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "0.78rem", color: T.inkMuted, cursor: "pointer" }}>End poll</button>
                     )}
                   </div>
                 )}
@@ -1522,7 +1522,7 @@ export default function JoinPage() {
               </div>
 
               {/* Heading */}
-              <div style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "1.35rem", fontWeight: 700, color: "#fff", letterSpacing: "-0.02em", marginBottom: "0.5rem" }}>
+              <div style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.35rem", fontWeight: 700, color: "#fff", letterSpacing: "-0.02em", marginBottom: "0.5rem" }}>
                 Wrap up this session?
               </div>
               <div style={{ fontSize: "0.83rem", color: "rgba(255,255,255,0.45)", lineHeight: 1.6, marginBottom: "1.5rem" }}>
@@ -1532,11 +1532,11 @@ export default function JoinPage() {
               {/* Stats row */}
               <div style={{ display: "flex", gap: "0.75rem", marginBottom: "1.75rem" }}>
                 <div style={{ flex: 1, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 12, padding: "0.75rem 1rem" }}>
-                  <div style={{ fontSize: "1.1rem", fontWeight: 700, color: "#fff", fontFamily: "'Fraunces', Georgia, serif", lineHeight: 1 }}>{fmtDuration(elapsedSec)}</div>
+                  <div style={{ fontSize: "1.1rem", fontWeight: 700, color: "#fff", fontFamily: "var(--font-fraunces), Georgia, serif", lineHeight: 1 }}>{fmtDuration(elapsedSec)}</div>
                   <div style={{ fontSize: "0.68rem", color: "rgba(255,255,255,0.35)", marginTop: "0.3rem", letterSpacing: "0.04em", textTransform: "uppercase" as const }}>Duration</div>
                 </div>
                 <div style={{ flex: 1, background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.07)", borderRadius: 12, padding: "0.75rem 1rem" }}>
-                  <div style={{ fontSize: "1.1rem", fontWeight: 700, color: "#fff", fontFamily: "'Fraunces', Georgia, serif", lineHeight: 1 }}>{onlineCount}</div>
+                  <div style={{ fontSize: "1.1rem", fontWeight: 700, color: "#fff", fontFamily: "var(--font-fraunces), Georgia, serif", lineHeight: 1 }}>{onlineCount}</div>
                   <div style={{ fontSize: "0.68rem", color: "rgba(255,255,255,0.35)", marginTop: "0.3rem", letterSpacing: "0.04em", textTransform: "uppercase" as const }}>Watching</div>
                 </div>
                 {isRecording && (
@@ -1555,14 +1555,14 @@ export default function JoinPage() {
                 <button
                   onClick={() => setShowEndConfirm(false)}
                   disabled={endingSession}
-                  style={{ flex: 1, padding: "0.75rem", borderRadius: 12, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.75)", fontFamily: "'DM Sans', sans-serif", fontSize: "0.88rem", fontWeight: 600, cursor: "pointer", transition: "all 0.15s" }}
+                  style={{ flex: 1, padding: "0.75rem", borderRadius: 12, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.75)", fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "0.88rem", fontWeight: 600, cursor: "pointer", transition: "all 0.15s" }}
                 >
                   Keep Going
                 </button>
                 <button
                   onClick={doEndSession}
                   disabled={endingSession}
-                  style={{ flex: 1, padding: "0.75rem", borderRadius: 12, border: "none", background: endingSession ? "rgba(255,255,255,0.08)" : "linear-gradient(135deg, #1a1f1c, #0f1410)", color: endingSession ? "rgba(255,255,255,0.3)" : "rgba(255,255,255,0.9)", fontFamily: "'DM Sans', sans-serif", fontSize: "0.88rem", fontWeight: 700, cursor: endingSession ? "default" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem", boxShadow: endingSession ? "none" : "0 2px 12px rgba(0,0,0,0.4)", transition: "all 0.15s" }}
+                  style={{ flex: 1, padding: "0.75rem", borderRadius: 12, border: "none", background: endingSession ? "rgba(255,255,255,0.08)" : "linear-gradient(135deg, #1a1f1c, #0f1410)", color: endingSession ? "rgba(255,255,255,0.3)" : "rgba(255,255,255,0.9)", fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "0.88rem", fontWeight: 700, cursor: endingSession ? "default" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem", boxShadow: endingSession ? "none" : "0 2px 12px rgba(0,0,0,0.4)", transition: "all 0.15s" }}
                 >
                   {endingSession
                     ? <><span style={{ width: 14, height: 14, border: "2px solid rgba(255,255,255,0.3)", borderTopColor: "rgba(255,255,255,0.7)", borderRadius: "50%", display: "inline-block", animation: "spin 0.7s linear infinite" }} /> Ending…</>
@@ -1608,7 +1608,7 @@ function CtrlBtn({ children, onClick, title, active }: { children: React.ReactNo
           borderRadius: 6,
           whiteSpace: "nowrap",
           pointerEvents: "none",
-          fontFamily: "'DM Sans', sans-serif",
+          fontFamily: "var(--font-dm-sans), sans-serif",
           zIndex: 20,
           boxShadow: "0 2px 8px rgba(0,0,0,0.4)",
           letterSpacing: "0.01em",

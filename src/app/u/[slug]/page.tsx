@@ -27,8 +27,8 @@ const C = {
   clay: "#c45b2a", clayLight: "#f8ede5",
   cream: "#faf7f2", white: "#ffffff", border: "#e2ded6",
   r: "16px", rs: "10px",
-  ff: "'DM Sans', sans-serif",
-  ffD: "'Fraunces', Georgia, serif",
+  ff: "var(--font-dm-sans), sans-serif",
+  ffD: "var(--font-fraunces), Georgia, serif",
 };
 
 type ChipVariant = "sky" | "green" | "clay" | "sun";
@@ -374,7 +374,7 @@ export default function PublicProfilePage() {
       `}</style>
 
       {/* ── NAV ── */}
-      <Header activeLink="teachers" />
+      <Header activeLink="speakers" />
 
       {/* ── COVER ── */}
       <div style={{ height: 200, marginTop: isMobile ? 57 : 64, background: C.ink, position: "relative", overflow: "hidden" }}>
@@ -385,7 +385,7 @@ export default function PublicProfilePage() {
         <div style={{ position: "absolute", top: "1.25rem", left: isMobile ? "1rem" : "2rem", zIndex: 1, display: "flex", alignItems: "center", gap: "0.4rem", fontSize: "0.78rem", color: "rgba(255,255,255,0.45)" }}>
           <Link href="/"    style={{ color: "rgba(255,255,255,0.45)", textDecoration: "none" }}>Home</Link>
           <span style={{ color: "rgba(255,255,255,0.25)" }}>›</span>
-          <Link href="/teachers" style={{ color: "rgba(255,255,255,0.45)", textDecoration: "none" }}>Speakers</Link>
+          <Link href="/speakers" style={{ color: "rgba(255,255,255,0.45)", textDecoration: "none" }}>Speakers</Link>
           <span style={{ color: "rgba(255,255,255,0.25)" }}>›</span>
           <span style={{ color: "rgba(255,255,255,0.75)" }}>{name}</span>
         </div>

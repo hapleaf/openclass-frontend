@@ -1,0 +1,124 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="630" viewBox="0 0 1200 630">
+  <defs>
+    <!-- Main background gradient -->
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#0b1a10"/>
+      <stop offset="100%" stop-color="#080f0a"/>
+    </linearGradient>
+    <!-- Left green glow -->
+    <radialGradient id="glL" cx="0%" cy="75%" r="65%">
+      <stop offset="0%" stop-color="#1d6b3c" stop-opacity="0.5"/>
+      <stop offset="100%" stop-color="#1d6b3c" stop-opacity="0"/>
+    </radialGradient>
+    <!-- Top-right cool glow -->
+    <radialGradient id="glR" cx="100%" cy="0%" r="55%">
+      <stop offset="0%" stop-color="#1a4f7a" stop-opacity="0.22"/>
+      <stop offset="100%" stop-color="#1a4f7a" stop-opacity="0"/>
+    </radialGradient>
+    <!-- Dot grid pattern -->
+    <pattern id="dots" x="0" y="0" width="30" height="30" patternUnits="userSpaceOnUse">
+      <circle cx="1" cy="1" r="1" fill="rgba(255,255,255,0.045)"/>
+    </pattern>
+    <!-- Logo icon gradient -->
+    <linearGradient id="iconBg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#25874c"/>
+      <stop offset="100%" stop-color="#1d6b3c"/>
+    </linearGradient>
+    <!-- Top accent line gradient -->
+    <linearGradient id="accentLine" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#7ed9a4"/>
+      <stop offset="40%" stop-color="#1d6b3c"/>
+      <stop offset="100%" stop-color="#1d6b3c" stop-opacity="0"/>
+    </linearGradient>
+    <!-- Pill tag gradient -->
+    <linearGradient id="pill" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#25874c"/>
+      <stop offset="100%" stop-color="#1d6b3c"/>
+    </linearGradient>
+  </defs>
+
+  <!-- ── Background layers ── -->
+  <rect width="1200" height="630" fill="url(#bg)"/>
+  <rect width="1200" height="630" fill="url(#glL)"/>
+  <rect width="1200" height="630" fill="url(#glR)"/>
+  <rect width="1200" height="630" fill="url(#dots)"/>
+
+  <!-- ── Top accent bar ── -->
+  <rect width="700" height="3" fill="url(#accentLine)" opacity="0.9"/>
+
+  <!-- ── Decorative right side: concentric rings + mic ── -->
+  <!-- Outer rings -->
+  <circle cx="1060" cy="320" r="260" stroke="#1d6b3c" stroke-width="1" fill="none" opacity="0.1"/>
+  <circle cx="1060" cy="320" r="195" stroke="#1d6b3c" stroke-width="1" fill="none" opacity="0.13"/>
+  <circle cx="1060" cy="320" r="132" stroke="#7ed9a4" stroke-width="1" fill="none" opacity="0.1"/>
+  <!-- Dashed inner ring -->
+  <circle cx="1060" cy="320" r="75" stroke="#7ed9a4" stroke-width="1.5" stroke-dasharray="6 6" fill="none" opacity="0.2"/>
+  <!-- Center filled circle -->
+  <circle cx="1060" cy="320" r="46" fill="#1d6b3c" opacity="0.55"/>
+  <circle cx="1060" cy="320" r="46" fill="url(#glL)" opacity="0.4"/>
+  <!-- Mic icon centered in circle -->
+  <rect x="1050" y="302" width="20" height="28" rx="10" fill="white" opacity="0.92"/>
+  <path d="M1040 321C1040 331.493 1049.059 340 1060 340C1070.941 340 1080 331.493 1080 321" stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none" opacity="0.92"/>
+  <line x1="1060" y1="340" x2="1060" y2="348" stroke="white" stroke-width="2.5" stroke-linecap="round" opacity="0.92"/>
+  <line x1="1052" y1="348" x2="1068" y2="348" stroke="white" stroke-width="2.5" stroke-linecap="round" opacity="0.92"/>
+  <!-- Live dot -->
+  <circle cx="1096" cy="284" r="7" fill="#7ed9a4"/>
+  <circle cx="1096" cy="284" r="4" fill="#2dcc70"/>
+
+  <!-- ── Logo section (top left) ── -->
+  <!-- Icon box -->
+  <rect x="72" y="62" width="58" height="58" rx="14" fill="url(#iconBg)"/>
+  <!-- Subtle inner highlight -->
+  <rect x="72" y="62" width="58" height="29" rx="14" fill="rgba(255,255,255,0.07)"/>
+  <!-- Mic inside icon -->
+  <rect x="87" y="72" width="18" height="26" rx="9" fill="white"/>
+  <path d="M79 91C79 101.493 88.059 108 99 108C109.941 108 119 101.493 119 91" stroke="white" stroke-width="2.5" stroke-linecap="round" fill="none"/>
+  <line x1="99" y1="108" x2="99" y2="115" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+  <line x1="92" y1="115" x2="106" y2="115" stroke="white" stroke-width="2.5" stroke-linecap="round"/>
+
+  <!-- Brand text -->
+  <text x="144" y="100" font-family="Georgia, 'Times New Roman', serif" font-size="32" font-weight="700" fill="white" letter-spacing="-0.5">Open<tspan fill="#7ed9a4">Webinar</tspan></text>
+  <text x="145" y="118" font-family="Arial, Helvetica, sans-serif" font-size="12" font-weight="400" fill="rgba(255,255,255,0.38)" letter-spacing="3">BY HAPLEAF TECHNOLOGIES</text>
+
+  <!-- ── Divider line under logo ── -->
+  <line x1="72" y1="152" x2="650" y2="152" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+
+  <!-- ── Main headline ── -->
+  <text x="72" y="262" font-family="Georgia, 'Times New Roman', serif" font-size="74" font-weight="700" fill="white" letter-spacing="-2.5">The world's only</text>
+  <text x="72" y="348" font-family="Georgia, 'Times New Roman', serif" font-size="74" font-weight="700" fill="#7ed9a4" letter-spacing="-2.5">free webinar hub.</text>
+
+  <!-- ── Subheadline ── -->
+  <text x="72" y="404" font-family="Arial, Helvetica, sans-serif" font-size="24" fill="rgba(255,255,255,0.5)" letter-spacing="0.2">Host, discover, and get found — at zero cost.</text>
+
+  <!-- ── Feature pills ── -->
+  <!-- Pill 1 — solid -->
+  <rect x="72" y="448" width="192" height="48" rx="24" fill="url(#pill)"/>
+  <text x="168" y="478" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="600" fill="white" text-anchor="middle">🎙️  Host for Free</text>
+
+  <!-- Pill 2 -->
+  <rect x="278" y="448" width="192" height="48" rx="24" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.14)" stroke-width="1"/>
+  <text x="374" y="478" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="600" fill="rgba(255,255,255,0.72)" text-anchor="middle">🌍  Global Audience</text>
+
+  <!-- Pill 3 -->
+  <rect x="484" y="448" width="210" height="48" rx="24" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.14)" stroke-width="1"/>
+  <text x="589" y="478" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="600" fill="rgba(255,255,255,0.72)" text-anchor="middle">⭐  Build Reputation</text>
+
+  <!-- Pill 4 -->
+  <rect x="708" y="448" width="148" height="48" rx="24" fill="rgba(255,255,255,0.06)" stroke="rgba(255,255,255,0.14)" stroke-width="1"/>
+  <text x="782" y="478" font-family="Arial, Helvetica, sans-serif" font-size="17" font-weight="600" fill="rgba(255,255,255,0.72)" text-anchor="middle">🔴  Live &amp; Free</text>
+
+  <!-- ── Bottom bar ── -->
+  <rect y="568" width="1200" height="62" fill="rgba(0,0,0,0.25)"/>
+  <line x1="0" y1="568" x2="1200" y2="568" stroke="rgba(255,255,255,0.07)" stroke-width="1"/>
+
+  <!-- URL left -->
+  <circle cx="104" cy="599" r="14" fill="#1d6b3c" opacity="0.8"/>
+  <text x="104" y="605" font-family="Arial, Helvetica, sans-serif" font-size="13" font-weight="700" fill="white" text-anchor="middle">OW</text>
+  <text x="128" y="604" font-family="Arial, Helvetica, sans-serif" font-size="18" font-weight="500" fill="rgba(255,255,255,0.45)" letter-spacing="0.3">open-webinar.com</text>
+
+  <!-- Right tagline -->
+  <text x="1128" y="604" font-family="Arial, Helvetica, sans-serif" font-size="15" fill="rgba(255,255,255,0.25)" text-anchor="end" letter-spacing="1.5">FREE · LIVE · OPEN</text>
+
+  <!-- Bottom accent -->
+  <rect y="627" width="1200" height="3" fill="#1d6b3c" opacity="0.6"/>
+</svg>

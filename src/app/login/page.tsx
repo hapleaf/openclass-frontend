@@ -1,6 +1,7 @@
 "use client";
 
 import LoginHeader from "../../components/common/HeadFoot/loginheader";
+import Footer from "../../components/common/HeadFoot/footer";
 import { login, forgotPassword, resetPassword } from "@/lib/auth";
 import { getProfile } from "@/lib/profile";
 import { useRouter } from "next/navigation";
@@ -23,8 +24,8 @@ const T = {
   white: "#ffffff",
   border: "#e2ded6",
   error: "#c0392b",
-  ff: "'DM Sans', sans-serif",
-  ffD: "'Fraunces', Georgia, serif",
+  ff: "var(--font-dm-sans), sans-serif",
+  ffD: "var(--font-fraunces), Georgia, serif",
   r: "10px",
 };
 
@@ -60,16 +61,16 @@ function EyeOffIcon() {
 
 /* ── Left panel ── */
 const TEACHER_PERKS = [
-  "Host live classes & webinars for free",
-  "Build a verified public profile & reputation",
-  "Reach students across India and the world",
-  "Manage sessions, replays, and messages",
+  "Host free live webinars for a global audience",
+  "Build a verified speaker profile & reputation",
+  "Get discovered by attendees worldwide",
+  "Manage webinars, recordings, and messages",
 ];
 const STUDENT_PERKS = [
-  "Join any live class or webinar instantly",
-  "Chat, ask doubts & interact in real time",
-  "Subscribe to teachers & get notified",
-  "Watch replays at your own pace",
+  "Join any live webinar instantly — free forever",
+  "Chat, ask questions & interact in real time",
+  "Follow speakers & get notified of new webinars",
+  "Watch recordings at your own pace",
 ];
 
 function RoleCard({ icon, iconBg, title, subtitle, description, perks }: {
@@ -120,23 +121,23 @@ function AuthLeft() {
           ● Free forever
         </div>
         <h1 style={{ fontFamily: T.ffD, fontSize: "clamp(2rem, 3.5vw, 2.8rem)", fontWeight: 700, lineHeight: 1.1, letterSpacing: "-0.03em", color: "#fff", marginBottom: "1rem" }}>
-          Education<br />
-          <em style={{ fontStyle: "italic", color: "#7ed9a4" }}>without walls.</em>
+          Webinars for<br />
+          <em style={{ fontStyle: "italic", color: "#7ed9a4" }}>everyone, free.</em>
         </h1>
         <p style={{ fontSize: "0.95rem", color: "rgba(255,255,255,0.55)", lineHeight: 1.75, maxWidth: 380, marginBottom: "2.5rem" }}>
-          OpenClass connects passionate teachers with curious learners — live, free, and open to everyone in India and beyond.
+          OpenWebinar connects expert speakers with curious attendees — live, free, and open to the world. No subscription. No paywalls. Ever.
         </p>
         <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
           <RoleCard
-            icon="👩‍🏫" iconBg="rgba(232,160,32,0.15)"
-            title="For Teachers" subtitle="Share your knowledge freely"
-            description="Whether you're a retired professor, working professional, or passionate expert — create live classes and webinars that reach thousands of students at no cost."
+            icon="🎙️" iconBg="rgba(232,160,32,0.15)"
+            title="For Speakers" subtitle="Share your expertise with the world"
+            description="Whether you're a seasoned professional, researcher, or passionate expert — host live webinars that reach a global audience at absolutely zero cost."
             perks={TEACHER_PERKS}
           />
           <RoleCard
-            icon="🎓" iconBg="rgba(29,107,60,0.2)"
-            title="For Students" subtitle="Learn from the best, for free"
-            description="Access live classes from IIT professors, industry professionals, and subject experts. Ask questions in real time, rate sessions, and follow the teachers you love."
+            icon="🎧" iconBg="rgba(29,107,60,0.2)"
+            title="For Attendees" subtitle="Learn from experts, for free"
+            description="Access live webinars from industry professionals, researchers, and domain experts worldwide. Ask questions in real time, rate webinars, and follow speakers you love."
             perks={STUDENT_PERKS}
           />
         </div>
@@ -292,7 +293,6 @@ export default function SignIn({ onSubmit, onGoSignUp, errorMessage }: SignInPro
 
   return (
     <>
-      <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
       <LoginHeader />
 
       <div className="oc-auth-layout" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", minHeight: "100vh", paddingTop: 64 }}>
@@ -448,12 +448,13 @@ export default function SignIn({ onSubmit, onGoSignUp, errorMessage }: SignInPro
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 }
 
 /* ── shared styles ── */
-const hs: React.CSSProperties = { fontFamily: "'Fraunces',Georgia,serif", fontSize: "1.75rem", fontWeight: 700, letterSpacing: "-0.02em", color: "#0f1410", marginBottom: "0.35rem" };
+const hs: React.CSSProperties = { fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.75rem", fontWeight: 700, letterSpacing: "-0.02em", color: "#0f1410", marginBottom: "0.35rem" };
 const ss: React.CSSProperties = { fontSize: "0.875rem", color: "#6b7a72", marginBottom: "2rem" };
 const ls: React.CSSProperties = { display: "block", fontSize: "0.8rem", fontWeight: 600, color: "#0f1410", marginBottom: "0.4rem" };
 const fg: React.CSSProperties = { marginBottom: "1.1rem" };

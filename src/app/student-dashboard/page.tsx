@@ -17,7 +17,7 @@ const T = {
   clay: "#c45b2a", clayLight: "#f8ede5",
   cream: "#faf7f2", white: "#fff", border: "#e2ded6",
   r: 16, rs: 10,
-  ff: "'DM Sans', sans-serif", ffd: "'Fraunces', Georgia, serif",
+  ff: "var(--font-dm-sans), sans-serif", ffd: "var(--font-fraunces), Georgia, serif",
 };
 
 const AVATAR_COLORS = ["#1d6b3c","#1a4f7a","#c45b2a","#7c3aed","#0e6370","#9b2c4e","#854d0e","#e8a020"];
@@ -179,7 +179,6 @@ export default function StudentDashboardPage() {
 
   return (
     <>
-      <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
       <Header activeLink="dashboard" userName={fullName(profile)} userInitials={initials(profile)} userRole="Student" />
 
       <div style={{ paddingTop: 64, background: T.cream, minHeight: "100vh", fontFamily: T.ff, color: T.ink }}>
@@ -207,7 +206,7 @@ export default function StudentDashboardPage() {
                   <Link href="/live" style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", padding: "0.5rem 1.1rem", borderRadius: 100, fontFamily: T.ff, fontSize: "0.82rem", fontWeight: 600, background: T.leaf, color: T.white, textDecoration: "none" }}>
                     Browse Webinars
                   </Link>
-                  <Link href="/teachers" style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", padding: "0.5rem 1.1rem", borderRadius: 100, fontFamily: T.ff, fontSize: "0.82rem", fontWeight: 600, background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.75)", border: "1px solid rgba(255,255,255,0.15)", textDecoration: "none" }}>
+                  <Link href="/speakers" style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", padding: "0.5rem 1.1rem", borderRadius: 100, fontFamily: T.ff, fontSize: "0.82rem", fontWeight: 600, background: "rgba(255,255,255,0.08)", color: "rgba(255,255,255,0.75)", border: "1px solid rgba(255,255,255,0.15)", textDecoration: "none" }}>
                     Discover Speakers
                   </Link>
                 </div>
@@ -480,7 +479,7 @@ export default function StudentDashboardPage() {
             {followedTeachers.length === 0 ? (
               <div style={{ background: T.white, border: `1px solid ${T.border}`, borderRadius: T.r, padding: "2rem", textAlign: "center", marginBottom: "1.75rem" }}>
                 <p style={{ fontFamily: T.ffd, fontSize: "1rem", color: T.inkSoft, marginBottom: "0.4rem" }}>You haven't followed any speakers yet.</p>
-                <Link href="/teachers" style={{ fontSize: "0.875rem", color: T.leaf, fontWeight: 600, textDecoration: "none" }}>Browse Speakers →</Link>
+                <Link href="/speakers" style={{ fontSize: "0.875rem", color: T.leaf, fontWeight: 600, textDecoration: "none" }}>Browse Speakers →</Link>
               </div>
             ) : (
               <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "1rem", marginBottom: "1.75rem" }}>
@@ -541,7 +540,7 @@ export default function StudentDashboardPage() {
                     ? `You follow ${stats.following} speaker${stats.following > 1 ? "s" : ""}. Check out their upcoming webinars and keep learning.`
                     : "Discover expert speakers across maths, science, engineering, languages and more — all free webinars."}
                 </div>
-                <Link href="/teachers" style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", padding: "0.55rem 1.1rem", borderRadius: T.rs, fontFamily: T.ff, fontSize: "0.82rem", fontWeight: 600, background: T.leaf, color: T.white, textDecoration: "none" }}>
+                <Link href="/speakers" style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", padding: "0.55rem 1.1rem", borderRadius: T.rs, fontFamily: T.ff, fontSize: "0.82rem", fontWeight: 600, background: T.leaf, color: T.white, textDecoration: "none" }}>
                   {stats.following > 0 ? "Browse Webinars →" : "Find Speakers →"}
                 </Link>
               </div>

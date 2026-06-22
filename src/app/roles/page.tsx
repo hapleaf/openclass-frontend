@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Link from "next/link";
 import { getCachedProfile, shortName } from "@/lib/profile";
@@ -63,7 +63,7 @@ const CARDS: {
   },
 ];
 
-export default function RolesPage() {
+function RolesPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [selected, setSelected] = useState<Role | null>(null);
@@ -100,9 +100,8 @@ export default function RolesPage() {
 
   return (
     <>
-      <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
 
-      <div style={{ minHeight: "100vh", background: "#0f1410", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "2rem", fontFamily: "'DM Sans', sans-serif", position: "relative", overflow: "hidden" }}>
+      <div style={{ minHeight: "100vh", background: "#0f1410", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "2rem", fontFamily: "var(--font-dm-sans), sans-serif", position: "relative", overflow: "hidden" }}>
 
         {/* Background texture */}
         <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px)", backgroundSize: "32px 32px", pointerEvents: "none" }} />
@@ -110,7 +109,7 @@ export default function RolesPage() {
         <div style={{ position: "absolute", width: 400, height: 400, background: "rgba(26,79,122,0.07)", borderRadius: "50%", filter: "blur(80px)", bottom: -100, left: -100, pointerEvents: "none" }} />
 
         {/* Logo */}
-        <Link href="/" style={{ position: "absolute", top: "1.5rem", left: "2rem", fontFamily: "'Fraunces', Georgia, serif", fontSize: "1.4rem", fontWeight: 700, color: "#fff", textDecoration: "none", letterSpacing: "-0.02em" }}>
+        <Link href="/" style={{ position: "absolute", top: "1.5rem", left: "2rem", fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.4rem", fontWeight: 700, color: "#fff", textDecoration: "none", letterSpacing: "-0.02em" }}>
           Open<span style={{ color: "#4a9e68" }}>Class</span>
         </Link>
 
@@ -121,7 +120,7 @@ export default function RolesPage() {
             <div style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", background: "rgba(255,255,255,0.06)", border: "1px solid rgba(255,255,255,0.1)", color: "rgba(255,255,255,0.6)", fontSize: "0.72rem", fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", padding: "0.3rem 0.8rem", borderRadius: 100, marginBottom: "1rem" }}>
               Welcome back, {name}
             </div>
-            <h1 style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "clamp(1.8rem,4vw,2.6rem)", fontWeight: 700, color: "#fff", letterSpacing: "-0.03em", lineHeight: 1.1, marginBottom: "0.6rem" }}>
+            <h1 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "clamp(1.8rem,4vw,2.6rem)", fontWeight: 700, color: "#fff", letterSpacing: "-0.03em", lineHeight: 1.1, marginBottom: "0.6rem" }}>
               How are you using <em style={{ color: "#7ed9a4", fontStyle: "italic" }}>OpenClass</em> today?
             </h1>
             <p style={{ color: "rgba(255,255,255,0.45)", fontSize: "0.95rem", maxWidth: 460, margin: "0 auto" }}>
@@ -178,7 +177,7 @@ export default function RolesPage() {
                       {card.emoji}
                     </div>
                     <div>
-                      <div style={{ fontSize: "1.15rem", fontFamily: "'Fraunces', Georgia, serif", fontWeight: 700, color: "#fff", letterSpacing: "-0.01em" }}>{card.title}</div>
+                      <div style={{ fontSize: "1.15rem", fontFamily: "var(--font-fraunces), Georgia, serif", fontWeight: 700, color: "#fff", letterSpacing: "-0.01em" }}>{card.title}</div>
                       <div style={{ fontSize: "0.8rem", color: isSelected ? card.accentText : "rgba(255,255,255,0.45)", marginTop: "0.1rem", transition: "color 0.2s" }}>{card.tagline}</div>
                     </div>
                   </div>
@@ -218,7 +217,7 @@ export default function RolesPage() {
           <button
             onClick={handleContinue}
             disabled={!selected}
-            style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.85rem 2.5rem", borderRadius: 100, fontFamily: "'DM Sans', sans-serif", fontSize: "0.95rem", fontWeight: 700, border: "none", cursor: selected ? "pointer" : "not-allowed", background: selected ? (selected === "teacher" ? "#1d6b3c" : "#1a4f7a") : "rgba(255,255,255,0.1)", color: selected ? "#fff" : "rgba(255,255,255,0.3)", transition: "all 0.2s", boxShadow: selected ? "0 4px 20px rgba(0,0,0,0.3)" : "none" }}>
+            style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.85rem 2.5rem", borderRadius: 100, fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "0.95rem", fontWeight: 700, border: "none", cursor: selected ? "pointer" : "not-allowed", background: selected ? (selected === "teacher" ? "#1d6b3c" : "#1a4f7a") : "rgba(255,255,255,0.1)", color: selected ? "#fff" : "rgba(255,255,255,0.3)", transition: "all 0.2s", boxShadow: selected ? "0 4px 20px rgba(0,0,0,0.3)" : "none" }}>
             Continue as {selected ? (selected === "teacher" ? "Teacher" : "Student") : "…"}
             <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </button>
@@ -226,7 +225,7 @@ export default function RolesPage() {
           {/* Change default hint */}
           {isChanging && currentDefault && (
             <div style={{ marginTop: "1.25rem" }}>
-              <button onClick={handleClearDefault} style={{ background: "none", border: "none", color: "rgba(255,255,255,0.3)", fontSize: "0.78rem", cursor: "pointer", fontFamily: "'DM Sans', sans-serif", textDecoration: "underline" }}>
+              <button onClick={handleClearDefault} style={{ background: "none", border: "none", color: "rgba(255,255,255,0.3)", fontSize: "0.78rem", cursor: "pointer", fontFamily: "var(--font-dm-sans), sans-serif", textDecoration: "underline" }}>
                 Clear saved default (always ask on login)
               </button>
             </div>
@@ -238,5 +237,13 @@ export default function RolesPage() {
         </div>
       </div>
     </>
+  );
+}
+
+export default function RolesPage() {
+  return (
+    <Suspense>
+      <RolesPageInner />
+    </Suspense>
   );
 }

@@ -385,7 +385,7 @@ export default function TeachersPage() {
 
   return (
     <>
-      <Header activeLink="teachers" />
+      <Header activeLink="speakers" />
 
       <div style={{ paddingTop: isMobile ? 57 : 64, fontFamily: "var(--font-dm-sans), sans-serif", background: "#faf7f2", minHeight: "100vh", color: "#0f1410" }}>
 

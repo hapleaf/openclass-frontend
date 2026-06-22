@@ -21,7 +21,7 @@ const T = {
   red: "#c0392b", redLight: "#fdecea",
   cream: "#faf7f2", white: "#ffffff", border: "#e2ded6",
   r: 16, rs: 10,
-  ff: "'DM Sans', sans-serif", ffd: "'Fraunces', Georgia, serif",
+  ff: "var(--font-dm-sans), sans-serif", ffd: "var(--font-fraunces), Georgia, serif",
 };
 
 const REJECTION_REASONS: { value: string; label: string; desc: string }[] = [

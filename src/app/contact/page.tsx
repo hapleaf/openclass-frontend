@@ -8,7 +8,7 @@ const T = {
   ink: "#0f1410", inkSoft: "#3a4140", inkMuted: "#6b7a72",
   leaf: "#1d6b3c", leafLight: "#d4ead9",
   cream: "#faf7f2", white: "#fff", border: "#e2ded6",
-  ff: "'DM Sans', sans-serif", ffd: "'Fraunces', Georgia, serif",
+  ff: "var(--font-dm-sans), sans-serif", ffd: "var(--font-fraunces), Georgia, serif",
 };
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? "";
@@ -88,7 +88,6 @@ export default function ContactPage() {
 
   return (
     <>
-      <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
       <Header />
       <div style={{ paddingTop: isMobile ? 57 : 64, background: T.cream, minHeight: "100vh", fontFamily: T.ff, color: T.ink }}>
 

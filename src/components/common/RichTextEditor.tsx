@@ -18,7 +18,7 @@ const BTN: React.CSSProperties = {
   padding: "0.25rem 0.55rem",
   fontSize: "0.78rem",
   cursor: "pointer",
-  fontFamily: "'DM Sans', sans-serif",
+  fontFamily: "var(--font-dm-sans), sans-serif",
   color: "#3a4140",
   lineHeight: 1,
   transition: "all 0.15s",
@@ -91,14 +91,14 @@ export default function RichTextEditor({ value, onChange, maxLength = 5000, minL
           <div style={{
             position: "absolute", top: "0.85rem", left: "1rem",
             color: "#a0a8a2", fontSize: "0.88rem", pointerEvents: "none",
-            fontFamily: "'DM Sans', sans-serif",
+            fontFamily: "var(--font-dm-sans), sans-serif",
           }}>
             {placeholder ?? "Write a detailed description…"}
           </div>
         )}
         <EditorContent
           editor={editor}
-          style={{ minHeight: 180, padding: "0.75rem 1rem", outline: "none", fontSize: "0.9rem", lineHeight: 1.65, fontFamily: "'DM Sans', sans-serif", color: "#1a1f1c" }}
+          style={{ minHeight: 180, padding: "0.75rem 1rem", outline: "none", fontSize: "0.9rem", lineHeight: 1.65, fontFamily: "var(--font-dm-sans), sans-serif", color: "#1a1f1c" }}
         />
       </div>
 
@@ -118,8 +118,8 @@ export default function RichTextEditor({ value, onChange, maxLength = 5000, minL
       {/* TipTap editor prose styles injected inline via global style tag */}
       <style>{`
         .ProseMirror { outline: none; }
-        .ProseMirror h2 { font-size: 1.15rem; font-weight: 700; margin: 0.75rem 0 0.35rem; color: #0f1410; font-family: 'Fraunces', Georgia, serif; }
-        .ProseMirror h3 { font-size: 1rem; font-weight: 700; margin: 0.6rem 0 0.25rem; color: #0f1410; font-family: 'Fraunces', Georgia, serif; }
+        .ProseMirror h2 { font-size: 1.15rem; font-weight: 700; margin: 0.75rem 0 0.35rem; color: #0f1410; font-family: var(--font-fraunces), Georgia, serif; }
+        .ProseMirror h3 { font-size: 1rem; font-weight: 700; margin: 0.6rem 0 0.25rem; color: #0f1410; font-family: var(--font-fraunces), Georgia, serif; }
         .ProseMirror p { margin: 0 0 0.5rem; }
         .ProseMirror ul, .ProseMirror ol { padding-left: 1.4rem; margin: 0.35rem 0 0.5rem; }
         .ProseMirror li { margin-bottom: 0.2rem; }

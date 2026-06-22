@@ -20,9 +20,9 @@ const FEATURES = [
 ];
 
 const TESTIMONIALS = [
-  { quote: "I live in a small town in Bihar with no coaching center nearby. OpenWebinar gave me access to the same experts my peers in Delhi have. Free, live, and interactive — nothing else comes close.", name: "Arjun Kumar", role: "Webinar Attendee, Sitamarhi", initials: "AK", bg: "#1d6b3c" },
-  { quote: "I retired from teaching after 30 years and worried my knowledge would just fade away. Now I host webinars for 3,000 people every week from my home. OpenWebinar gave me purpose again.", name: "Prof. Sudha Rao", role: "Webinar Host, Mysuru", initials: "SR", bg: "#1a4f7a" },
-  { quote: "YouTube has my videos but nobody finds them. On OpenWebinar I get real attendees, real questions, and real ratings. My reputation here opened consulting opportunities I never expected.", name: "Pallavi Mathur", role: "Business Strategy Host, Pune", initials: "PM", bg: "#c45b2a" },
+  { quote: "I live in a small town in Bihar with no coaching center nearby. OpenWebinar gave me access to the same experts my peers in Delhi have. Free, live, and interactive — nothing else comes close.", name: "Arjun Kumar", role: "Webinar Attendee, Sitamarhi, India", initials: "AK", bg: "#1d6b3c" },
+  { quote: "I retired from teaching after 30 years and worried my knowledge would just fade away. Now I host webinars for 3,000 people every week from my home. OpenWebinar gave me purpose again.", name: "James Whitfield", role: "Webinar Host, Manchester, UK", initials: "JW", bg: "#1a4f7a" },
+  { quote: "YouTube has my videos but nobody finds them. On OpenWebinar I get real attendees, real questions, and real ratings. My reputation here opened consulting opportunities I never expected.", name: "Sarah Collins", role: "Business Strategy Host, Chicago, USA", initials: "SC", bg: "#b54c20" },
 ];
 
 type ChatMsg = { av: string; bg: string; avColor?: string; name: string; text: string; pinned?: boolean };
@@ -32,8 +32,8 @@ type ExpTab = "chat" | "rate" | "profile" | "message";
 const INIT_CHAT: ChatMsg[] = [
   { av: "AK", bg: "#1d6b3c", name: "Arjun K.", text: "Can you explain eigenvectors once more? 🙏" },
   { av: "SR", bg: "#1a4f7a", name: "Shruti R.", text: "This is so clear!! Thank you Prof. Rao 🙌" },
-  { av: "PJ", bg: "#c45b2a", name: "Priya J.", text: "What's the difference between eigenvalue and eigenvector?" },
-  { av: "NM", bg: "#8b5cf6", name: "Nikhil M.", text: "For CBSE students — is this in Class 12?", pinned: true },
+  { av: "PJ", bg: "#b54c20", name: "Priya J.", text: "What's the difference between eigenvalue and eigenvector?" },
+  { av: "NM", bg: "#7c3aed", name: "Nikhil M.", text: "For CBSE students — is this in Class 12?", pinned: true },
   { av: "DL", bg: "#e8a020", avColor: "#402810", name: "Divya L.", text: "👏👏👏 best webinar this week" },
 ];
 
@@ -140,12 +140,11 @@ export default function HomePage() {
 
   /* ─── shared style helpers ───────────────────────────────────── */
   const sectionTag: React.CSSProperties = { fontSize: "0.8rem", fontWeight: 500, letterSpacing: "0.07em", textTransform: "uppercase", color: "#1d6b3c", marginBottom: "1rem" };
-  const sectionTitle: React.CSSProperties = { fontFamily: "'Fraunces', Georgia, serif", fontSize: "clamp(1.75rem,3.5vw,2.8rem)", fontWeight: 700, letterSpacing: "-0.02em", lineHeight: 1.2, marginBottom: "1rem" };
+  const sectionTitle: React.CSSProperties = { fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "clamp(1.75rem,3.5vw,2.8rem)", fontWeight: 700, letterSpacing: "-0.02em", lineHeight: 1.2, marginBottom: "1rem" };
   const sectionSub: React.CSSProperties = { color: "#3a4140", maxWidth: 520, fontSize: "1rem", marginBottom: "3rem" };
 
   return (
-    <div style={{ fontFamily: "'DM Sans', sans-serif", background: "#faf7f2", color: "#0f1410", overflowX: "hidden" }}>
-      <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
+    <div style={{ fontFamily: "var(--font-dm-sans), sans-serif", background: "#faf7f2", color: "#0f1410", overflowX: "hidden" }}>
       <Header />
 
       {/* ── HERO ─────────────────────────────────────────────────── */}
@@ -158,26 +157,26 @@ export default function HomePage() {
             Free webinars · Build reputation · Get discovered
           </div>
 
-          <h1 className="fade-up d2" style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "clamp(2.4rem,6vw,5rem)", fontWeight: 700, lineHeight: 1.05, letterSpacing: "-0.03em", color: "#0f1410", marginBottom: "1rem" }}>
+          <h1 className="fade-up d2" style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "clamp(2.4rem,6vw,5rem)", fontWeight: 700, lineHeight: 1.05, letterSpacing: "-0.03em", color: "#0f1410", marginBottom: "1rem" }}>
             The world's only<br /><em style={{ fontStyle: "italic", color: "#1d6b3c" }}>free webinar hub.</em>
           </h1>
 
-          <p className="fade-up d3" style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "clamp(1rem,2vw,1.35rem)", fontWeight: 300, fontStyle: "italic", color: "#3a4140", marginBottom: "1.75rem", letterSpacing: "0.01em" }}>
+          <p className="fade-up d3" style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "clamp(1rem,2vw,1.35rem)", fontWeight: 300, fontStyle: "italic", color: "#3a4140", marginBottom: "1.75rem", letterSpacing: "0.01em" }}>
             Host freely. Grow freely. Always.
           </p>
 
-          <p className="fade-up d3" style={{ fontSize: "1rem", color: "#6b7a72", maxWidth: 560, margin: "0 auto 2.5rem", lineHeight: 1.8 }}>
+          <p className="fade-up d3" style={{ fontSize: "1rem", color: "#5f6e66", maxWidth: 560, margin: "0 auto 2.5rem", lineHeight: 1.8 }}>
             OpenWebinar is the world's first dedicated platform for free webinars. Share your expertise, build a real reputation, and reach a global audience — at zero cost. Paid sessions coming soon for those ready to monetize.
           </p>
 
           {/* Zero cost callout */}
           <div className="fade-up d4" style={{ display: "inline-flex", alignItems: "center", gap: "1.5rem", background: "#fff", border: "1.5px solid #e2ded6", borderRadius: 16, padding: "1.1rem 2rem", marginBottom: "2.5rem", flexWrap: "wrap", justifyContent: "center" }}>
             <div style={{ display: "flex", alignItems: "baseline", gap: "0.25rem" }}>
-              <span style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "3.2rem", fontWeight: 700, lineHeight: 1, color: "#1d6b3c", letterSpacing: "-0.04em" }}>Zero</span>
-              <span style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "1.6rem", fontWeight: 300, color: "#1d6b3c", marginLeft: "0.35rem" }}>cost.</span>
+              <span style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "3.2rem", fontWeight: 700, lineHeight: 1, color: "#1d6b3c", letterSpacing: "-0.04em" }}>Zero</span>
+              <span style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.6rem", fontWeight: 300, color: "#1d6b3c", marginLeft: "0.35rem" }}>cost.</span>
             </div>
             <div className="price-divider" style={{ width: 1, height: 40, background: "#e2ded6", flexShrink: 0 }} />
-            <div style={{ fontSize: "0.8rem", fontWeight: 500, color: "#6b7a72", textAlign: "left", lineHeight: 1.4 }}>
+            <div style={{ fontSize: "0.8rem", fontWeight: 500, color: "#5f6e66", textAlign: "left", lineHeight: 1.4 }}>
               <strong style={{ display: "block", fontSize: "0.95rem", color: "#0f1410" }}>Forever free to host.</strong>
               Not a trial. Not freemium.<br />Free today — earn tomorrow.
             </div>
@@ -207,8 +206,8 @@ export default function HomePage() {
           <div className="fade-up d5" style={{ display: "flex", gap: "2rem", marginTop: "3rem", paddingTop: "3rem", borderTop: "1px solid #e2ded6", justifyContent: "center", flexWrap: "wrap" }}>
             {[["12K+","Speakers hosting"],["340K+","Attendees learning"],["80+","Topics covered"],["$0","Cost, forever"]].map(([num, label]) => (
               <div key={label} style={{ textAlign: "center" }}>
-                <div style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "clamp(1.4rem,3vw,2rem)", fontWeight: 700, color: "#0f1410", lineHeight: 1 }}>{num}</div>
-                <div style={{ fontSize: "0.8rem", color: "#6b7a72", marginTop: "0.3rem" }}>{label}</div>
+                <div style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "clamp(1.4rem,3vw,2rem)", fontWeight: 700, color: "#0f1410", lineHeight: 1 }}>{num}</div>
+                <div style={{ fontSize: "0.8rem", color: "#5f6e66", marginTop: "0.3rem" }}>{label}</div>
               </div>
             ))}
           </div>
@@ -219,7 +218,7 @@ export default function HomePage() {
       <section className="section-pad" style={{ padding: "6rem 2rem", background: "#0f1410", color: "#faf7f2", textAlign: "center", position: "relative", overflow: "hidden" }}>
         <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.04) 1px, transparent 1px)", backgroundSize: "40px 40px" }} />
         <div style={{ position: "relative", zIndex: 1, maxWidth: 820, margin: "0 auto" }}>
-          <h2 className="anim-item" style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "clamp(1.8rem,4.5vw,3.5rem)", fontWeight: 300, lineHeight: 1.25, letterSpacing: "-0.02em", marginBottom: "1.5rem", color: "#faf7f2" }}>
+          <h2 className="anim-item" style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "clamp(1.8rem,4.5vw,3.5rem)", fontWeight: 300, lineHeight: 1.25, letterSpacing: "-0.02em", marginBottom: "1.5rem", color: "#faf7f2" }}>
             Better than YouTube<br />for <em style={{ fontStyle: "italic", color: "#7ed9a4" }}>webinars.</em>
           </h2>
           <p className="anim-item" style={{ fontSize: "1.05rem", color: "rgba(250,247,242,0.65)", maxWidth: 640, margin: "0 auto 2rem" }}>
@@ -266,7 +265,7 @@ export default function HomePage() {
               ].map(([title, desc], i) => (
                 <div key={title} className="anim-item" style={{ display: "flex", gap: "1rem", marginBottom: i < 3 ? "1.5rem" : 0, alignItems: "flex-start" }}>
                   <div style={{ width: 32, height: 32, flexShrink: 0, borderRadius: "50%", background: "#d4ead9", color: "#1d6b3c", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.8rem", fontWeight: 600 }}>{i + 1}</div>
-                  <div><strong style={{ display: "block", fontSize: "0.95rem", marginBottom: "0.2rem" }}>{title}</strong><span style={{ fontSize: "0.85rem", color: "#6b7a72" }}>{desc}</span></div>
+                  <div><strong style={{ display: "block", fontSize: "0.95rem", marginBottom: "0.2rem" }}>{title}</strong><span style={{ fontSize: "0.85rem", color: "#5f6e66" }}>{desc}</span></div>
                 </div>
               ))}
             </div>
@@ -284,7 +283,7 @@ export default function HomePage() {
               ].map(([title, desc], i) => (
                 <div key={title} className="anim-item" style={{ display: "flex", gap: "1rem", marginBottom: i < 3 ? "1.5rem" : 0, alignItems: "flex-start" }}>
                   <div style={{ width: 32, height: 32, flexShrink: 0, borderRadius: "50%", background: "#ddeaf8", color: "#1a4f7a", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.8rem", fontWeight: 600 }}>{i + 1}</div>
-                  <div><strong style={{ display: "block", fontSize: "0.95rem", marginBottom: "0.2rem" }}>{title}</strong><span style={{ fontSize: "0.85rem", color: "#6b7a72" }}>{desc}</span></div>
+                  <div><strong style={{ display: "block", fontSize: "0.95rem", marginBottom: "0.2rem" }}>{title}</strong><span style={{ fontSize: "0.85rem", color: "#5f6e66" }}>{desc}</span></div>
                 </div>
               ))}
             </div>
@@ -303,7 +302,7 @@ export default function HomePage() {
               <div key={f.title} className="anim-item feature-card-hover" style={{ padding: "1.75rem", borderRadius: 16, border: "1px solid #e2ded6", transition: "border-color 0.2s, transform 0.2s" }}>
                 <div style={{ width: 44, height: 44, borderRadius: 8, background: f.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.3rem", marginBottom: "1.25rem" }}>{f.icon}</div>
                 <h3 style={{ fontSize: "1rem", fontWeight: 500, marginBottom: "0.5rem" }}>{f.title}</h3>
-                <p style={{ fontSize: "0.875rem", color: "#6b7a72", lineHeight: 1.65 }}>{f.desc}</p>
+                <p style={{ fontSize: "0.875rem", color: "#5f6e66", lineHeight: 1.65 }}>{f.desc}</p>
               </div>
             ))}
           </div>
@@ -327,7 +326,7 @@ export default function HomePage() {
             ] as { id: ExpTab; label: string }[]).map(tab => (
               <button key={tab.id} onClick={() => setActiveTab(tab.id)}
                 className={activeTab !== tab.id ? "exp-tab-hover" : ""}
-                style={{ padding: "0.55rem 1.1rem", borderRadius: 100, border: `1.5px solid ${activeTab === tab.id ? "#1d6b3c" : "#e2ded6"}`, background: activeTab === tab.id ? "#1d6b3c" : "#fff", color: activeTab === tab.id ? "#fff" : "#3a4140", fontSize: "0.85rem", fontWeight: 500, cursor: "pointer", fontFamily: "'DM Sans', sans-serif", transition: "all 0.2s" }}>
+                style={{ padding: "0.55rem 1.1rem", borderRadius: 100, border: `1.5px solid ${activeTab === tab.id ? "#1d6b3c" : "#e2ded6"}`, background: activeTab === tab.id ? "#1d6b3c" : "#fff", color: activeTab === tab.id ? "#fff" : "#3a4140", fontSize: "0.85rem", fontWeight: 500, cursor: "pointer", fontFamily: "var(--font-dm-sans), sans-serif", transition: "all 0.2s" }}>
                 {tab.label}
               </button>
             ))}
@@ -337,7 +336,7 @@ export default function HomePage() {
           {activeTab === "chat" && (
             <div className="grid-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "3rem", alignItems: "start" }}>
               <div>
-                <h3 style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "1.5rem", fontWeight: 700, letterSpacing: "-0.02em", marginBottom: "0.85rem" }}>Comment & ask questions live</h3>
+                <h3 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.5rem", fontWeight: 700, letterSpacing: "-0.02em", marginBottom: "0.85rem" }}>Comment & ask questions live</h3>
                 <p style={{ color: "#3a4140", lineHeight: 1.75, marginBottom: "1.25rem" }}>During every webinar, the live chat runs alongside the stream. Ask doubts, react to what the speaker says, and learn from other attendees' questions too. Speakers can pin important questions and respond in real time.</p>
                 <ul style={{ listStyle: "none", padding: 0, display: "flex", flexDirection: "column", gap: "0.5rem" }}>
                   {["Emoji reactions during the session", "Speaker can highlight and answer questions", "Chat history saved with the replay"].map(p => (
@@ -363,8 +362,8 @@ export default function HomePage() {
                   ))}
                 </div>
                 <div style={{ display: "flex", gap: "0.5rem", padding: "0.65rem 0.75rem", borderTop: "1px solid #e2ded6" }}>
-                  <input value={chatInput} onChange={e => setChatInput(e.target.value)} onKeyDown={e => e.key === "Enter" && sendChat()} placeholder="Ask something…" style={{ flex: 1, border: "1.5px solid #e2ded6", borderRadius: 100, padding: "0.4rem 0.85rem", fontSize: "0.8rem", fontFamily: "'DM Sans', sans-serif", color: "#0f1410", outline: "none" }} />
-                  <button onClick={sendChat} className="mock-send-hover" style={{ background: "#1d6b3c", color: "#fff", border: "none", borderRadius: 100, padding: "0.4rem 0.9rem", fontSize: "0.78rem", fontWeight: 600, cursor: "pointer", fontFamily: "'DM Sans', sans-serif", transition: "background 0.2s" }}>Send</button>
+                  <input value={chatInput} onChange={e => setChatInput(e.target.value)} onKeyDown={e => e.key === "Enter" && sendChat()} placeholder="Ask something…" style={{ flex: 1, border: "1.5px solid #e2ded6", borderRadius: 100, padding: "0.4rem 0.85rem", fontSize: "0.8rem", fontFamily: "var(--font-dm-sans), sans-serif", color: "#0f1410", outline: "none" }} />
+                  <button onClick={sendChat} className="mock-send-hover" style={{ background: "#1d6b3c", color: "#fff", border: "none", borderRadius: 100, padding: "0.4rem 0.9rem", fontSize: "0.78rem", fontWeight: 600, cursor: "pointer", fontFamily: "var(--font-dm-sans), sans-serif", transition: "background 0.2s" }}>Send</button>
                 </div>
               </div>
             </div>
@@ -374,7 +373,7 @@ export default function HomePage() {
           {activeTab === "rate" && (
             <div className="grid-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "3rem", alignItems: "start" }}>
               <div>
-                <h3 style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "1.5rem", fontWeight: 700, letterSpacing: "-0.02em", marginBottom: "0.85rem" }}>Rate every webinar honestly</h3>
+                <h3 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.5rem", fontWeight: 700, letterSpacing: "-0.02em", marginBottom: "0.85rem" }}>Rate every webinar honestly</h3>
                 <p style={{ color: "#3a4140", lineHeight: 1.75, marginBottom: "1.25rem" }}>After a webinar ends, attendees can leave a star rating (1–5) and a written comment. This builds a transparent reputation system — great speakers rise naturally through genuine feedback, not paid promotion. Your rating is your brand.</p>
                 <ul style={{ listStyle: "none", padding: 0, display: "flex", flexDirection: "column", gap: "0.5rem" }}>
                   {["1–5 star rating per webinar", "Written review visible on speaker profile", "Average rating shown on all webinar cards"].map(p => (
@@ -386,16 +385,16 @@ export default function HomePage() {
               </div>
               <div style={{ background: "#fff", border: "1.5px solid #e2ded6", borderRadius: 16, overflow: "hidden", boxShadow: "0 8px 32px rgba(15,20,16,0.08)" }}>
                 <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", padding: "0.75rem 1rem", background: "#0f1410", color: "#fff", fontSize: "0.8rem", fontWeight: 500 }}>Rate this webinar</div>
-                <div style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "1rem", fontWeight: 700, padding: "1rem 1rem 0.15rem", color: "#0f1410" }}>Linear Algebra: Eigenvalues & Eigenvectors</div>
-                <div style={{ fontSize: "0.78rem", color: "#6b7a72", padding: "0 1rem 0.75rem" }}>Prof. Ananya Rao · Mathematics</div>
+                <div style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1rem", fontWeight: 700, padding: "1rem 1rem 0.15rem", color: "#0f1410" }}>Linear Algebra: Eigenvalues & Eigenvectors</div>
+                <div style={{ fontSize: "0.78rem", color: "#5f6e66", padding: "0 1rem 0.75rem" }}>Prof. Ananya Rao · Mathematics</div>
                 <div style={{ display: "flex", gap: "0.35rem", padding: "0 1rem 0.5rem", cursor: "pointer" }}>
                   {[1,2,3,4,5].map(v => (
                     <span key={v} onMouseEnter={() => setRatingHover(v)} onMouseLeave={() => setRatingHover(0)} onClick={() => setCurrentRating(v)} style={{ fontSize: "1.6rem", color: v <= displayRating ? "#e8a020" : "#e2ded6", transition: "color 0.15s", cursor: "pointer" }}>★</span>
                   ))}
                 </div>
-                <div style={{ fontSize: "0.8rem", color: "#6b7a72", padding: "0 1rem 0.75rem" }}>{RATE_LABELS[displayRating]}</div>
-                <textarea rows={3} placeholder="What did you learn? What could be better? (optional)" style={{ width: "calc(100% - 2rem)", margin: "0 1rem", border: "1.5px solid #e2ded6", borderRadius: 8, padding: "0.6rem 0.75rem", fontSize: "0.8rem", fontFamily: "'DM Sans', sans-serif", color: "#0f1410", resize: "none", outline: "none" }} />
-                <button className="rate-submit-hover" style={{ display: "block", margin: "0.75rem 1rem", background: "#1d6b3c", color: "#fff", border: "none", borderRadius: 100, padding: "0.55rem 1.25rem", fontSize: "0.85rem", fontWeight: 600, cursor: "pointer", fontFamily: "'DM Sans', sans-serif", transition: "background 0.2s" }}>Submit Rating</button>
+                <div style={{ fontSize: "0.8rem", color: "#5f6e66", padding: "0 1rem 0.75rem" }}>{RATE_LABELS[displayRating]}</div>
+                <textarea rows={3} placeholder="What did you learn? What could be better? (optional)" style={{ width: "calc(100% - 2rem)", margin: "0 1rem", border: "1.5px solid #e2ded6", borderRadius: 8, padding: "0.6rem 0.75rem", fontSize: "0.8rem", fontFamily: "var(--font-dm-sans), sans-serif", color: "#0f1410", resize: "none", outline: "none" }} />
+                <button className="rate-submit-hover" style={{ display: "block", margin: "0.75rem 1rem", background: "#1d6b3c", color: "#fff", border: "none", borderRadius: 100, padding: "0.55rem 1.25rem", fontSize: "0.85rem", fontWeight: 600, cursor: "pointer", fontFamily: "var(--font-dm-sans), sans-serif", transition: "background 0.2s" }}>Submit Rating</button>
                 <div style={{ padding: "0.75rem 1rem 1rem", borderTop: "1px solid #e2ded6" }}>
                   <div style={{ fontSize: "0.8rem", fontWeight: 500, letterSpacing: "0.07em", textTransform: "uppercase", color: "#1d6b3c", marginBottom: "0.75rem" }}>Recent ratings</div>
                   {[
@@ -405,7 +404,7 @@ export default function HomePage() {
                     <div key={r.name} style={{ display: "flex", alignItems: "flex-start", gap: "0.5rem", marginBottom: "0.6rem", fontSize: "0.78rem" }}>
                       <span style={{ color: "#e8a020", flexShrink: 0 }}>{r.stars}</span>
                       <span style={{ color: "#3a4140", flex: 1, fontStyle: "italic" }}>"{r.text}"</span>
-                      <span style={{ color: "#6b7a72", whiteSpace: "nowrap" }}>— {r.name}</span>
+                      <span style={{ color: "#5f6e66", whiteSpace: "nowrap" }}>— {r.name}</span>
                     </div>
                   ))}
                 </div>
@@ -417,7 +416,7 @@ export default function HomePage() {
           {activeTab === "profile" && (
             <div className="grid-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "3rem", alignItems: "start" }}>
               <div>
-                <h3 style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "1.5rem", fontWeight: 700, letterSpacing: "-0.02em", marginBottom: "0.85rem" }}>Know your speaker deeply</h3>
+                <h3 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.5rem", fontWeight: 700, letterSpacing: "-0.02em", marginBottom: "0.85rem" }}>Know your speaker deeply</h3>
                 <p style={{ color: "#3a4140", lineHeight: 1.75, marginBottom: "1.25rem" }}>Every speaker on OpenWebinar has a full public profile — their background, expertise, average rating, total attendees, and a complete history of past webinars with replays. Follow in one tap to never miss a session.</p>
                 <ul style={{ listStyle: "none", padding: 0, display: "flex", flexDirection: "column", gap: "0.5rem" }}>
                   {["Full bio and speaking background", "Upcoming webinar schedule at a glance", "All past webinars with replays"].map(p => (
@@ -432,21 +431,21 @@ export default function HomePage() {
                   <div style={{ width: 44, height: 44, borderRadius: "50%", background: "#1d6b3c", color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.8rem", fontWeight: 700, flexShrink: 0 }}>AR</div>
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontWeight: 700, fontSize: "0.9rem", color: "#0f1410" }}>Prof. Ananya Rao</div>
-                    <div style={{ fontSize: "0.75rem", color: "#6b7a72", marginBottom: "0.4rem" }}>Mathematics · IIT Bombay (Retd.)</div>
+                    <div style={{ fontSize: "0.75rem", color: "#5f6e66", marginBottom: "0.4rem" }}>Mathematics · IIT Bombay (Retd.)</div>
                     <div style={{ display: "flex", flexWrap: "wrap", gap: "0.3rem" }}>
-                      {[["⭐ 4.9 Rating","#d4ead9","#1d6b3c"],["🥇 34K attendees","#ddeaf8","#1a4f7a"],["📡 148 webinars","#f8ede5","#c45b2a"]].map(([label,bg,tc]) => (
+                      {[["⭐ 4.9 Rating","#d4ead9","#1d6b3c"],["🥇 34K attendees","#ddeaf8","#1a4f7a"],["📡 148 webinars","#f8ede5","#b54c20"]].map(([label,bg,tc]) => (
                         <span key={label} style={{ fontSize: "0.68rem", fontWeight: 500, padding: "0.15rem 0.5rem", borderRadius: 100, background: bg as string, color: tc as string }}>{label}</span>
                       ))}
                     </div>
                   </div>
-                  <button onClick={() => setIsSubscribed(v => !v)} className="sub-btn-hover" style={{ flexShrink: 0, background: isSubscribed ? "#d4ead9" : "#1d6b3c", color: isSubscribed ? "#1d6b3c" : "#fff", border: "none", borderRadius: 100, padding: "0.4rem 0.85rem", fontSize: "0.78rem", fontWeight: 600, cursor: "pointer", fontFamily: "'DM Sans', sans-serif", transition: "background 0.2s" }}>
+                  <button onClick={() => setIsSubscribed(v => !v)} className="sub-btn-hover" style={{ flexShrink: 0, background: isSubscribed ? "#d4ead9" : "#1d6b3c", color: isSubscribed ? "#1d6b3c" : "#fff", border: "none", borderRadius: 100, padding: "0.4rem 0.85rem", fontSize: "0.78rem", fontWeight: 600, cursor: "pointer", fontFamily: "var(--font-dm-sans), sans-serif", transition: "background 0.2s" }}>
                     {isSubscribed ? "✓ Following" : "+ Follow"}
                   </button>
                 </div>
                 <div style={{ fontSize: "0.78rem", color: "#3a4140", fontStyle: "italic", padding: "0.85rem 1rem", borderBottom: "1px solid #e2ded6", lineHeight: 1.6 }}>
                   "I spent 30 years teaching at IIT Bombay. Now I want to reach every student in India — not just those who can afford premium coaching. Mathematics is for everyone."
                 </div>
-                <div style={{ fontSize: "0.68rem", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#6b7a72", padding: "0.75rem 1rem 0.4rem" }}>Upcoming webinars</div>
+                <div style={{ fontSize: "0.68rem", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: "#5f6e66", padding: "0.75rem 1rem 0.4rem" }}>Upcoming webinars</div>
                 {[
                   { dot: "#1d6b3c", title: "Differential Equations: Introduction", time: "Today · 5:00 PM IST", btn: "Join Free" },
                   { dot: "#1a4f7a", title: "Linear Algebra: Matrix Operations",    time: "Tomorrow · 4:00 PM IST", btn: "Remind Me" },
@@ -455,7 +454,7 @@ export default function HomePage() {
                     <div style={{ width: 8, height: 8, borderRadius: "50%", background: s.dot, flexShrink: 0 }} />
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ fontSize: "0.8rem", fontWeight: 600, color: "#0f1410", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>{s.title}</div>
-                      <div style={{ fontSize: "0.72rem", color: "#6b7a72" }}>{s.time}</div>
+                      <div style={{ fontSize: "0.72rem", color: "#5f6e66" }}>{s.time}</div>
                     </div>
                     <span className="ps-join-hover" style={{ fontSize: "0.72rem", fontWeight: 600, color: "#1d6b3c", background: "#d4ead9", padding: "0.2rem 0.6rem", borderRadius: 100, cursor: "pointer", transition: "background 0.2s", flexShrink: 0 }}>{s.btn}</span>
                   </div>
@@ -468,7 +467,7 @@ export default function HomePage() {
           {activeTab === "message" && (
             <div className="grid-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "3rem", alignItems: "start" }}>
               <div>
-                <h3 style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "1.5rem", fontWeight: 700, letterSpacing: "-0.02em", marginBottom: "0.85rem" }}>Talk to your speaker directly</h3>
+                <h3 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.5rem", fontWeight: 700, letterSpacing: "-0.02em", marginBottom: "0.85rem" }}>Talk to your speaker directly</h3>
                 <p style={{ color: "#3a4140", lineHeight: 1.75, marginBottom: "1.25rem" }}>Have a question that wasn't answered during the webinar? Want to go deeper on a topic? Attendees can send direct messages to any speaker on OpenWebinar. Speakers respond at their own pace — real human connection, not a chatbot.</p>
                 <ul style={{ listStyle: "none", padding: 0, display: "flex", flexDirection: "column", gap: "0.5rem" }}>
                   {["One-on-one message thread per speaker", "Speakers manage their inbox easily", "Share notes, images, or links in chat"].map(p => (
@@ -490,13 +489,13 @@ export default function HomePage() {
                   {dmMessages.map((m, i) => (
                     <div key={i} style={{ display: "flex", flexDirection: "column", alignItems: m.isMe ? "flex-end" : "flex-start" }}>
                       <div style={{ fontSize: "0.8rem", padding: "0.55rem 0.85rem", borderRadius: 14, maxWidth: "85%", lineHeight: 1.5, background: m.isMe ? "#1d6b3c" : "#faf7f2", color: m.isMe ? "#fff" : "#0f1410", borderBottomRightRadius: m.isMe ? 4 : 14, borderBottomLeftRadius: m.isMe ? 14 : 4 }}>{m.text}</div>
-                      <div style={{ fontSize: "0.65rem", color: "#6b7a72", marginTop: "0.2rem" }}>{m.time}</div>
+                      <div style={{ fontSize: "0.65rem", color: "#5f6e66", marginTop: "0.2rem" }}>{m.time}</div>
                     </div>
                   ))}
                 </div>
                 <div style={{ display: "flex", gap: "0.5rem", padding: "0.65rem 0.75rem", borderTop: "1px solid #e2ded6" }}>
-                  <input value={dmInput} onChange={e => setDmInput(e.target.value)} onKeyDown={e => e.key === "Enter" && sendDM()} placeholder="Type a message…" style={{ flex: 1, border: "1.5px solid #e2ded6", borderRadius: 100, padding: "0.4rem 0.85rem", fontSize: "0.8rem", fontFamily: "'DM Sans', sans-serif", color: "#0f1410", outline: "none" }} />
-                  <button onClick={sendDM} className="mock-send-hover" style={{ background: "#1d6b3c", color: "#fff", border: "none", borderRadius: 100, padding: "0.4rem 0.9rem", fontSize: "0.78rem", fontWeight: 600, cursor: "pointer", fontFamily: "'DM Sans', sans-serif", transition: "background 0.2s" }}>Send</button>
+                  <input value={dmInput} onChange={e => setDmInput(e.target.value)} onKeyDown={e => e.key === "Enter" && sendDM()} placeholder="Type a message…" style={{ flex: 1, border: "1.5px solid #e2ded6", borderRadius: 100, padding: "0.4rem 0.85rem", fontSize: "0.8rem", fontFamily: "var(--font-dm-sans), sans-serif", color: "#0f1410", outline: "none" }} />
+                  <button onClick={sendDM} className="mock-send-hover" style={{ background: "#1d6b3c", color: "#fff", border: "none", borderRadius: 100, padding: "0.4rem 0.9rem", fontSize: "0.78rem", fontWeight: 600, cursor: "pointer", fontFamily: "var(--font-dm-sans), sans-serif", transition: "background 0.2s" }}>Send</button>
                 </div>
               </div>
             </div>
@@ -515,7 +514,7 @@ export default function HomePage() {
               {categories.map(cat => (
                 <button key={cat.id} onClick={() => setActiveSubject(cat.name)}
                   className={activeSubject !== cat.name ? "exp-tab-hover" : ""}
-                  style={{ display: "flex", alignItems: "center", gap: "0.5rem", padding: "0.6rem 1.1rem", borderRadius: 100, border: `1.5px solid ${activeSubject === cat.name ? "#1d6b3c" : "#e2ded6"}`, fontSize: "0.875rem", fontWeight: 500, cursor: "pointer", transition: "all 0.2s", background: activeSubject === cat.name ? "#d4ead9" : "#fff", color: activeSubject === cat.name ? "#1d6b3c" : "#3a4140", fontFamily: "'DM Sans', sans-serif" }}>
+                  style={{ display: "flex", alignItems: "center", gap: "0.5rem", padding: "0.6rem 1.1rem", borderRadius: 100, border: `1.5px solid ${activeSubject === cat.name ? "#1d6b3c" : "#e2ded6"}`, fontSize: "0.875rem", fontWeight: 500, cursor: "pointer", transition: "all 0.2s", background: activeSubject === cat.name ? "#d4ead9" : "#fff", color: activeSubject === cat.name ? "#1d6b3c" : "#3a4140", fontFamily: "var(--font-dm-sans), sans-serif" }}>
                   {cat.name}
                 </button>
               ))}
@@ -532,12 +531,12 @@ export default function HomePage() {
           <div className="grid-3col" style={{ display: "grid", gridTemplateColumns: "repeat(3, 1fr)", gap: "1.5rem" }}>
             {TESTIMONIALS.map(t => (
               <div key={t.name} className="anim-item" style={{ background: "#fff", border: "1px solid #e2ded6", borderRadius: 16, padding: "1.75rem" }}>
-                <div style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "1.05rem", fontWeight: 300, fontStyle: "italic", lineHeight: 1.6, color: "#0f1410", marginBottom: "1.25rem" }}>"{t.quote}"</div>
+                <div style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.05rem", fontWeight: 300, fontStyle: "italic", lineHeight: 1.6, color: "#0f1410", marginBottom: "1.25rem" }}>"{t.quote}"</div>
                 <div style={{ display: "flex", alignItems: "center", gap: "0.75rem" }}>
                   <div style={{ width: 36, height: 36, borderRadius: "50%", background: t.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.75rem", fontWeight: 600, color: "#fff", flexShrink: 0 }}>{t.initials}</div>
                   <div>
                     <div style={{ fontSize: "0.875rem", fontWeight: 500 }}>{t.name}</div>
-                    <div style={{ fontSize: "0.78rem", color: "#6b7a72" }}>{t.role}</div>
+                    <div style={{ fontSize: "0.78rem", color: "#5f6e66" }}>{t.role}</div>
                   </div>
                 </div>
               </div>
@@ -551,16 +550,16 @@ export default function HomePage() {
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <div className="grid-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "2rem" }}>
             <div className="anim-item dual-cta-card" style={{ background: "#0f1410", color: "#faf7f2", borderRadius: 16, padding: "3rem 2.5rem", position: "relative", overflow: "hidden" }}>
-              <h3 style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "1.8rem", fontWeight: 700, marginBottom: "0.75rem", letterSpacing: "-0.02em" }}>Share your expertise.</h3>
+              <h3 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.8rem", fontWeight: 700, marginBottom: "0.75rem", letterSpacing: "-0.02em" }}>Share your expertise.</h3>
               <p style={{ fontSize: "0.95rem", color: "rgba(250,247,242,0.65)", marginBottom: "2rem", lineHeight: 1.7 }}>You don't need a studio or a production team. You need knowledge and the will to share it. Host free, build your reputation, earn later.</p>
               <Link href="/login" style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "#fff", color: "#0f1410", padding: "0.75rem 1.5rem", borderRadius: 100, fontWeight: 500, fontSize: "0.9rem", textDecoration: "none" }}>Host a webinar →</Link>
-              <div style={{ position: "absolute", right: "1.5rem", bottom: "-0.5rem", fontFamily: "'Fraunces', Georgia, serif", fontSize: "8rem", fontWeight: 700, opacity: 0.07, lineHeight: 1, pointerEvents: "none" }}>🎙</div>
+              <div style={{ position: "absolute", right: "1.5rem", bottom: "-0.5rem", fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "8rem", fontWeight: 700, opacity: 0.07, lineHeight: 1, pointerEvents: "none" }}>🎙</div>
             </div>
             <div className="anim-item dual-cta-card" style={{ background: "#d4ead9", color: "#0f1410", borderRadius: 16, padding: "3rem 2.5rem", position: "relative", overflow: "hidden" }}>
-              <h3 style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "1.8rem", fontWeight: 700, marginBottom: "0.75rem", letterSpacing: "-0.02em" }}>Attend any webinar, free.</h3>
+              <h3 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.8rem", fontWeight: 700, marginBottom: "0.75rem", letterSpacing: "-0.02em" }}>Attend any webinar, free.</h3>
               <p style={{ fontSize: "0.95rem", color: "#3a4140", marginBottom: "2rem", lineHeight: 1.7 }}>Browse hundreds of live and upcoming webinars. Pick a topic, click join, and start learning in seconds. No subscriptions. No paywalls.</p>
               <Link href="/live" style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "#1d6b3c", color: "#fff", padding: "0.75rem 1.5rem", borderRadius: 100, fontWeight: 500, fontSize: "0.9rem", textDecoration: "none" }}>Browse webinars →</Link>
-              <div style={{ position: "absolute", right: "1.5rem", bottom: "-0.5rem", fontFamily: "'Fraunces', Georgia, serif", fontSize: "8rem", fontWeight: 700, opacity: 0.07, lineHeight: 1, pointerEvents: "none" }}>📡</div>
+              <div style={{ position: "absolute", right: "1.5rem", bottom: "-0.5rem", fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "8rem", fontWeight: 700, opacity: 0.07, lineHeight: 1, pointerEvents: "none" }}>📡</div>
             </div>
           </div>
         </div>
@@ -571,32 +570,51 @@ export default function HomePage() {
         <div style={{ maxWidth: 1100, margin: "0 auto" }}>
           <div className="footer-grid" style={{ display: "grid", gridTemplateColumns: "2fr 1fr 1fr 1fr", gap: "3rem", marginBottom: "3rem" }}>
             <div>
-              <h3 style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "1.4rem", fontWeight: 700, marginBottom: "0.75rem" }}>Open<span style={{ color: "#7ed9a4" }}>Webinar</span></h3>
-              <p style={{ fontSize: "0.875rem", color: "rgba(250,247,242,0.55)", maxWidth: 280, lineHeight: 1.7 }}>The world's only free webinar hub. Host webinars, build your reputation, and reach a global audience — at zero cost.</p>
-              <div style={{ marginTop: "1.25rem" }}><span style={{ fontSize: "0.78rem", color: "rgba(250,247,242,0.4)" }}>Built with love in India 🇮🇳</span></div>
+              <h3 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.4rem", fontWeight: 700, marginBottom: "0.75rem" }}>Open<span style={{ color: "#7ed9a4" }}>Webinar</span></h3>
+              <p style={{ fontSize: "0.875rem", color: "rgba(250,247,242,0.72)", maxWidth: 280, lineHeight: 1.7 }}>The world's only free webinar hub. Host webinars, build your reputation, and reach a global audience — at zero cost.</p>
+              <div style={{ marginTop: "1.25rem" }}><span style={{ fontSize: "0.78rem", color: "rgba(250,247,242,0.62)" }}>Built with love in India 🇮🇳</span></div>
             </div>
             {[
-              { title: "Discover", links: [["Browse Webinars","/live"],["Upcoming Schedule","/live"],["Browse by Topic","/live"],["Speakers","/teachers"]] },
+              { title: "Discover", links: [["Browse Webinars","/live"],["Upcoming Schedule","/live"],["Browse by Topic","/live"],["Speakers","/speakers"]] },
               { title: "Host",     links: [["Apply to Speak","/login"],["Speaker Dashboard","/dashboard"],["Host a Webinar","/session"],["My Webinars","/my-sessions"]] },
               { title: "About",    links: [["Our Mission","/about"],["How We're Funded","/about#funding"],["Expertise Levels","/expertise"],["Contact Us","/contact"]] },
             ].map(col => (
               <div key={col.title}>
-                <h4 style={{ fontSize: "0.8rem", fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "rgba(250,247,242,0.45)", marginBottom: "1rem" }}>{col.title}</h4>
+                <h4 style={{ fontSize: "0.8rem", fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase", color: "rgba(250,247,242,0.68)", marginBottom: "1rem" }}>{col.title}</h4>
                 <ul style={{ listStyle: "none", padding: 0, margin: 0 }}>
                   {col.links.map(([label, href]) => (
                     <li key={label} style={{ marginBottom: "0.6rem" }}>
-                      <Link href={href} className="footer-link-hover" style={{ textDecoration: "none", fontSize: "0.875rem", color: "rgba(250,247,242,0.65)", transition: "color 0.2s" }}>{label}</Link>
+                      <Link href={href} className="footer-link-hover" style={{ textDecoration: "none", fontSize: "0.875rem", color: "rgba(250,247,242,0.82)", transition: "color 0.2s" }}>{label}</Link>
                     </li>
                   ))}
                 </ul>
               </div>
             ))}
           </div>
-          <div className="footer-bottom" style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: "1.5rem", display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: "0.8rem", color: "rgba(250,247,242,0.35)" }}>
-            <span>© 2026 OpenWebinar · Free webinars, for everyone.</span>
+          {/* Address row */}
+          <div style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: "1.5rem", marginBottom: "1.25rem", display: "flex", gap: "3rem", flexWrap: "wrap" as const }}>
+            <div>
+              <div style={{ fontSize: "0.68rem", fontWeight: 700, letterSpacing: "0.07em", textTransform: "uppercase" as const, color: "rgba(250,247,242,0.62)", marginBottom: "0.4rem" }}>🇺🇸 US Address</div>
+              <div style={{ fontSize: "0.78rem", color: "rgba(250,247,242,0.68)", lineHeight: 1.7 }}>
+                Hapleaf Technologies<br />
+                9169 W State St #3977<br />
+                Garden City, ID 83714
+              </div>
+            </div>
+            <div>
+              <div style={{ fontSize: "0.68rem", fontWeight: 700, letterSpacing: "0.07em", textTransform: "uppercase" as const, color: "rgba(250,247,242,0.62)", marginBottom: "0.4rem" }}>🇮🇳 India Address</div>
+              <div style={{ fontSize: "0.78rem", color: "rgba(250,247,242,0.68)", lineHeight: 1.7 }}>
+                101, 1st Cross, Lakeshore Garden<br />
+                Thindlu, Vidyaranyapura<br />
+                Bengaluru – 560097
+              </div>
+            </div>
+          </div>
+          <div className="footer-bottom" style={{ borderTop: "1px solid rgba(255,255,255,0.08)", paddingTop: "1.5rem", display: "flex", alignItems: "center", justifyContent: "space-between", fontSize: "0.8rem", color: "rgba(250,247,242,0.62)" }}>
+            <span>© 2026 OpenWebinar · A product of Hapleaf Technologies Private Limited (CIN: U72900KA2021PTC148827) · Free webinars, for everyone.</span>
             <div style={{ display: "flex", gap: "1.5rem" }}>
-              <Link href="/privacy" className="footer-link-hover" style={{ textDecoration: "none", color: "rgba(250,247,242,0.35)", transition: "color 0.2s" }}>Privacy</Link>
-              <Link href="/terms" className="footer-link-hover" style={{ textDecoration: "none", color: "rgba(250,247,242,0.35)", transition: "color 0.2s" }}>Terms</Link>
+              <Link href="/privacy" className="footer-link-hover" style={{ textDecoration: "none", color: "rgba(250,247,242,0.62)", transition: "color 0.2s" }}>Privacy</Link>
+              <Link href="/terms" className="footer-link-hover" style={{ textDecoration: "none", color: "rgba(250,247,242,0.62)", transition: "color 0.2s" }}>Terms</Link>
             </div>
           </div>
         </div>

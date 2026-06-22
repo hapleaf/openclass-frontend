@@ -9,7 +9,7 @@ import { EXPERTISE_LEVELS, ExpertiseLevelMeta } from "@/lib/profile";
 const T = {
   ink: "#0f1410", inkMuted: "#6b7a72", cream: "#faf7f2",
   border: "#e2ded6", white: "#ffffff", leaf: "#1d6b3c",
-  leafLight: "#d4ead9", ff: "'DM Sans', sans-serif", ffD: "'Fraunces', Georgia, serif",
+  leafLight: "#d4ead9", ff: "var(--font-dm-sans), sans-serif", ffD: "var(--font-fraunces), Georgia, serif",
 };
 
 const CRITERIA_ROWS = [
@@ -84,7 +84,7 @@ function LevelCard({ lvl, index }: { lvl: ExpertiseLevelMeta; index: number }) {
 export default function ExpertisePage() {
   return (
     <>
-      <Header activeLink="" />
+      <Header />
       <div style={{ paddingTop: 64, minHeight: "100vh", background: T.cream, fontFamily: T.ff, color: T.ink }}>
 
         {/* Hero */}
@@ -98,7 +98,7 @@ export default function ExpertisePage() {
             <p style={{ fontSize: "1rem", color: "rgba(255,255,255,0.75)", lineHeight: 1.7, maxWidth: 520, margin: "0 auto 1.5rem" }}>
               Every host on OpenWebinar earns a badge that reflects their real track record — webinars hosted, attendee reviews, and star ratings. Earned, not bought.
             </p>
-            <Link href="/teachers" style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", background: "rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.85)", fontSize: "0.85rem", fontWeight: 600, padding: "0.6rem 1.25rem", borderRadius: 100, textDecoration: "none", border: "1px solid rgba(255,255,255,0.2)", backdropFilter: "blur(8px)" }}>
+            <Link href="/speakers" style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", background: "rgba(255,255,255,0.12)", color: "rgba(255,255,255,0.85)", fontSize: "0.85rem", fontWeight: 600, padding: "0.6rem 1.25rem", borderRadius: 100, textDecoration: "none", border: "1px solid rgba(255,255,255,0.2)", backdropFilter: "blur(8px)" }}>
               Browse Speakers →
             </Link>
           </div>

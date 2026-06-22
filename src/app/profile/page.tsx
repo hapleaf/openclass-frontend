@@ -17,8 +17,8 @@ const T = {
   clayLight: "#f8ede5",
   cream: "#faf7f2", white: "#ffffff", border: "#e2ded6",
   r: "16px", rs: "10px",
-  ff: "'DM Sans', sans-serif",
-  ffD: "'Fraunces', Georgia, serif",
+  ff: "var(--font-dm-sans), sans-serif",
+  ffD: "var(--font-fraunces), Georgia, serif",
 };
 
 /* ── static data (hardcoded for MVP) ── */
@@ -347,7 +347,6 @@ export default function ProfilePage() {
 
   return (
     <div style={{ fontFamily: T.ff, background: T.cream, minHeight: "100vh", overflowX: "hidden", fontSize: 15, lineHeight: 1.6, color: T.ink }}>
-      <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
 
       <Header
         userName={userName}

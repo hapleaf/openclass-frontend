@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useRef, useEffect, useCallback } from 'react';
+import React, { useState, useRef, useEffect, useCallback, Suspense } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Header from '@/components/common/HeadFoot/header';
@@ -77,7 +77,7 @@ const defaultForm: FormState = {
 };
 
 // ── component ───────────────────────────────────────────────────────────────
-export default function SessionPage() {
+function SessionPageInner() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const editId = searchParams.get('edit') ? Number(searchParams.get('edit')) : null;
@@ -385,7 +385,7 @@ export default function SessionPage() {
       )}
 
       {loadingSession && (
-        <div style={{ textAlign: 'center', padding: '4rem 2rem', color: '#6b7a72', fontFamily: "'DM Sans',sans-serif", fontSize: '0.95rem' }}>
+        <div style={{ textAlign: 'center', padding: '4rem 2rem', color: '#6b7a72', fontFamily: "var(--font-dm-sans), sans-serif", fontSize: '0.95rem' }}>
           Loading session…
         </div>
       )}
@@ -396,7 +396,7 @@ export default function SessionPage() {
 
           {/* approved warning banner */}
           {sessionApproved && (
-            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.9rem 1.25rem', marginBottom: '1.5rem', background: '#fdf3e0', border: '1.5px solid rgba(181,71,14,0.35)', borderRadius: 12, fontFamily: "'DM Sans',sans-serif" }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', padding: '0.9rem 1.25rem', marginBottom: '1.5rem', background: '#fdf3e0', border: '1.5px solid rgba(181,71,14,0.35)', borderRadius: 12, fontFamily: "var(--font-dm-sans), sans-serif" }}>
               <span style={{ fontSize: '1.1rem' }}>⚠️</span>
               <div>
                 <div style={{ fontSize: '0.875rem', fontWeight: 700, color: '#b5470e' }}>This session is approved and live</div>
@@ -496,7 +496,7 @@ export default function SessionPage() {
                     <button
                       onClick={() => bannerInputRef.current?.click()}
                       disabled={bannerUploading}
-                      style={{ padding: '0.5rem 1rem', border: '1.5px dashed #e2ded6', borderRadius: 8, background: '#faf7f2', fontFamily: "'DM Sans',sans-serif", fontSize: '0.78rem', fontWeight: 600, color: '#6b7a72', cursor: 'pointer', whiteSpace: 'nowrap' }}
+                      style={{ padding: '0.5rem 1rem', border: '1.5px dashed #e2ded6', borderRadius: 8, background: '#faf7f2', fontFamily: "var(--font-dm-sans), sans-serif", fontSize: '0.78rem', fontWeight: 600, color: '#6b7a72', cursor: 'pointer', whiteSpace: 'nowrap' }}
                     >
                       {bannerUploading ? '⏳ Uploading…' : '🖼 Upload Image'}
                     </button>
@@ -954,5 +954,13 @@ export default function SessionPage() {
       </div>}
       <Footer />
     </>
+  );
+}
+
+export default function SessionPage() {
+  return (
+    <Suspense>
+      <SessionPageInner />
+    </Suspense>
   );
 }

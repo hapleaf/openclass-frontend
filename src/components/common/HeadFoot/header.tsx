@@ -9,7 +9,7 @@ interface HeaderProps {
   userName?: string;
   userRole?: string;
   userInitials?: string;
-  activeLink?: "dashboard" | "profile" | "live" | "teachers" | "sessions";
+  activeLink?: "dashboard" | "profile" | "live" | "teachers" | "speakers" | "sessions";
   onSignOut?: () => void;
 }
 
@@ -104,7 +104,7 @@ export default function Header({
     borderRadius: 100,
     background: active ? "#d4ead9" : "transparent",
     transition: "all 0.2s",
-    fontFamily: "'DM Sans', sans-serif",
+    fontFamily: "var(--font-dm-sans), sans-serif",
   });
 
   const mobileLinkStyle = (active: boolean): React.CSSProperties => ({
@@ -116,7 +116,7 @@ export default function Header({
     borderRadius: 12,
     background: active ? "#d4ead9" : "transparent",
     display: "block",
-    fontFamily: "'DM Sans', sans-serif",
+    fontFamily: "var(--font-dm-sans), sans-serif",
     transition: "background 0.15s",
   });
 
@@ -141,7 +141,6 @@ export default function Header({
 
   return (
     <>
-      <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
 
       <nav style={{
         position: "fixed", top: 0, left: 0, right: 0, zIndex: 200,
@@ -152,8 +151,37 @@ export default function Header({
       }}>
 
         {/* Logo */}
-        <Link href="/" style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "1.4rem", fontWeight: 700, color: "#0f1410", letterSpacing: "-0.02em", textDecoration: "none", whiteSpace: "nowrap" }}>
-          Open<span style={{ color: "#1d6b3c" }}>Webinar</span>
+        <Link href="/" style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.4rem", fontWeight: 700, color: "#0f1410", letterSpacing: "-0.02em", textDecoration: "none", whiteSpace: "nowrap", display: "inline-flex", alignItems: "center", gap: "0.45rem" }}>
+          {/* Mic icon — straight, elegant */}
+          <svg width="18" height="25" viewBox="0 0 22 30" fill="none" xmlns="http://www.w3.org/2000/svg" style={{ flexShrink: 0 }}>
+            <defs>
+              <linearGradient id="micG" x1="30%" y1="0%" x2="70%" y2="100%">
+                <stop offset="0%" stopColor="#34a85a"/>
+                <stop offset="100%" stopColor="#1a5e34"/>
+              </linearGradient>
+              <linearGradient id="micShine" x1="0%" y1="0%" x2="100%" y2="0%">
+                <stop offset="0%" stopColor="rgba(255,255,255,0.18)"/>
+                <stop offset="100%" stopColor="rgba(255,255,255,0)"/>
+              </linearGradient>
+            </defs>
+            {/* Capsule body — slender pill */}
+            <rect x="7" y="1" width="8" height="16" rx="4" fill="url(#micG)"/>
+            {/* Left-side shine */}
+            <rect x="7" y="1" width="4" height="16" rx="4" fill="url(#micShine)"/>
+            {/* Top highlight dot */}
+            <ellipse cx="9.5" cy="4.5" rx="1.5" ry="2" fill="rgba(255,255,255,0.28)"/>
+            {/* Fine mesh lines */}
+            <line x1="7.5" y1="11" x2="14.5" y2="11" stroke="rgba(255,255,255,0.12)" strokeWidth="0.8"/>
+            <line x1="7.5" y1="13" x2="14.5" y2="13" stroke="rgba(255,255,255,0.12)" strokeWidth="0.8"/>
+            <line x1="7.5" y1="15" x2="14.5" y2="15" stroke="rgba(255,255,255,0.12)" strokeWidth="0.8"/>
+            {/* Stand arc — smooth, thin */}
+            <path d="M3 14C3 19.799 6.686 23.5 11 23.5C15.314 23.5 19 19.799 19 14" stroke="#1d6b3c" strokeWidth="1.8" strokeLinecap="round" fill="none"/>
+            {/* Stand rod */}
+            <line x1="11" y1="23.5" x2="11" y2="27" stroke="#1d6b3c" strokeWidth="1.8" strokeLinecap="round"/>
+            {/* Base — elegant, tapered */}
+            <path d="M6.5 27 Q11 26.2 15.5 27" stroke="#1d6b3c" strokeWidth="1.8" strokeLinecap="round" fill="none"/>
+          </svg>
+          <span style={{ letterSpacing: "-0.02em" }}>Open<span style={{ color: "#1d6b3c" }}>Webinar</span></span>
         </Link>
 
         {isMobile ? (
@@ -165,8 +193,8 @@ export default function Header({
                 {displayInitials}
               </div>
             ) : (
-              <Link href="/login" style={{ textDecoration: "none", fontSize: "0.85rem", fontWeight: 600, color: "#fff", background: "#1d6b3c", padding: "0.4rem 1rem", borderRadius: 100, fontFamily: "'DM Sans', sans-serif", whiteSpace: "nowrap" }}>
-                Log in
+              <Link href="/login" style={{ textDecoration: "none", fontSize: "0.82rem", fontWeight: 600, color: "#fff", background: "#1d6b3c", padding: "0.4rem 0.85rem", borderRadius: 100, fontFamily: "var(--font-dm-sans), sans-serif", whiteSpace: "nowrap" }}>
+                Sign in
               </Link>
             )}
 
@@ -195,13 +223,13 @@ export default function Header({
             <ul style={{ display: "flex", alignItems: "center", gap: "0.35rem", listStyle: "none", margin: "0 0 0 auto", padding: 0 }}>
               {isLoggedIn && <li><Link href={dashRole === "student" ? "/student-dashboard" : "/dashboard"} style={linkStyle(activeLink === "dashboard")}>Dashboard</Link></li>}
               <li><Link href="/live" style={linkStyle(activeLink === "live")}>Webinars</Link></li>
-              <li><Link href="/teachers" style={linkStyle(activeLink === "teachers")}>Speakers</Link></li>
+              <li><Link href="/speakers" style={linkStyle(activeLink === "speakers" || activeLink === "teachers")}>Speakers</Link></li>
               {isLoggedIn && userRole !== "Student" && dashRole !== "student" && <li><Link href="/my-sessions" style={linkStyle(activeLink === "sessions")}>My Webinars</Link></li>}
               {isLoggedIn && (
                 <li style={{ position: "relative" }}
                   onMouseEnter={() => setRoleHover(true)}
                   onMouseLeave={() => setRoleHover(false)}>
-                  <button onClick={switchRole} style={{ display: "flex", alignItems: "center", gap: "0.4rem", textDecoration: "none", fontSize: "0.78rem", fontWeight: 600, color: "#1a4f7a", background: "#ddeaf8", border: "1.5px solid #b8d4ee", padding: "0.35rem 0.85rem", borderRadius: 100, fontFamily: "'DM Sans', sans-serif", whiteSpace: "nowrap" as const, cursor: "pointer" }}>
+                  <button onClick={switchRole} style={{ display: "flex", alignItems: "center", gap: "0.4rem", textDecoration: "none", fontSize: "0.78rem", fontWeight: 600, color: "#1a4f7a", background: "#ddeaf8", border: "1.5px solid #b8d4ee", padding: "0.35rem 0.85rem", borderRadius: 100, fontFamily: "var(--font-dm-sans), sans-serif", whiteSpace: "nowrap" as const, cursor: "pointer" }}>
                     <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2} style={{ flexShrink: 0 }}><path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4" /></svg>
                     {dashRole === "student" ? "Switch to Speaker" : "Switch to Attendee"}
                   </button>
@@ -231,7 +259,7 @@ export default function Header({
               )}
               {isAdmin && (
                 <li>
-                  <Link href="/admin" style={{ textDecoration: "none", fontSize: "0.8rem", fontWeight: 700, color: "#fff", background: "#0f1410", padding: "0.35rem 0.9rem", borderRadius: 100, fontFamily: "'DM Sans', sans-serif", letterSpacing: "0.02em" }}>
+                  <Link href="/admin" style={{ textDecoration: "none", fontSize: "0.8rem", fontWeight: 700, color: "#fff", background: "#0f1410", padding: "0.35rem 0.9rem", borderRadius: 100, fontFamily: "var(--font-dm-sans), sans-serif", letterSpacing: "0.02em" }}>
                     ⚙ Admin
                   </Link>
                 </li>
@@ -270,8 +298,8 @@ export default function Header({
                 )}
               </div>
             ) : (
-              <Link href="/login" style={{ textDecoration: "none", fontSize: "0.875rem", fontWeight: 600, color: "#fff", background: "#1d6b3c", padding: "0.45rem 1.2rem", borderRadius: 100, fontFamily: "'DM Sans', sans-serif", whiteSpace: "nowrap", flexShrink: 0 }}>
-                Log in
+              <Link href="/login" style={{ textDecoration: "none", fontSize: "0.875rem", fontWeight: 600, color: "#fff", background: "#1d6b3c", padding: "0.45rem 1.2rem", borderRadius: 100, fontFamily: "var(--font-dm-sans), sans-serif", whiteSpace: "nowrap", flexShrink: 0 }}>
+                Sign in to Host / Attend Webinar
               </Link>
             )}
           </>
@@ -300,7 +328,7 @@ export default function Header({
           <Link href="/live" onClick={() => setMenuOpen(false)} style={mobileLinkStyle(activeLink === "live")}>
             Webinars
           </Link>
-          <Link href="/teachers" onClick={() => setMenuOpen(false)} style={mobileLinkStyle(activeLink === "teachers")}>
+          <Link href="/speakers" onClick={() => setMenuOpen(false)} style={mobileLinkStyle(activeLink === "speakers" || activeLink === "teachers")}>
             Speakers
           </Link>
           {isLoggedIn && userRole !== "Student" && dashRole !== "student" && (
@@ -311,7 +339,7 @@ export default function Header({
 
           {/* Role switcher */}
           {isLoggedIn && (
-            <button onClick={switchRole} style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "0.9rem", fontWeight: 600, color: "#1a4f7a", background: "#ddeaf8", border: "1.5px solid #b8d4ee", padding: "0.7rem 1rem", borderRadius: 12, fontFamily: "'DM Sans', sans-serif", cursor: "pointer", margin: "0.25rem 0", textAlign: "left" }}>
+            <button onClick={switchRole} style={{ display: "flex", alignItems: "center", gap: "0.5rem", fontSize: "0.9rem", fontWeight: 600, color: "#1a4f7a", background: "#ddeaf8", border: "1.5px solid #b8d4ee", padding: "0.7rem 1rem", borderRadius: 12, fontFamily: "var(--font-dm-sans), sans-serif", cursor: "pointer", margin: "0.25rem 0", textAlign: "left" }}>
               <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2} style={{ flexShrink: 0 }}><path d="M7 16V4m0 0L3 8m4-4l4 4M17 8v12m0 0l4-4m-4 4l-4-4" /></svg>
               {dashRole === "student" ? "Switch to Speaker" : "Switch to Attendee"}
             </button>
@@ -319,7 +347,7 @@ export default function Header({
 
           {/* Admin */}
           {isAdmin && (
-            <Link href="/admin" onClick={() => setMenuOpen(false)} style={{ textDecoration: "none", fontSize: "0.9rem", fontWeight: 700, color: "#fff", background: "#0f1410", padding: "0.7rem 1rem", borderRadius: 12, fontFamily: "'DM Sans', sans-serif", margin: "0.25rem 0", display: "block" }}>
+            <Link href="/admin" onClick={() => setMenuOpen(false)} style={{ textDecoration: "none", fontSize: "0.9rem", fontWeight: 700, color: "#fff", background: "#0f1410", padding: "0.7rem 1rem", borderRadius: 12, fontFamily: "var(--font-dm-sans), sans-serif", margin: "0.25rem 0", display: "block" }}>
               ⚙ Admin Panel
             </Link>
           )}
@@ -345,7 +373,7 @@ export default function Header({
                 My Profile
               </Link>
 
-              <button onClick={handleSignOut} style={{ display: "flex", alignItems: "center", gap: "0.6rem", fontSize: "1rem", fontWeight: 500, color: "#c0392b", background: "transparent", border: "none", padding: "0.85rem 1rem", borderRadius: 12, fontFamily: "'DM Sans', sans-serif", cursor: "pointer", textAlign: "left" }}>
+              <button onClick={handleSignOut} style={{ display: "flex", alignItems: "center", gap: "0.6rem", fontSize: "1rem", fontWeight: 500, color: "#c0392b", background: "transparent", border: "none", padding: "0.85rem 1rem", borderRadius: 12, fontFamily: "var(--font-dm-sans), sans-serif", cursor: "pointer", textAlign: "left" }}>
                 <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" /></svg>
                 Sign Out
               </button>
@@ -356,10 +384,10 @@ export default function Header({
           {!isLoggedIn && (
             <>
               <div style={{ height: 1, background: "#e2ded6", margin: "1rem 0" }} />
-              <Link href="/login" onClick={() => setMenuOpen(false)} style={{ textDecoration: "none", fontSize: "1rem", fontWeight: 600, color: "#fff", background: "#1d6b3c", padding: "0.85rem 1rem", borderRadius: 12, fontFamily: "'DM Sans', sans-serif", display: "block", textAlign: "center", margin: "0.25rem 0" }}>
-                Log in
+              <Link href="/login" onClick={() => setMenuOpen(false)} style={{ textDecoration: "none", fontSize: "1rem", fontWeight: 600, color: "#fff", background: "#1d6b3c", padding: "0.85rem 1rem", borderRadius: 12, fontFamily: "var(--font-dm-sans), sans-serif", display: "block", textAlign: "center", margin: "0.25rem 0" }}>
+                Sign in to Host / Attend Webinar
               </Link>
-              <Link href="/signup" onClick={() => setMenuOpen(false)} style={{ textDecoration: "none", fontSize: "1rem", fontWeight: 500, color: "#0f1410", background: "transparent", border: "1.5px solid #e2ded6", padding: "0.85rem 1rem", borderRadius: 12, fontFamily: "'DM Sans', sans-serif", display: "block", textAlign: "center", margin: "0.25rem 0" }}>
+              <Link href="/signup" onClick={() => setMenuOpen(false)} style={{ textDecoration: "none", fontSize: "1rem", fontWeight: 500, color: "#0f1410", background: "transparent", border: "1.5px solid #e2ded6", padding: "0.85rem 1rem", borderRadius: 12, fontFamily: "var(--font-dm-sans), sans-serif", display: "block", textAlign: "center", margin: "0.25rem 0" }}>
                 Create account
               </Link>
             </>
@@ -377,7 +405,7 @@ function ddItem(danger = false): React.CSSProperties {
     color: danger ? "#c0392b" : "#3a4140",
     textDecoration: "none", cursor: "pointer",
     background: "transparent", border: "none",
-    fontFamily: "'DM Sans', sans-serif",
+    fontFamily: "var(--font-dm-sans), sans-serif",
     transition: "background 0.15s",
   };
 }

@@ -13,7 +13,7 @@ const T = {
   sky: "#1a4f7a", skyLight: "#ddeaf8",
   sun: "#b5470e", sunLight: "#fdf3e0",
   cream: "#faf7f2", white: "#fff", border: "#e2ded6",
-  ff: "'DM Sans', sans-serif", ffD: "'Fraunces', Georgia, serif",
+  ff: "var(--font-dm-sans), sans-serif", ffD: "var(--font-fraunces), Georgia, serif",
   rs: 10,
 };
 
@@ -185,7 +185,6 @@ export default function MySessionsPage() {
 
   return (
     <>
-      <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
       <Header activeLink="sessions" />
 
       <div style={{ paddingTop: isMobile ? 57 : 64, background: T.cream, minHeight: "100vh", fontFamily: T.ff, color: T.ink }}>

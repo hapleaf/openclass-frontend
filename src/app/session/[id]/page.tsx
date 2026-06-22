@@ -35,8 +35,8 @@ function HlsPlayer({ src, label }: { src: string; label?: string }) {
   }, [src]);
   return (
     <div>
-      {label && <div style={{ fontSize: "0.72rem", fontWeight: 600, color: "rgba(255,255,255,0.4)", marginBottom: "0.5rem" }}>{label}</div>}
-      <video ref={videoRef} controls style={{ width: "100%", borderRadius: 12, maxHeight: 480, display: "block", background: "#000" }} />
+      {label && <div style={{ fontSize: "0.72rem", fontWeight: 600, color: "#6b7a72", marginBottom: "0.5rem" }}>{label}</div>}
+      <video ref={videoRef} controls style={{ width: "100%", borderRadius: 10, maxHeight: 480, display: "block", background: "#000" }} />
     </div>
   );
 }
@@ -341,22 +341,18 @@ export default function SessionDetailPage() {
     });
   }
 
-  const fonts = (
-    <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
-  );
-
   if (loading) return (
-    <>{fonts}<Header activeLink="live" />
-      <div style={{ paddingTop: 64, minHeight: "100vh", background: "#faf7f2", display: "flex", alignItems: "center", justifyContent: "center", color: "#6b7a72", fontFamily: "'DM Sans', sans-serif" }}>
+    <><Header activeLink="live" />
+      <div style={{ paddingTop: 64, minHeight: "100vh", background: "#faf7f2", display: "flex", alignItems: "center", justifyContent: "center", color: "#6b7a72", fontFamily: "var(--font-dm-sans), sans-serif" }}>
         Loading session…
       </div>
     </>
   );
 
   if (error || !session) return (
-    <>{fonts}<Header activeLink="live" />
-      <div style={{ paddingTop: 64, minHeight: "100vh", background: "#faf7f2", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "1rem", fontFamily: "'DM Sans', sans-serif" }}>
-        <p style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "1.4rem", color: "#0f1410" }}>Session not found</p>
+    <><Header activeLink="live" />
+      <div style={{ paddingTop: 64, minHeight: "100vh", background: "#faf7f2", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", gap: "1rem", fontFamily: "var(--font-dm-sans), sans-serif" }}>
+        <p style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.4rem", color: "#0f1410" }}>Session not found</p>
         <Link href="/live" style={{ color: "#1d6b3c", textDecoration: "none", fontSize: "0.875rem" }}>← Back to Webinars</Link>
       </div>
     </>
@@ -405,7 +401,6 @@ export default function SessionDetailPage() {
 
   return (
     <>
-      {fonts}
       <Header activeLink="live" />
       <style>{`
         @keyframes pulse{0%,100%{opacity:1;transform:scale(1)}50%{opacity:.5;transform:scale(.7)}}
@@ -430,7 +425,7 @@ export default function SessionDetailPage() {
         }
       `}</style>
 
-      <div className="sd-page" style={{ minHeight: "100vh", background: "#faf7f2", fontFamily: "'DM Sans', sans-serif", color: "#0f1410" }}>
+      <div className="sd-page" style={{ minHeight: "100vh", background: "#faf7f2", fontFamily: "var(--font-dm-sans), sans-serif", color: "#0f1410" }}>
 
         {/* ── Colour accent strip ───────────────────────────────────────────────── */}
         <div style={{ height: 5, background: bannerBg }} />
@@ -478,7 +473,7 @@ export default function SessionDetailPage() {
                 </div>
 
                 {/* Title */}
-                <h1 style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "clamp(1.5rem, 3.5vw, 2.2rem)", fontWeight: 700, color: "#0f1410", lineHeight: 1.2, marginBottom: "1rem", letterSpacing: "-0.02em" }}>
+                <h1 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "clamp(1.5rem, 3.5vw, 2.2rem)", fontWeight: 700, color: "#0f1410", lineHeight: 1.2, marginBottom: "1rem", letterSpacing: "-0.02em" }}>
                   {session.title}
                 </h1>
 
@@ -534,55 +529,6 @@ export default function SessionDetailPage() {
             </div>
           </div>
         </div>
-
-        {/* ── Recording processing banner ──────────────────────────────────────── */}
-        {!(session.recordings?.length) && recordingProcessing && (
-          <div style={{ background: "#0d1610", padding: "1.25rem 0" }}>
-            <div className="sd-wrap">
-              <div style={{ display: "flex", alignItems: "center", gap: "0.85rem", background: "rgba(255,255,255,0.04)", border: "1px solid rgba(255,255,255,0.08)", borderRadius: 10, padding: "0.9rem 1.1rem" }}>
-                <div style={{ width: 32, height: 32, borderRadius: "50%", border: "2.5px solid rgba(29,107,60,0.35)", borderTopColor: "#1d6b3c", flexShrink: 0, animation: "oc-spin 0.9s linear infinite" }} />
-                <div>
-                  <div style={{ fontSize: "0.82rem", fontWeight: 600, color: "rgba(255,255,255,0.75)", marginBottom: "0.2rem" }}>Recording is being processed…</div>
-                  <div style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.35)" }}>This usually takes 1–2 minutes. The video will appear here automatically.</div>
-                </div>
-              </div>
-            </div>
-          </div>
-        )}
-
-        {/* ── Recording player(s) ──────────────────────────────────────────────── */}
-        {(session.recordings?.length ?? 0) > 0 && (
-          <div style={{ background: "#0d1610" }}>
-            <div className="sd-wrap">
-              <div style={{ fontSize: "0.68rem", fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" as const, color: "#5a8a6a", marginBottom: "0.75rem" }}>
-                ▶ Session Recording{session.recordings!.length > 1 ? "s" : ""}
-              </div>
-              {session.recordings!.map((rec, idx) => {
-                const partLabel = session.recordings!.length > 1 ? `Part ${idx + 1}` : undefined;
-                if (rec.hlsUrl) {
-                  return <div key={rec.id} style={{ marginBottom: idx < session.recordings!.length - 1 ? "1.5rem" : 0 }}><HlsPlayer src={rec.hlsUrl} label={partLabel} /></div>;
-                }
-                // Fallback: local MP4
-                const url = resolveRecordingUrl(rec.filename);
-                const embed = getEmbedInfo(url);
-                return (
-                  <div key={rec.id} style={{ marginBottom: idx < session.recordings!.length - 1 ? "1.5rem" : 0 }}>
-                    {partLabel && <div style={{ fontSize: "0.72rem", fontWeight: 600, color: "rgba(255,255,255,0.4)", marginBottom: "0.5rem" }}>{partLabel}</div>}
-                    {embed.kind === "video" ? (
-                      <video controls style={{ width: "100%", borderRadius: 12, maxHeight: 480, display: "block" }}>
-                        <source src={embed.src} type="video/mp4" />
-                      </video>
-                    ) : (
-                      <div style={{ position: "relative", paddingBottom: "56.25%", height: 0, borderRadius: 12, overflow: "hidden" }}>
-                        <iframe src={embed.src} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: "none" }} />
-                      </div>
-                      )}
-                    </div>
-                  );
-                })}
-            </div>
-          </div>
-        )}
 
         {/* ── Body grid ────────────────────────────────────────────────────────── */}
         <div className="sd-wrap">
@@ -648,7 +594,7 @@ export default function SessionDetailPage() {
 
                     <div style={{ flex: 1, minWidth: 0 }}>
                       {/* Status headline */}
-                      <div style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "1.05rem", fontWeight: 700, color: sm.color, marginBottom: "0.45rem" }}>
+                      <div style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.05rem", fontWeight: 700, color: sm.color, marginBottom: "0.45rem" }}>
                         Session {sm.label}
                       </div>
 
@@ -715,6 +661,58 @@ export default function SessionDetailPage() {
               </div>
             )}
 
+            {/* ── Recording player(s) ─────────────────────────────────────────────── */}
+            {(session.recordings?.length ?? 0) > 0 && (
+              <div style={{ marginBottom: "1.75rem", borderRadius: 14, border: "1px solid #e2ded6", background: "#fff", overflow: "hidden", boxShadow: "0 2px 8px rgba(0,0,0,0.05)" }}>
+                <div style={{ padding: "0.85rem 1.25rem", borderBottom: "1px solid #f0ede8", background: "#faf7f2", display: "flex", alignItems: "center", gap: "0.6rem" }}>
+                  <svg width="15" height="15" viewBox="0 0 24 24" fill="#1d6b3c"><polygon points="5 3 19 12 5 21 5 3"/></svg>
+                  <span style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase" as const, color: "#1d6b3c" }}>
+                    Webinar Recording{session.recordings!.length > 1 ? "s" : ""}
+                  </span>
+                  <span style={{ marginLeft: "auto", fontSize: "0.68rem", fontWeight: 600, padding: "0.15rem 0.55rem", borderRadius: 100, background: "#d4ead9", color: "#1d6b3c" }}>
+                    {session.recordings!.length} {session.recordings!.length === 1 ? "video" : "videos"}
+                  </span>
+                </div>
+                <div style={{ padding: "1.25rem" }}>
+                  {session.recordings!.map((rec, idx) => {
+                    const partLabel = session.recordings!.length > 1 ? `Part ${idx + 1}` : undefined;
+                    if (rec.hlsUrl) {
+                      return <div key={rec.id} style={{ marginBottom: idx < session.recordings!.length - 1 ? "1.5rem" : 0 }}><HlsPlayer src={rec.hlsUrl} label={partLabel} /></div>;
+                    }
+                    const url = resolveRecordingUrl(rec.filename);
+                    const embed = getEmbedInfo(url);
+                    return (
+                      <div key={rec.id} style={{ marginBottom: idx < session.recordings!.length - 1 ? "1.5rem" : 0 }}>
+                        {partLabel && <div style={{ fontSize: "0.72rem", fontWeight: 600, color: "#6b7a72", marginBottom: "0.5rem" }}>{partLabel}</div>}
+                        {embed.kind === "video" ? (
+                          <video controls style={{ width: "100%", borderRadius: 10, maxHeight: 480, display: "block", background: "#000" }}>
+                            <source src={embed.src} type="video/mp4" />
+                          </video>
+                        ) : (
+                          <div style={{ position: "relative", paddingBottom: "56.25%", height: 0, borderRadius: 10, overflow: "hidden" }}>
+                            <iframe src={embed.src} allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowFullScreen style={{ position: "absolute", inset: 0, width: "100%", height: "100%", border: "none" }} />
+                          </div>
+                        )}
+                      </div>
+                    );
+                  })}
+                </div>
+              </div>
+            )}
+
+            {/* ── Recording processing notice ──────────────────────────────────────── */}
+            {!(session.recordings?.length) && recordingProcessing && (
+              <div style={{ marginBottom: "1.75rem", borderRadius: 14, border: "1px solid #d4ead9", background: "#f0faf4", overflow: "hidden" }}>
+                <div style={{ padding: "1rem 1.25rem", display: "flex", alignItems: "center", gap: "0.85rem" }}>
+                  <div style={{ width: 36, height: 36, borderRadius: "50%", border: "2.5px solid rgba(29,107,60,0.25)", borderTopColor: "#1d6b3c", flexShrink: 0, animation: "oc-spin 0.9s linear infinite" }} />
+                  <div>
+                    <div style={{ fontSize: "0.85rem", fontWeight: 600, color: "#1d6b3c", marginBottom: "0.2rem" }}>Recording is being processed…</div>
+                    <div style={{ fontSize: "0.75rem", color: "#5a8a6a" }}>This usually takes 1–2 minutes. The video will appear here automatically.</div>
+                  </div>
+                </div>
+              </div>
+            )}
+
             {/* Teacher card */}
             <Link href={`/u/${teacherSlug}`} target="_blank" style={{ display: "flex", alignItems: "center", gap: "1rem", padding: "1.1rem 1.25rem", background: "#fff", border: "1px solid #e2ded6", borderRadius: 14, textDecoration: "none", color: "inherit" }}>
               <div style={{ width: 52, height: 52, borderRadius: "50%", background: avatarBg(session.user.id), color: "#fff", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1rem", fontWeight: 700, flexShrink: 0, overflow: "hidden" }}>
@@ -748,7 +746,7 @@ export default function SessionDetailPage() {
                     <div style={{ display: "flex", alignItems: "center", gap: "1.5rem", padding: "1rem 1.2rem", background: "#faf7f2", border: "1px solid #ede9e2", borderRadius: 12, marginBottom: "1.25rem", flexWrap: "wrap" as const }}>
                       {/* Left: big number + stars */}
                       <div style={{ textAlign: "center", minWidth: 60 }}>
-                        <div style={{ fontSize: "2.6rem", fontWeight: 800, color: "#0f1410", lineHeight: 1, fontFamily: "'Fraunces', Georgia, serif" }}>{avgRating.toFixed(1)}</div>
+                        <div style={{ fontSize: "2.6rem", fontWeight: 800, color: "#0f1410", lineHeight: 1, fontFamily: "var(--font-fraunces), Georgia, serif" }}>{avgRating.toFixed(1)}</div>
                         <div style={{ color: "#e8a020", fontSize: "1rem", letterSpacing: "0.05em", margin: "0.25rem 0 0.15rem" }}>
                           {"★".repeat(Math.round(avgRating))}{"☆".repeat(5 - Math.round(avgRating))}
                         </div>
@@ -790,11 +788,11 @@ export default function SessionDetailPage() {
                       onChange={e => setOrgComment(e.target.value)}
                       placeholder="Respond to your audience, add notes, or reply to a review…"
                       rows={3}
-                      style={{ width: "100%", padding: "0.65rem 0.85rem", borderRadius: 8, border: "1.5px solid #e2ded6", background: "#faf7f2", fontFamily: "'DM Sans', sans-serif", fontSize: "0.85rem", color: "#0f1410", resize: "vertical", boxSizing: "border-box" as const, outline: "none" }}
+                      style={{ width: "100%", padding: "0.65rem 0.85rem", borderRadius: 8, border: "1.5px solid #e2ded6", background: "#faf7f2", fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "0.85rem", color: "#0f1410", resize: "vertical", boxSizing: "border-box" as const, outline: "none" }}
                     />
                     <div style={{ marginTop: "0.6rem", display: "flex", alignItems: "center", gap: "0.75rem" }}>
                       <button type="submit" disabled={orgCommentLoading || !orgComment.trim()}
-                        style={{ padding: "0.5rem 1.2rem", borderRadius: 8, border: "none", background: orgCommentLoading || !orgComment.trim() ? "#c8c4be" : "#1d6b3c", color: "#fff", fontFamily: "'DM Sans', sans-serif", fontSize: "0.83rem", fontWeight: 600, cursor: orgCommentLoading || !orgComment.trim() ? "default" : "pointer", display: "flex", alignItems: "center", gap: "0.4rem" }}>
+                        style={{ padding: "0.5rem 1.2rem", borderRadius: 8, border: "none", background: orgCommentLoading || !orgComment.trim() ? "#c8c4be" : "#1d6b3c", color: "#fff", fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "0.83rem", fontWeight: 600, cursor: orgCommentLoading || !orgComment.trim() ? "default" : "pointer", display: "flex", alignItems: "center", gap: "0.4rem" }}>
                         {orgCommentLoading
                           ? <><span style={{ width: 12, height: 12, border: "2px solid #fff", borderTopColor: "transparent", borderRadius: "50%", display: "inline-block", animation: "oc-spin 0.7s linear infinite" }} /> Posting…</>
                           : "Post Comment"}
@@ -808,14 +806,14 @@ export default function SessionDetailPage() {
                 {!isOrganizer && !ratingDone && (
                   <form onSubmit={handleSubmitRating}
                     style={{ marginBottom: "1.25rem", paddingBottom: "1.25rem", borderBottom: "1px solid #f0ede8" }}>
-                    <div style={{ fontSize: "0.8rem", fontWeight: 600, color: "#0f1410", marginBottom: "0.6rem" }}>Rate this session</div>
+                    <div style={{ fontSize: "0.8rem", fontWeight: 600, color: "#0f1410", marginBottom: "0.6rem" }}>Rate this webinar</div>
                     <StarInput value={ratingValue} onChange={setRatingValue} />
                     <textarea
                       value={ratingComment}
                       onChange={e => setRatingComment(e.target.value)}
                       placeholder="Share your experience (optional)…"
                       rows={3}
-                      style={{ width: "100%", marginTop: "0.75rem", padding: "0.65rem 0.85rem", borderRadius: 8, border: "1.5px solid #e2ded6", background: "#faf7f2", fontFamily: "'DM Sans', sans-serif", fontSize: "0.85rem", color: "#0f1410", resize: "vertical", boxSizing: "border-box", outline: "none" }}
+                      style={{ width: "100%", marginTop: "0.75rem", padding: "0.65rem 0.85rem", borderRadius: 8, border: "1.5px solid #e2ded6", background: "#faf7f2", fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "0.85rem", color: "#0f1410", resize: "vertical", boxSizing: "border-box", outline: "none" }}
                     />
 
                     {/* Captcha row */}
@@ -829,7 +827,7 @@ export default function SessionDetailPage() {
                           value={captchaInput}
                           onChange={e => setCaptchaInput(e.target.value)}
                           placeholder="Answer"
-                          style={{ width: 68, padding: "0.3rem 0.5rem", borderRadius: 6, border: "1.5px solid #e2ded6", fontFamily: "'DM Sans', sans-serif", fontSize: "0.85rem", textAlign: "center", outline: "none", background: "#fff" }}
+                          style={{ width: 68, padding: "0.3rem 0.5rem", borderRadius: 6, border: "1.5px solid #e2ded6", fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "0.85rem", textAlign: "center", outline: "none", background: "#fff" }}
                         />
                         <button type="button" onClick={loadCaptcha} title="Refresh captcha"
                           style={{ background: "none", border: "none", cursor: "pointer", color: "#6b7a72", fontSize: "1rem", padding: 0, lineHeight: 1 }}>
@@ -837,7 +835,7 @@ export default function SessionDetailPage() {
                         </button>
                       </div>
                       <button type="submit" disabled={ratingLoading || !ratingValue}
-                        style={{ padding: "0.55rem 1.25rem", borderRadius: 8, border: "none", background: ratingLoading || !ratingValue ? "#c8c4be" : "#1d6b3c", color: "#fff", fontFamily: "'DM Sans', sans-serif", fontSize: "0.85rem", fontWeight: 600, cursor: ratingLoading || !ratingValue ? "default" : "pointer", display: "flex", alignItems: "center", gap: "0.4rem", transition: "background 0.15s" }}>
+                        style={{ padding: "0.55rem 1.25rem", borderRadius: 8, border: "none", background: ratingLoading || !ratingValue ? "#c8c4be" : "#1d6b3c", color: "#fff", fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "0.85rem", fontWeight: 600, cursor: ratingLoading || !ratingValue ? "default" : "pointer", display: "flex", alignItems: "center", gap: "0.4rem", transition: "background 0.15s" }}>
                         {ratingLoading
                           ? <><span style={{ width: 12, height: 12, border: "2px solid #fff", borderTopColor: "transparent", borderRadius: "50%", display: "inline-block", animation: "oc-spin 0.7s linear infinite" }} /> Submitting…</>
                           : "Submit Review"}
@@ -892,7 +890,7 @@ export default function SessionDetailPage() {
                               <button type="button" onClick={() => {
                                 setOrgComment(`@${r.authorName} `);
                                 setTimeout(() => { orgCommentRef.current?.focus(); orgCommentRef.current?.scrollIntoView({ behavior: "smooth", block: "center" }); }, 50);
-                              }} style={{ background: "none", border: "1px solid #e2ded6", borderRadius: 6, fontSize: "0.68rem", color: "#6b7a72", cursor: "pointer", padding: "0.15rem 0.5rem", fontFamily: "'DM Sans', sans-serif", flexShrink: 0 }}>
+                              }} style={{ background: "none", border: "1px solid #e2ded6", borderRadius: 6, fontSize: "0.68rem", color: "#6b7a72", cursor: "pointer", padding: "0.15rem 0.5rem", fontFamily: "var(--font-dm-sans), sans-serif", flexShrink: 0 }}>
                                 ↩ Reply
                               </button>
                             )}
@@ -914,13 +912,13 @@ export default function SessionDetailPage() {
             {/* Share section */}
             <div style={{ marginTop: "1.75rem", padding: "1.25rem 1.4rem", background: "#fff", border: "1px solid #e2ded6", borderRadius: 14 }}>
               <div style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#6b7a72", marginBottom: "1rem" }}>
-                Share this session
+                Share this webinar
               </div>
               <div style={{ display: "flex", alignItems: "center", gap: "0.6rem", marginBottom: "1rem" }}>
                 <div style={{ flex: 1, fontSize: "0.78rem", color: "#6b7a72", background: "#faf7f2", border: "1px solid #e2ded6", borderRadius: 8, padding: "0.45rem 0.75rem", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap", fontFamily: "monospace" }}>
-                  {typeof window !== "undefined" ? window.location.href : `openclass.com/session/${session.id}`}
+                  {typeof window !== "undefined" ? window.location.href : `open-webinar.com/session/${session.id}`}
                 </div>
-                <button onClick={handleCopy} style={{ flexShrink: 0, padding: "0.45rem 1rem", borderRadius: 8, border: copied ? "1.5px solid #1d6b3c" : "1.5px solid #e2ded6", background: copied ? "#d4ead9" : "#fff", color: copied ? "#1d6b3c" : "#3a4140", fontSize: "0.78rem", fontWeight: 600, cursor: "pointer", fontFamily: "'DM Sans', sans-serif", transition: "all 0.2s", whiteSpace: "nowrap" }}>
+                <button onClick={handleCopy} style={{ flexShrink: 0, padding: "0.45rem 1rem", borderRadius: 8, border: copied ? "1.5px solid #1d6b3c" : "1.5px solid #e2ded6", background: copied ? "#d4ead9" : "#fff", color: copied ? "#1d6b3c" : "#3a4140", fontSize: "0.78rem", fontWeight: 600, cursor: "pointer", fontFamily: "var(--font-dm-sans), sans-serif", transition: "all 0.2s", whiteSpace: "nowrap" }}>
                   {copied ? "✓ Copied!" : "Copy link"}
                 </button>
               </div>
@@ -948,7 +946,7 @@ export default function SessionDetailPage() {
             {/* Sidebar header */}
             <div style={{ padding: "1rem 1.25rem 0.85rem", borderBottom: "1px solid #f0ede8", display: "flex", alignItems: "center", gap: "0.5rem" }}>
               <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#1d6b3c" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
-              <span style={{ fontSize: "0.68rem", fontWeight: 700, letterSpacing: "0.09em", textTransform: "uppercase" as const, color: "#1d6b3c" }}>Session Details</span>
+              <span style={{ fontSize: "0.68rem", fontWeight: 700, letterSpacing: "0.09em", textTransform: "uppercase" as const, color: "#1d6b3c" }}>Webinar Details</span>
             </div>
 
             {/* Detail rows */}
@@ -1072,19 +1070,19 @@ export default function SessionDetailPage() {
                   </div>
                 );
               })() : (
-                <div style={{ width: "100%", padding: "0.85rem", borderRadius: 10, border: "1.5px solid #d4ead9", background: "#f0faf4", color: "#1d6b3c", fontSize: "0.88rem", fontWeight: 600, textAlign: "center", fontFamily: "'DM Sans', sans-serif" }}>
+                <div style={{ width: "100%", padding: "0.85rem", borderRadius: 10, border: "1.5px solid #d4ead9", background: "#f0faf4", color: "#1d6b3c", fontSize: "0.88rem", fontWeight: 600, textAlign: "center", fontFamily: "var(--font-dm-sans), sans-serif" }}>
                   🎙️ You&apos;re hosting this session
                 </div>
               )
             ) : status === "closed" ? (
-              <button disabled style={{ width: "100%", padding: "0.85rem", borderRadius: 10, border: "1px solid #e2ded6", background: "#faf7f2", color: "#6b7a72", fontSize: "0.9rem", fontWeight: 600, cursor: "default", fontFamily: "'DM Sans', sans-serif" }}>
-                🔒 Session Closed
+              <button disabled style={{ width: "100%", padding: "0.85rem", borderRadius: 10, border: "1px solid #e2ded6", background: "#faf7f2", color: "#6b7a72", fontSize: "0.9rem", fontWeight: 600, cursor: "default", fontFamily: "var(--font-dm-sans), sans-serif" }}>
+                🔒 Webinar Closed
               </button>
             ) : status === "live" ? (
               /* ── LIVE: gate join behind registration ── */
               isOrganizer ? (
                 <button onClick={() => router.push(`/join/${id}`)}
-                  style={{ width: "100%", padding: "0.85rem", borderRadius: 10, border: "none", background: "#1d6b3c", color: "#fff", fontSize: "0.9rem", fontWeight: 600, cursor: "pointer", fontFamily: "'DM Sans', sans-serif" }}>
+                  style={{ width: "100%", padding: "0.85rem", borderRadius: 10, border: "none", background: "#1d6b3c", color: "#fff", fontSize: "0.9rem", fontWeight: 600, cursor: "pointer", fontFamily: "var(--font-dm-sans), sans-serif" }}>
                   🎙️ Start Session
                 </button>
               ) : isRegistered ? (
@@ -1092,7 +1090,7 @@ export default function SessionDetailPage() {
                   if (!localStorage.getItem("token")) { router.push(`/login?redirect=/join/${id}`); return; }
                   router.push(`/join/${id}`);
                 }}
-                  style={{ width: "100%", padding: "0.85rem", borderRadius: 10, border: "none", background: "#1d6b3c", color: "#fff", fontSize: "0.9rem", fontWeight: 600, cursor: "pointer", fontFamily: "'DM Sans', sans-serif" }}>
+                  style={{ width: "100%", padding: "0.85rem", borderRadius: 10, border: "none", background: "#1d6b3c", color: "#fff", fontSize: "0.9rem", fontWeight: 600, cursor: "pointer", fontFamily: "var(--font-dm-sans), sans-serif" }}>
                   ▶ Join Now
                 </button>
               ) : (
@@ -1102,7 +1100,7 @@ export default function SessionDetailPage() {
                     if (!localStorage.getItem("token")) { router.push(`/login?redirect=/session/${id}`); return; }
                     handleRegisterToggle();
                   }} disabled={registerLoading}
-                    style={{ width: "100%", padding: "0.85rem", borderRadius: 10, border: "none", background: "#1a4f7a", color: "#fff", fontSize: "0.9rem", fontWeight: 600, cursor: registerLoading ? "default" : "pointer", fontFamily: "'DM Sans', sans-serif", display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
+                    style={{ width: "100%", padding: "0.85rem", borderRadius: 10, border: "none", background: "#1a4f7a", color: "#fff", fontSize: "0.9rem", fontWeight: 600, cursor: registerLoading ? "default" : "pointer", fontFamily: "var(--font-dm-sans), sans-serif", display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
                     {registerLoading
                       ? <><span style={{ width: 15, height: 15, border: "2px solid currentColor", borderTopColor: "transparent", borderRadius: "50%", display: "inline-block", animation: "oc-spin 0.7s linear infinite" }} /> Registering…</>
                       : <>🔔 Register to Join (Session is Live)</>}
@@ -1115,7 +1113,7 @@ export default function SessionDetailPage() {
             ) : (
               /* ── UPCOMING: register/unregister ── */
               <button onClick={handleRegisterToggle} disabled={registerLoading}
-                style={{ width: "100%", padding: "0.85rem", borderRadius: 10, border: isRegistered ? "1.5px solid #1d6b3c" : "none", background: isRegistered ? "#fff" : "#1a4f7a", color: isRegistered ? "#1d6b3c" : "#fff", fontSize: "0.9rem", fontWeight: 600, cursor: registerLoading ? "default" : "pointer", fontFamily: "'DM Sans', sans-serif", display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem", transition: "all 0.15s" }}>
+                style={{ width: "100%", padding: "0.85rem", borderRadius: 10, border: isRegistered ? "1.5px solid #1d6b3c" : "none", background: isRegistered ? "#fff" : "#1a4f7a", color: isRegistered ? "#1d6b3c" : "#fff", fontSize: "0.9rem", fontWeight: 600, cursor: registerLoading ? "default" : "pointer", fontFamily: "var(--font-dm-sans), sans-serif", display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem", transition: "all 0.15s" }}>
                 {registerLoading
                   ? <><span style={{ width: 15, height: 15, border: "2px solid currentColor", borderTopColor: "transparent", borderRadius: "50%", display: "inline-block", animation: "oc-spin 0.7s linear infinite" }} /> Updating…</>
                   : isRegistered ? <>✓ Registered — Click to cancel</> : <>🔔 Register Free</>}

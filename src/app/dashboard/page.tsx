@@ -17,7 +17,7 @@ const T = {
   clayLight: "#f8ede5",
   cream: "#faf7f2", white: "#fff", border: "#e2ded6",
   r: 16, rs: 10,
-  ff: "'DM Sans', sans-serif", ffd: "'Fraunces', Georgia, serif",
+  ff: "var(--font-dm-sans), sans-serif", ffd: "var(--font-fraunces), Georgia, serif",
 };
 
 /* ─── helpers ────────────────────────────────────────────────────────── */
@@ -305,7 +305,6 @@ export default function DashboardPage() {
 
   return (
     <>
-      <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
       <Header activeLink="dashboard" userName={fullName(profile)} userInitials={initials(profile)} userRole={profile.title || "Teacher"} />
 
       <div style={{ paddingTop: 64, background: T.cream, minHeight: "100vh", fontFamily: T.ff, color: T.ink }}>

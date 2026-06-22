@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation";
 import React, { useState, useRef, useEffect } from "react";
 import Link from "next/link";
 import LoginHeader from "../../components/common/HeadFoot/loginheader";
+import Footer from "../../components/common/HeadFoot/footer";
 
 /* ── tokens ── */
 const T = {
@@ -19,8 +20,8 @@ const T = {
   white: "#ffffff",
   border: "#e2ded6",
   error: "#c0392b",
-  ff: "'DM Sans', sans-serif",
-  ffD: "'Fraunces', Georgia, serif",
+  ff: "var(--font-dm-sans), sans-serif",
+  ffD: "var(--font-fraunces), Georgia, serif",
   r: "10px",
 };
 
@@ -33,17 +34,17 @@ function injectStyles() {
       @keyframes oc-spin { to { transform: rotate(360deg); } }
       @keyframes oc-fade { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
       * { box-sizing: border-box; }
-      .oc-input { width:100%; padding:0.7rem 1rem; border:1.5px solid #e2ded6; border-radius:10px; font-family:'DM Sans',sans-serif; font-size:0.9rem; color:#0f1410; background:#fff; outline:none; transition:border-color 0.2s, box-shadow 0.2s; }
+      .oc-input { width:100%; padding:0.7rem 1rem; border:1.5px solid #e2ded6; border-radius:10px; font-family:var(--font-dm-sans), sans-serif; font-size:0.9rem; color:#0f1410; background:#fff; outline:none; transition:border-color 0.2s, box-shadow 0.2s; }
       .oc-input:focus { border-color:#1d6b3c; box-shadow:0 0 0 3px rgba(29,107,60,0.1); }
       .oc-input::placeholder { color:#6b7a72; }
-      .oc-btn-primary { width:100%; padding:0.85rem; background:#1d6b3c; color:#fff; border:none; border-radius:10px; font-family:'DM Sans',sans-serif; font-size:0.95rem; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:0.5rem; transition:background 0.2s; }
+      .oc-btn-primary { width:100%; padding:0.85rem; background:#1d6b3c; color:#fff; border:none; border-radius:10px; font-family:var(--font-dm-sans), sans-serif; font-size:0.95rem; font-weight:600; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:0.5rem; transition:background 0.2s; }
       .oc-btn-primary:hover:not(:disabled) { background:#145c30; }
       .oc-btn-primary:disabled { background:#6b7a72; cursor:not-allowed; }
-      .oc-btn-ghost { width:100%; padding:0.75rem; background:transparent; color:#3a4140; border:1.5px solid #e2ded6; border-radius:10px; font-family:'DM Sans',sans-serif; font-size:0.875rem; font-weight:500; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:0.5rem; margin-top:0.75rem; transition:border-color 0.2s, color 0.2s; }
+      .oc-btn-ghost { width:100%; padding:0.75rem; background:transparent; color:#3a4140; border:1.5px solid #e2ded6; border-radius:10px; font-family:var(--font-dm-sans), sans-serif; font-size:0.875rem; font-weight:500; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:0.5rem; margin-top:0.75rem; transition:border-color 0.2s, color 0.2s; }
       .oc-btn-ghost:hover { border-color:#1d6b3c; color:#1d6b3c; }
-      .oc-text-link { background:none; border:none; color:#1d6b3c; font-weight:500; cursor:pointer; padding:0; font-family:'DM Sans',sans-serif; font-size:inherit; }
+      .oc-text-link { background:none; border:none; color:#1d6b3c; font-weight:500; cursor:pointer; padding:0; font-family:var(--font-dm-sans), sans-serif; font-size:inherit; }
       .oc-text-link:hover { text-decoration:underline; }
-      .oc-otp-digit { width:52px; height:60px; border:1.5px solid #e2ded6; border-radius:10px; font-family:'Fraunces',Georgia,serif; font-size:1.5rem; font-weight:700; text-align:center; color:#0f1410; background:#fff; outline:none; transition:border-color 0.2s, box-shadow 0.2s, background 0.2s; }
+      .oc-otp-digit { width:52px; height:60px; border:1.5px solid #e2ded6; border-radius:10px; font-family:var(--font-fraunces), Georgia, serif; font-size:1.5rem; font-weight:700; text-align:center; color:#0f1410; background:#fff; outline:none; transition:border-color 0.2s, box-shadow 0.2s, background 0.2s; }
       .oc-otp-digit:focus { border-color:#1d6b3c; box-shadow:0 0 0 3px rgba(29,107,60,0.1); }
       .oc-otp-digit.filled { border-color:#1d6b3c; background:#d4ead9; }
       .oc-role-card { background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); border-radius:16px; padding:1.25rem 1.5rem; transition:border-color 0.2s, background 0.2s; }
@@ -85,16 +86,16 @@ function EyeOffIcon() {
 
 /* ── Left panel (inlined) ── */
 const TEACHER_PERKS = [
-  "Host live classes & webinars for free",
-  "Build a verified public profile & reputation",
-  "Reach students across India and the world",
-  "Manage sessions, replays, and messages",
+  "Host free live webinars for a global audience",
+  "Build a verified speaker profile & reputation",
+  "Get discovered by attendees worldwide",
+  "Manage webinars, recordings, and messages",
 ];
 const STUDENT_PERKS = [
-  "Join any live class or webinar instantly",
-  "Chat, ask doubts & interact in real time",
-  "Subscribe to teachers & get notified",
-  "Watch replays at your own pace",
+  "Join any live webinar instantly — free forever",
+  "Chat, ask questions & interact in real time",
+  "Follow speakers & get notified of new webinars",
+  "Watch recordings at your own pace",
 ];
 
 function RoleCard({ icon, iconBg, title, subtitle, description, perks }: {
@@ -140,15 +141,15 @@ function AuthLeft() {
           ● Free forever
         </div>
         <h1 style={{ fontFamily: T.ffD, fontSize: "clamp(2rem, 3.5vw, 2.8rem)", fontWeight: 700, lineHeight: 1.1, letterSpacing: "-0.03em", color: "#fff", marginBottom: "1rem" }}>
-          Education<br />
-          <em style={{ fontStyle: "italic", color: "#7ed9a4" }}>without walls.</em>
+          Webinars for<br />
+          <em style={{ fontStyle: "italic", color: "#7ed9a4" }}>everyone, free.</em>
         </h1>
         <p style={{ fontSize: "0.95rem", color: "rgba(255,255,255,0.55)", lineHeight: 1.75, maxWidth: 380, marginBottom: "2.5rem" }}>
-          OpenClass connects passionate teachers with curious learners — live, free, and open to everyone in India and beyond.
+          OpenWebinar connects expert speakers with curious attendees — live, free, and open to the world. No subscription. No paywalls. Ever.
         </p>
         <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
-          <RoleCard icon="👩‍🏫" iconBg="rgba(232,160,32,0.15)" title="For Teachers" subtitle="Share your knowledge freely" description="Whether you're a retired professor, working professional, or passionate expert — create live classes and webinars that reach thousands of students at no cost." perks={TEACHER_PERKS} />
-          <RoleCard icon="🎓" iconBg="rgba(29,107,60,0.2)" title="For Students" subtitle="Learn from the best, for free" description="Access live classes from IIT professors, industry professionals, and subject experts. Ask questions in real time, rate sessions, and follow the teachers you love." perks={STUDENT_PERKS} />
+          <RoleCard icon="🎙️" iconBg="rgba(232,160,32,0.15)" title="For Speakers" subtitle="Share your expertise with the world" description="Whether you're a seasoned professional, researcher, or passionate expert — host live webinars that reach a global audience at absolutely zero cost." perks={TEACHER_PERKS} />
+          <RoleCard icon="🎧" iconBg="rgba(29,107,60,0.2)" title="For Attendees" subtitle="Learn from experts, for free" description="Access live webinars from industry professionals, researchers, and domain experts worldwide. Ask questions in real time, rate webinars, and follow speakers you love." perks={STUDENT_PERKS} />
         </div>
       </div>
     </div>
@@ -335,7 +336,6 @@ export default function SignUp({ onSendOtp, onVerifyOtp, onSuccess, onGoSignIn }
 
   return (
     <>
-      <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
       <LoginHeader />
 
       <div className="oc-auth-layout" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", minHeight: "100vh", paddingTop: 64 }}>
@@ -430,7 +430,7 @@ export default function SignUp({ onSendOtp, onVerifyOtp, onSuccess, onGoSignIn }
                 <div style={{ width: 56, height: 56, borderRadius: "50%", background: T.leafLight, color: T.leaf, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.5rem", margin: "0 auto 1.25rem" }}>✓</div>
                 <h2 style={{ ...hs, textAlign: "center" }}>You're in!</h2>
                 <p style={{ fontSize: "0.875rem", color: T.inkMuted, marginBottom: "1.5rem" }}>
-                  Your account has been created. Welcome to OpenClass — education without walls.
+                  Your account has been created. Welcome to OpenWebinar — free webinars for everyone.
                 </p>
                 <button className="oc-btn-primary" onClick={onSuccess ?? (() => router.push("/dashboard"))}>Go to Dashboard →</button>
               </div>
@@ -439,12 +439,13 @@ export default function SignUp({ onSendOtp, onVerifyOtp, onSuccess, onGoSignIn }
           </div>
         </div>
       </div>
+      <Footer />
     </>
   );
 }
 
 /* ── shared styles ── */
-const hs: React.CSSProperties = { fontFamily: "'Fraunces',Georgia,serif", fontSize: "1.75rem", fontWeight: 700, letterSpacing: "-0.02em", color: "#0f1410", marginBottom: "0.35rem" };
+const hs: React.CSSProperties = { fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.75rem", fontWeight: 700, letterSpacing: "-0.02em", color: "#0f1410", marginBottom: "0.35rem" };
 const ss: React.CSSProperties = { fontSize: "0.875rem", color: "#6b7a72", marginBottom: "2rem" };
 const ls: React.CSSProperties = { display: "block", fontSize: "0.8rem", fontWeight: 600, color: "#0f1410", marginBottom: "0.4rem" };
 const fg: React.CSSProperties = { marginBottom: "1.1rem" };

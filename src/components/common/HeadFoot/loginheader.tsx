@@ -13,16 +13,6 @@ export default function LoginHeader({
 }: LoginHeaderProps) {
   return (
     <>
-      {/* Google Fonts */}
-      <link
-        rel="preconnect"
-        href="https://fonts.googleapis.com"
-      />
-      <link
-        href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap"
-        rel="stylesheet"
-      />
-
       <nav
         style={{
           position: "fixed",
@@ -44,7 +34,7 @@ export default function LoginHeader({
         <a
           href="/"
           style={{
-            fontFamily: "'Fraunces', Georgia, serif",
+            fontFamily: "var(--font-fraunces), Georgia, serif",
             fontSize: "1.5rem",
             fontWeight: 700,
             color: "#0f1410",
@@ -52,7 +42,7 @@ export default function LoginHeader({
             textDecoration: "none",
           }}
         >
-          Open<span style={{ color: "#1d6b3c" }}>Class</span>
+          Open<span style={{ color: "#1d6b3c" }}>Webinar</span>
         </a>
 
         {/* Back to home */}

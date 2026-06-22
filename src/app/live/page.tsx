@@ -195,10 +195,10 @@ function SessionCard({ s, isRegistered, registerLoading, onRegisterToggle }: {
         </div>
 
         {/* Body */}
-        <div style={{ padding: "1rem 1.1rem", flex: 1, display: "flex", flexDirection: "column", gap: "0.5rem", fontFamily: "'DM Sans', sans-serif" }}>
+        <div style={{ padding: "1rem 1.1rem", flex: 1, display: "flex", flexDirection: "column", gap: "0.5rem", fontFamily: "var(--font-dm-sans), sans-serif" }}>
           {s.category && <div style={{ fontSize: "0.7rem", fontWeight: 600, letterSpacing: "0.05em", textTransform: "uppercase", color: "#6b7a72" }}>{s.category}</div>}
 
-          <div style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "0.98rem", fontWeight: 700, color: "#0f1410", lineHeight: 1.3 }}>
+          <div style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "0.98rem", fontWeight: 700, color: "#0f1410", lineHeight: 1.3 }}>
             {s.title}
           </div>
 
@@ -245,11 +245,11 @@ function SessionCard({ s, isRegistered, registerLoading, onRegisterToggle }: {
         {/* Footer CTA */}
         <div style={{ padding: "0.75rem 1.1rem", borderTop: "1px solid #e2ded6" }}>
           {status === "closed" ? (
-            <button disabled onClick={e => e.preventDefault()} style={{ width: "100%", padding: "0.65rem", borderRadius: 8, border: "1px solid #e2ded6", background: "#faf7f2", color: "#6b7a72", fontSize: "0.875rem", fontWeight: 600, cursor: "default", fontFamily: "'DM Sans', sans-serif" }}>
+            <button disabled onClick={e => e.preventDefault()} style={{ width: "100%", padding: "0.65rem", borderRadius: 8, border: "1px solid #e2ded6", background: "#faf7f2", color: "#6b7a72", fontSize: "0.875rem", fontWeight: 600, cursor: "default", fontFamily: "var(--font-dm-sans), sans-serif" }}>
               🔒 Session Closed
             </button>
           ) : status === "live" ? (
-            <button onClick={e => e.preventDefault()} style={{ width: "100%", padding: "0.65rem", borderRadius: 8, border: "none", background: "#1d6b3c", color: "#fff", fontSize: "0.875rem", fontWeight: 600, cursor: "pointer", fontFamily: "'DM Sans', sans-serif" }}>
+            <button onClick={e => e.preventDefault()} style={{ width: "100%", padding: "0.65rem", borderRadius: 8, border: "none", background: "#1d6b3c", color: "#fff", fontSize: "0.875rem", fontWeight: 600, cursor: "pointer", fontFamily: "var(--font-dm-sans), sans-serif" }}>
               ▶ Join Now — Free
             </button>
           ) : (
@@ -268,7 +268,7 @@ function SessionCard({ s, isRegistered, registerLoading, onRegisterToggle }: {
                 color: isRegistered ? "#1d6b3c" : "#fff",
                 fontSize: "0.875rem", fontWeight: 600,
                 cursor: registerLoading ? "default" : "pointer",
-                fontFamily: "'DM Sans', sans-serif",
+                fontFamily: "var(--font-dm-sans), sans-serif",
                 display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem",
                 transition: "all 0.18s",
                 boxShadow: isRegistered ? "none" : regBtnHovered
@@ -437,10 +437,9 @@ export default function LivePage() {
 
   return (
     <>
-      <link href="https://fonts.googleapis.com/css2?family=Fraunces:ital,wght@0,300;0,400;0,700;1,300;1,400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet" />
       <Header activeLink="live" />
 
-      <div style={{ paddingTop: isMobile ? 57 : 64, fontFamily: "'DM Sans', sans-serif", background: "#faf7f2", minHeight: "100vh", color: "#0f1410" }}>
+      <div style={{ paddingTop: isMobile ? 57 : 64, fontFamily: "var(--font-dm-sans), sans-serif", background: "#faf7f2", minHeight: "100vh", color: "#0f1410" }}>
 
         {/* Page header */}
         <div style={{ background: "#0f1410", padding: isMobile ? "1.5rem 1.25rem" : "2.5rem 2rem", position: "relative", overflow: "hidden" }}>
@@ -452,7 +451,7 @@ export default function LivePage() {
                 <span style={{ color: "rgba(255,255,255,0.3)", fontSize: "0.8rem" }}>›</span>
                 <span style={{ color: "#7ed9a4", fontSize: "0.8rem", fontWeight: 600 }}>Webinars</span>
               </div>
-              <h1 style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "clamp(1.6rem,3vw,2.2rem)", fontWeight: 700, color: "#fff", letterSpacing: "-0.02em", lineHeight: 1.15 }}>
+              <h1 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "clamp(1.6rem,3vw,2.2rem)", fontWeight: 700, color: "#fff", letterSpacing: "-0.02em", lineHeight: 1.15 }}>
                 Free <em style={{ color: "#7ed9a4", fontStyle: "italic" }}>Webinars</em>
               </h1>
               <p style={{ color: "rgba(255,255,255,0.55)", fontSize: "0.9rem", marginTop: "0.35rem", maxWidth: 560 }}>
@@ -476,7 +475,7 @@ export default function LivePage() {
             <div style={{ fontSize: "0.7rem", fontWeight: 700, letterSpacing: "0.08em", textTransform: "uppercase", color: "#6b7a72", marginBottom: "1rem", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
               Filters
               {hasFilters && (
-                <button onClick={clearAll} style={{ fontSize: "0.72rem", fontWeight: 500, color: "#1d6b3c", cursor: "pointer", background: "none", border: "none", padding: 0, fontFamily: "'DM Sans', sans-serif" }}>
+                <button onClick={clearAll} style={{ fontSize: "0.72rem", fontWeight: 500, color: "#1d6b3c", cursor: "pointer", background: "none", border: "none", padding: 0, fontFamily: "var(--font-dm-sans), sans-serif" }}>
                   Clear all
                 </button>
               )}
@@ -557,7 +556,7 @@ export default function LivePage() {
                 >
                   <div style={{ display: "flex", alignItems: "center", gap: "0.45rem" }}>
                     <span style={{ color: active ? "#1d6b3c" : "#6b7a72", display: "flex" }}>{icon}</span>
-                    <span style={{ fontSize: "0.8rem", fontWeight: 600, color: active ? "#1d6b3c" : "#0f1410", fontFamily: "'DM Sans', sans-serif" }}>{label}</span>
+                    <span style={{ fontSize: "0.8rem", fontWeight: 600, color: active ? "#1d6b3c" : "#0f1410", fontFamily: "var(--font-dm-sans), sans-serif" }}>{label}</span>
                     {active && <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#1d6b3c", flexShrink: 0 }} />}
                   </div>
                   <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="#a0a89a" strokeWidth="2.5" strokeLinecap="round" style={{ transform: openSections[key] ? "rotate(180deg)" : "rotate(0deg)", transition: "transform 0.2s" }}>
@@ -586,7 +585,7 @@ export default function LivePage() {
             {isMobile && (
               <button
                 onClick={() => setFiltersOpen(o => !o)}
-                style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", padding: "0.65rem 1rem", borderRadius: 10, border: `1.5px solid ${filtersOpen ? "#1d6b3c" : "#e2ded6"}`, background: filtersOpen ? "#d4ead9" : "#fff", color: filtersOpen ? "#1d6b3c" : "#3a4140", fontFamily: "'DM Sans', sans-serif", fontSize: "0.875rem", fontWeight: 600, cursor: "pointer", marginBottom: "0.75rem" }}
+                style={{ display: "flex", alignItems: "center", justifyContent: "space-between", width: "100%", padding: "0.65rem 1rem", borderRadius: 10, border: `1.5px solid ${filtersOpen ? "#1d6b3c" : "#e2ded6"}`, background: filtersOpen ? "#d4ead9" : "#fff", color: filtersOpen ? "#1d6b3c" : "#3a4140", fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "0.875rem", fontWeight: 600, cursor: "pointer", marginBottom: "0.75rem" }}
               >
                 <span>🔽 Filters{hasFilters ? " •" : ""}</span>
                 <span style={{ fontSize: "0.75rem", fontWeight: 400 }}>{filtersOpen ? "Hide ▲" : "Show ▼"}</span>
@@ -600,7 +599,7 @@ export default function LivePage() {
                 <circle cx="11" cy="11" r="8" /><path d="M21 21l-4.35-4.35" />
               </svg>
               <input type="text" placeholder="Search webinars, speakers, or subjects…" value={search} onChange={e => setSearch(e.target.value)}
-                style={{ border: "none", outline: "none", background: "transparent", fontFamily: "'DM Sans', sans-serif", fontSize: "0.875rem", color: "#0f1410", width: "100%" }} />
+                style={{ border: "none", outline: "none", background: "transparent", fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "0.875rem", color: "#0f1410", width: "100%" }} />
               {search && (
                 <button onClick={() => setSearch("")} style={{ background: "none", border: "none", cursor: "pointer", color: "#6b7a72", padding: 0, display: "flex", alignItems: "center" }}>
                   <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><line x1="18" y1="6" x2="6" y2="18" /><line x1="6" y1="6" x2="18" y2="18" /></svg>
@@ -617,7 +616,7 @@ export default function LivePage() {
                 <span style={{ fontSize: "0.8rem", color: "#6b7a72" }}>Sort by:</span>
                 {sortOptions.map(s => (
                   <button key={s.key} onClick={() => setSortKey(s.key)}
-                    style={{ display: "inline-flex", alignItems: "center", gap: "0.35rem", padding: "0.4rem 0.85rem", borderRadius: 100, border: `1.5px solid ${sortKey === s.key ? "#1d6b3c" : "#e2ded6"}`, fontSize: "0.8rem", fontWeight: 500, whiteSpace: "nowrap", color: sortKey === s.key ? "#fff" : "#3a4140", background: sortKey === s.key ? "#1d6b3c" : "#fff", cursor: "pointer", transition: "all 0.15s", fontFamily: "'DM Sans', sans-serif" }}>
+                    style={{ display: "inline-flex", alignItems: "center", gap: "0.35rem", padding: "0.4rem 0.85rem", borderRadius: 100, border: `1.5px solid ${sortKey === s.key ? "#1d6b3c" : "#e2ded6"}`, fontSize: "0.8rem", fontWeight: 500, whiteSpace: "nowrap", color: sortKey === s.key ? "#fff" : "#3a4140", background: sortKey === s.key ? "#1d6b3c" : "#fff", cursor: "pointer", transition: "all 0.15s", fontFamily: "var(--font-dm-sans), sans-serif" }}>
                     {s.label}
                   </button>
                 ))}
@@ -629,10 +628,10 @@ export default function LivePage() {
               <div style={{ textAlign: "center", padding: "4rem", color: "#6b7a72" }}>Loading sessions…</div>
             ) : filtered.length === 0 ? (
               <div style={{ textAlign: "center", padding: "4rem 2rem", color: "#6b7a72" }}>
-                <p style={{ fontFamily: "'Fraunces', Georgia, serif", fontSize: "1.4rem", color: "#0f1410", marginBottom: "0.5rem" }}>No sessions found</p>
+                <p style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.4rem", color: "#0f1410", marginBottom: "0.5rem" }}>No sessions found</p>
                 <p>Try adjusting your filters or check a different time range.</p>
                 {selTime !== "all" && (
-                  <button onClick={() => setSelTime("all")} style={{ marginTop: "1rem", padding: "0.5rem 1.25rem", borderRadius: 100, border: "1.5px solid #1d6b3c", background: "transparent", color: "#1d6b3c", fontSize: "0.85rem", fontWeight: 500, cursor: "pointer", fontFamily: "'DM Sans', sans-serif" }}>
+                  <button onClick={() => setSelTime("all")} style={{ marginTop: "1rem", padding: "0.5rem 1.25rem", borderRadius: 100, border: "1.5px solid #1d6b3c", background: "transparent", color: "#1d6b3c", fontSize: "0.85rem", fontWeight: 500, cursor: "pointer", fontFamily: "var(--font-dm-sans), sans-serif" }}>
                     Show all time
                   </button>
                 )}
