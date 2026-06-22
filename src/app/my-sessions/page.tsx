@@ -6,6 +6,7 @@ import { useRouter } from "next/navigation";
 import Header from "@/components/common/HeadFoot/header";
 import Footer from "@/components/common/HeadFoot/footer";
 import { getMySessions, deleteSession, cancelSession, SessionData } from "@/lib/session";
+import { getUserTz, fmtDateShort } from "@/lib/tz";
 
 const T = {
   ink: "#0f1410", inkMuted: "#6b7a72", inkSoft: "#3a4140",
@@ -64,9 +65,7 @@ function SessionStatusBadge({ sessionStatus, qualityFlag }: { sessionStatus?: st
   );
 }
 
-function fmtDate(iso: string) {
-  return new Date(iso).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" });
-}
+function fmtDate(iso: string) { return fmtDateShort(iso); }
 
 const MYSESS_CACHE_KEY = "oc_mysess_cache";
 const MYSESS_CACHE_TTL = 90_000;
@@ -274,8 +273,8 @@ export default function MySessionsPage() {
                   const openTime  = new Date(openMs);
                   const sameDay   = openTime.toDateString() === now.toDateString();
                   const openLabel = sameDay
-                    ? openTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
-                    : openTime.toLocaleDateString([], { month: "short", day: "numeric" }) + " at " + openTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+                    ? openTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", timeZone: getUserTz() })
+                    : openTime.toLocaleDateString([], { month: "short", day: "numeric", timeZone: getUserTz() }) + " at " + openTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", timeZone: getUserTz() });
 
                   return (
                     <div key={s.id} style={{ padding: "1rem 0", borderBottom: i < filtered.length - 1 ? `1px solid ${T.border}` : "none" }}>
@@ -306,7 +305,7 @@ export default function MySessionsPage() {
                             <span style={{ fontSize: "0.65rem", fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase" as const, padding: "0.18rem 0.6rem", borderRadius: 100, background: typeBg, color: typeColor }}>{typeLabel}</span>
                             {s.category && <span style={{ fontSize: "0.72rem", color: T.inkMuted }}>📂 {s.category}</span>}
                             <span style={{ fontSize: "0.72rem", color: T.inkMuted }}>
-                              ⏰ {d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} · {s.duration} min
+                              ⏰ {d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", timeZone: getUserTz() })} · {s.duration} min
                             </span>
                             {s.skillLevel && <span style={{ fontSize: "0.65rem", color: T.inkMuted, background: T.cream, border: `1px solid ${T.border}`, padding: "0.1rem 0.45rem", borderRadius: 100 }}>{s.skillLevel}</span>}
                             {s.visibility === "private" && <span style={{ fontSize: "0.65rem", color: "#9b2c4e", background: "#fce8ef", padding: "0.1rem 0.45rem", borderRadius: 100, fontWeight: 600 }}>🔒 Private</span>}
@@ -418,7 +417,7 @@ export default function MySessionsPage() {
                           </button>
                           <span style={{ fontSize: "0.72rem", color: T.inkMuted }}>
                             {joinOpen && isLive ? "Webinar is live · closes 30 min after end" :
-                             joinOpen ? `Room opens 30 min early · starts at ${d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}` :
+                             joinOpen ? `Room opens 30 min early · starts at ${d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", timeZone: getUserTz() })}` :
                              beforeOpen ? `Room opens at ${openLabel} (30 min before start)` : ""}
                           </span>
                         </div>

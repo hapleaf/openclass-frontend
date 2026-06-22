@@ -7,6 +7,7 @@ import Header from "@/components/common/HeadFoot/header";
 import Footer from "@/components/common/HeadFoot/footer";
 import { getStudentDashboard, StudentDashboardData, FollowedTeacher, fullName, initials, shortName, computeExpertiseLevel, makeProfileSlug } from "@/lib/profile";
 import { PublicSessionData } from "@/lib/session";
+import { fmtTime, fmtDateShort } from "@/lib/tz";
 
 /* ─── tokens ─────────────────────────────────────────────────────────── */
 const T = {
@@ -40,14 +41,7 @@ function teacherInitials(t: FollowedTeacher) {
   return (t.name || "T").slice(0, 2).toUpperCase();
 }
 
-function fmtDate(iso: string) {
-  const d = new Date(iso);
-  return d.toLocaleDateString("en-IN", { month: "short", day: "numeric", year: "numeric" });
-}
-
-function fmtTime(iso: string) {
-  return new Date(iso).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit", hour12: true }) + " IST";
-}
+function fmtDate(iso: string) { return fmtDateShort(iso); }
 
 function fmtCountdown(minsToStart: number): string {
   if (minsToStart < 60) return `Starts in ${minsToStart} min`;
@@ -112,10 +106,14 @@ export default function StudentDashboardPage() {
   const [refreshingSessions, setRefreshingSessions] = useState(false);
   const [regSearch, setRegSearch] = useState("");
   const [regFilter, setRegFilter] = useState<"all" | "upcoming" | "past">("all");
-  const [isMobile, setIsMobile] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);  // < 960 → no sidebar
+  const [isNarrow, setIsNarrow] = useState(false);  // < 640 → 1-col cards
 
   useEffect(() => {
-    const check = () => setIsMobile(window.innerWidth <= 768);
+    const check = () => {
+      setIsMobile(window.innerWidth < 960);
+      setIsNarrow(window.innerWidth < 640);
+    };
     check();
     window.addEventListener("resize", check);
     return () => window.removeEventListener("resize", check);
@@ -214,7 +212,7 @@ export default function StudentDashboardPage() {
             </div>
 
             {/* ── Stats row ───────────────────────────────────── */}
-            <div style={{ display: "grid", gridTemplateColumns: isMobile ? "repeat(2,1fr)" : "repeat(4,1fr)", gap: "1rem", marginBottom: "1.75rem" }}>
+            <div style={{ display: "grid", gridTemplateColumns: isNarrow ? "repeat(2,1fr)" : "repeat(4,1fr)", gap: "1rem", marginBottom: "1.75rem" }}>
               {[
                 { icon: "📅", bg: T.skyLight,  label: "Registered",    value: registeredSessions.length, sub: `${thisWeek} this week` },
                 { icon: "✅", bg: T.leafLight, label: "Completed",     value: 0,              sub: "total sessions" },
@@ -287,7 +285,7 @@ export default function StudentDashboardPage() {
               ) : (
               <div style={{ marginBottom: "1.75rem" }}>
                 {regUpcoming.length > 0 && (regFilter === "all" || regFilter === "upcoming") && (
-                  <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "1rem", marginBottom: regFilter === "all" && regPast.length > 0 ? "1.5rem" : 0 }}>
+                  <div style={{ display: "grid", gridTemplateColumns: isNarrow ? "1fr" : "1fr 1fr", gap: "1rem", marginBottom: regFilter === "all" && regPast.length > 0 ? "1.5rem" : 0 }}>
                     {regUpcoming.map(s => {
                   const status = sessionStatus(s);
                   const isLive = status === "live";
@@ -429,7 +427,7 @@ export default function StudentDashboardPage() {
                     <div style={{ flex: 1, height: 1, background: T.border }} />
                   </div>
                 )}
-                <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "1rem" }}>
+                <div style={{ display: "grid", gridTemplateColumns: isNarrow ? "1fr" : "1fr 1fr", gap: "1rem" }}>
                   {regPast.map(s => {
                     const API = process.env.NEXT_PUBLIC_API_URL ?? "";
                     const teacherLvl = computeExpertiseLevel(s.user.sessionCount ?? 0, s.user.reviewCount ?? 0, s.user.avgRating ?? null);
@@ -482,7 +480,7 @@ export default function StudentDashboardPage() {
                 <Link href="/speakers" style={{ fontSize: "0.875rem", color: T.leaf, fontWeight: 600, textDecoration: "none" }}>Browse Speakers →</Link>
               </div>
             ) : (
-              <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "1rem", marginBottom: "1.75rem" }}>
+              <div style={{ display: "grid", gridTemplateColumns: isNarrow ? "1fr" : "1fr 1fr", gap: "1rem", marginBottom: "1.75rem" }}>
                 {followedTeachers.map(t => {
                   const API = process.env.NEXT_PUBLIC_API_URL ?? "";
                   const tSlug = makeProfileSlug({ id: t.id, firstName: t.firstName ?? undefined, lastName: t.lastName ?? undefined });
@@ -586,7 +584,7 @@ export default function StudentDashboardPage() {
                     <div style={{ flex: 1, minWidth: 0 }}>
                       <div style={{ fontSize: "0.82rem", fontWeight: 600, color: T.ink, whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis" }}>{s.title}</div>
                       <div style={{ fontSize: "0.72rem", color: T.inkMuted }}>
-                        {d.toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit", hour12: true })} IST · {s.type === "webinar" ? "Webinar" : "Live Class"}
+                        {fmtTime(s.scheduledAt)} · {s.type === "webinar" ? "Webinar" : "Live Class"}
                       </div>
                     </div>
                   </div>

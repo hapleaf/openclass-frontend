@@ -7,6 +7,7 @@ import Header from "@/components/common/HeadFoot/header";
 import Footer from "@/components/common/HeadFoot/footer";
 import { getDashboard, getSubscribers, toggleSubscription, makeProfileSlug, computeExpertiseLevel, DashboardData, SubscriberItem, fullName, initials } from "@/lib/profile";
 import { deleteSession, cancelSession } from "@/lib/session";
+import { getUserTz } from "@/lib/tz";
 
 /* ─── design tokens ──────────────────────────────────────────────────── */
 const T = {
@@ -403,8 +404,8 @@ export default function DashboardPage() {
                   const openTime   = new Date(openMs);
                   const sameDay    = openTime.toDateString() === new Date().toDateString();
                   const openLabel  = sameDay
-                    ? openTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })
-                    : openTime.toLocaleDateString([], { month: "short", day: "numeric" }) + " at " + openTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
+                    ? openTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", timeZone: getUserTz() })
+                    : openTime.toLocaleDateString([], { month: "short", day: "numeric", timeZone: getUserTz() }) + " at " + openTime.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", timeZone: getUserTz() });
                   const list = dashTabSessions[dashSessTab];
                   return (
                     <div key={s.id} style={{ padding: "1rem 0", borderBottom: i < list.length - 1 ? `1px solid ${T.border}` : "none" }}>
@@ -435,7 +436,7 @@ export default function DashboardPage() {
                             <div style={{ display: "flex", alignItems: "center", gap: "0.55rem", flexWrap: "wrap" as const, marginBottom: s._count !== undefined ? "0.55rem" : 0 }}>
                               <span style={{ fontSize: "0.65rem", fontWeight: 700, letterSpacing: "0.04em", textTransform: "uppercase" as const, padding: "0.18rem 0.6rem", borderRadius: 100, background: typeBg, color: typeColor }}>{typeLabel}</span>
                               {s.category && <span style={{ fontSize: "0.72rem", color: T.inkMuted }}>📂 {s.category}</span>}
-                              <span style={{ fontSize: "0.72rem", color: T.inkMuted }}>⏰ {d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })} · {s.duration} min</span>
+                              <span style={{ fontSize: "0.72rem", color: T.inkMuted }}>⏰ {d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", timeZone: getUserTz() })} · {s.duration} min</span>
                               {s.skillLevel && <span style={{ fontSize: "0.65rem", color: T.inkMuted, background: T.cream, border: `1px solid ${T.border}`, padding: "0.1rem 0.45rem", borderRadius: 100 }}>{s.skillLevel}</span>}
                               {s.visibility === "private" && <span style={{ fontSize: "0.65rem", color: "#9b2c4e", background: "#fce8ef", padding: "0.1rem 0.45rem", borderRadius: 100, fontWeight: 600 }}>🔒 Private</span>}
                             </div>
@@ -552,7 +553,7 @@ export default function DashboardPage() {
                           </button>
                           <span style={{ fontSize: "0.72rem", color: T.inkMuted }}>
                             {joinOpen && isLive ? "Session is live · closes 30 min after end" :
-                             joinOpen ? `Room opens 30 min early · starts at ${d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}` :
+                             joinOpen ? `Room opens 30 min early · starts at ${d.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit", timeZone: getUserTz() })}` :
                              beforeOpen ? `Room opens at ${openLabel} (30 min before start)` : ""}
                           </span>
                         </div>

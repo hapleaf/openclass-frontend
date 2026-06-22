@@ -7,6 +7,7 @@ import Header from "@/components/common/HeadFoot/header";
 import Footer from "@/components/common/HeadFoot/footer";
 import { getPublicSessions, PublicSessionData, getMyRegistrationIds, toggleRegistration } from "@/lib/session";
 import { computeExpertiseLevel } from "@/lib/profile";
+import { fmtTime, fmtDateCard } from "@/lib/tz";
 
 const API = process.env.NEXT_PUBLIC_API_URL ?? "";
 function resolveUrl(path: string | null | undefined): string | null {
@@ -27,9 +28,6 @@ function sessionStatus(s: PublicSessionData): Status {
 }
 
 /* ─── formatting ─────────────────────────────────────────────────────── */
-function fmtTime(iso: string) {
-  return new Date(iso).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit", hour12: true }) + " IST";
-}
 
 function fmtDate(iso: string) {
   const d = new Date(iso);
@@ -37,7 +35,7 @@ function fmtDate(iso: string) {
   const tomorrow = new Date(); tomorrow.setDate(today.getDate() + 1);
   if (d.toDateString() === today.toDateString()) return "Today";
   if (d.toDateString() === tomorrow.toDateString()) return "Tomorrow";
-  return d.toLocaleDateString("en-IN", { day: "numeric", month: "short" });
+  return fmtDateCard(iso);
 }
 
 function fmtEndTime(s: PublicSessionData) {

@@ -12,6 +12,7 @@ import {
 } from "@/lib/session";
 import { apiFetch } from "@/lib/api";
 import { makeProfileSlug, computeExpertiseLevel } from "@/lib/profile";
+import { fmtTime, fmtDateLong, fmtDateShort } from "@/lib/tz";
 
 function HlsPlayer({ src, label }: { src: string; label?: string }) {
   const videoRef = useRef<HTMLVideoElement>(null);
@@ -55,12 +56,7 @@ function sessionStatus(s: PublicSessionData): Status {
   return "upcoming";
 }
 
-function fmtTime(iso: string) {
-  return new Date(iso).toLocaleTimeString("en-IN", { hour: "2-digit", minute: "2-digit", hour12: true }) + " IST";
-}
-function fmtDate(iso: string) {
-  return new Date(iso).toLocaleDateString("en-IN", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
-}
+function fmtDate(iso: string) { return fmtDateLong(iso); }
 function teacherName(u: PublicSessionData["user"]) {
   return [u.firstName, u.lastName].filter(Boolean).join(" ") || u.name || "Unknown";
 }
@@ -899,7 +895,7 @@ export default function SessionDetailPage() {
                             <p style={{ margin: 0, fontSize: "0.85rem", color: isOrgReply ? "#1d4a2a" : "#3a4140", lineHeight: 1.6 }}>{r.comment}</p>
                           )}
                           <div style={{ marginTop: "0.3rem", fontSize: "0.72rem", color: "#a0a89a" }}>
-                            {new Date(r.createdAt).toLocaleDateString("en-IN", { day: "numeric", month: "short", year: "numeric" })}
+                            {fmtDateShort(r.createdAt)}
                           </div>
                         </div>
                       );
