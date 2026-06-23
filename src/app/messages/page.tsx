@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import { useRouter, useSearchParams } from "next/navigation";
 import Header from "@/components/common/HeadFoot/header";
 import Footer from "@/components/common/HeadFoot/footer";
@@ -73,7 +73,7 @@ function Avatar({ other, size = 40 }: { other: ConvOther; size?: number }) {
   );
 }
 
-export default function MessagesPage() {
+function MessagesContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [myId, setMyId] = useState<number | null>(null);
@@ -327,5 +327,13 @@ export default function MessagesPage() {
       </main>
       <Footer />
     </>
+  );
+}
+
+export default function MessagesPage() {
+  return (
+    <Suspense>
+      <MessagesContent />
+    </Suspense>
   );
 }

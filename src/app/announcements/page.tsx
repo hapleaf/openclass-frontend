@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, Suspense } from "react";
 import Link from "next/link";
 import { useRouter, useSearchParams } from "next/navigation";
 import Header from "@/components/common/HeadFoot/header";
@@ -58,7 +58,7 @@ function updateUnreadCache(count: number) {
   setTimeout(() => window.dispatchEvent(new Event("oc_ann_update")), 0);
 }
 
-export default function AnnouncementsPage() {
+function AnnouncementsContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [anns, setAnns] = useState<Ann[]>([]);
@@ -274,5 +274,13 @@ export default function AnnouncementsPage() {
       <Footer />
       <style>{`@keyframes oc-spin { to { transform: rotate(360deg); } }`}</style>
     </>
+  );
+}
+
+export default function AnnouncementsPage() {
+  return (
+    <Suspense>
+      <AnnouncementsContent />
+    </Suspense>
   );
 }
