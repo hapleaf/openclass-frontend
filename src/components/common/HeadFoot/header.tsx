@@ -289,6 +289,10 @@ export default function Header({
                       <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
                       My Profile
                     </Link>
+                    <Link href="/support" onClick={() => setDropdownOpen(false)} style={ddItem()}>
+                      <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" /></svg>
+                      Support
+                    </Link>
                     <div style={{ height: 1, background: "#e2ded6" }} />
                     <button onClick={handleSignOut} style={{ ...ddItem(true), width: "100%", textAlign: "left" }}>
                       <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M9 21H5a2 2 0 01-2-2V5a2 2 0 012-2h4M16 17l5-5-5-5M21 12H9" /></svg>
@@ -371,6 +375,11 @@ export default function Header({
               <Link href="/profile" onClick={() => setMenuOpen(false)} style={{ ...mobileLinkStyle(false), display: "flex", alignItems: "center", gap: "0.6rem" }}>
                 <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
                 My Profile
+              </Link>
+
+              <Link href="/support" onClick={() => setMenuOpen(false)} style={{ ...mobileLinkStyle(false), display: "flex", alignItems: "center", gap: "0.6rem" }}>
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" /></svg>
+                Support
               </Link>
 
               <button onClick={handleSignOut} style={{ display: "flex", alignItems: "center", gap: "0.6rem", fontSize: "1rem", fontWeight: 500, color: "#c0392b", background: "transparent", border: "none", padding: "0.85rem 1rem", borderRadius: 12, fontFamily: "var(--font-dm-sans), sans-serif", cursor: "pointer", textAlign: "left" }}>

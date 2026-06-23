@@ -31,7 +31,18 @@ const T = {
   ff: "var(--font-dm-sans), sans-serif", ffd: "var(--font-fraunces), Georgia, serif",
 };
 
-type Tab = "overview" | "approval" | "sessions" | "users" | "insights" | "messages" | "recordings";
+type Tab = "overview" | "approval" | "sessions" | "users" | "insights" | "messages" | "recordings" | "support";
+
+interface SuppTicket {
+  id: number; subject: string; category: string | null; status: string; priority: string;
+  createdAt: string; updatedAt: string;
+  user: { email: string; firstName: string | null; lastName: string | null };
+  _count: { replies: number };
+}
+interface SuppTicketDetail extends SuppTicket {
+  message: string;
+  replies: { id: number; isAdmin: boolean; message: string; createdAt: string; authorId: number | null }[];
+}
 
 export const REJECTION_REASONS: { value: string; label: string; desc: string }[] = [
   { value: "REJECTED_QUALITY",       label: "Content Quality",         desc: "Content does not meet platform standards" },
@@ -274,6 +285,15 @@ export default function AdminPage() {
   const [scanDiskRunning, setScanDiskRunning]       = useState(false);
   const [syncS3Running, setSyncS3Running]           = useState(false);
   const [migrateUrlsRunning, setMigrateUrlsRunning] = useState(false);
+
+  const [suppTickets, setSuppTickets]               = useState<SuppTicket[] | null>(null);
+  const [suppLoading, setSuppLoading]               = useState(false);
+  const [suppFilter, setSuppFilter]                 = useState("all");
+  const [suppTicket, setSuppTicket]                 = useState<SuppTicketDetail | null>(null);
+  const [suppTicketLoading, setSuppTicketLoading]   = useState(false);
+  const [suppReply, setSuppReply]                   = useState("");
+  const [suppReplying, setSuppReplying]             = useState(false);
+  const [suppStatusUpdating, setSuppStatusUpdating] = useState(false);
 
   const showToast = (msg: string, ok = true) => {
     setToast({ msg, ok });
@@ -624,6 +644,7 @@ export default function AdminPage() {
           {tabBtn("insights", "💡 Insights")}
           {tabBtn("messages", "✉️ Messages")}
           {tabBtn("recordings", "🎬 Recordings")}
+          {tabBtn("support", "🎫 Support")}
         </div>
 
         {loading && tab === "overview" ? (
@@ -2054,9 +2075,280 @@ export default function AdminPage() {
 
               </div>
             )}
+
+            {tab === "support" && (
+              <AdminSupportTab
+                showToast={showToast}
+                isMobile={isMobile}
+                suppTickets={suppTickets}
+                setSuppTickets={setSuppTickets}
+                suppLoading={suppLoading}
+                setSuppLoading={setSuppLoading}
+                suppFilter={suppFilter}
+                setSuppFilter={setSuppFilter}
+                suppTicket={suppTicket}
+                setSuppTicket={setSuppTicket}
+                suppTicketLoading={suppTicketLoading}
+                setSuppTicketLoading={setSuppTicketLoading}
+                suppReply={suppReply}
+                setSuppReply={setSuppReply}
+                suppReplying={suppReplying}
+                setSuppReplying={setSuppReplying}
+                suppStatusUpdating={suppStatusUpdating}
+                setSuppStatusUpdating={setSuppStatusUpdating}
+              />
+            )}
           </>
         )}
       </div>
+    </div>
+  );
+}
+
+/* ══ Admin Support Tab ══════════════════════════════════════════════════════ */
+
+const SUPP_STATUS_COLORS: Record<string, { bg: string; color: string; label: string }> = {
+  OPEN:        { bg: "#e8f4ff", color: "#1a4f7a", label: "Open" },
+  IN_PROGRESS: { bg: "#fff4e0", color: "#a05f00", label: "In Progress" },
+  RESOLVED:    { bg: "#d4ead9", color: "#1d6b3c", label: "Resolved" },
+  CLOSED:      { bg: "#f0f0f0", color: "#6b7a72", label: "Closed" },
+};
+
+const SUPP_PRIORITY_COLORS: Record<string, { bg: string; color: string }> = {
+  LOW:    { bg: "#f0f0f0", color: "#6b7a72" },
+  NORMAL: { bg: "#e8f4ff", color: "#1a4f7a" },
+  HIGH:   { bg: "#fff4e0", color: "#a05f00" },
+  URGENT: { bg: "#fdecea", color: "#c0392b" },
+};
+
+const API_SUPP = process.env.NEXT_PUBLIC_API_URL ?? "";
+
+function AdminSupportTab({
+  showToast, isMobile,
+  suppTickets, setSuppTickets, suppLoading, setSuppLoading,
+  suppFilter, setSuppFilter,
+  suppTicket, setSuppTicket, suppTicketLoading, setSuppTicketLoading,
+  suppReply, setSuppReply, suppReplying, setSuppReplying,
+  suppStatusUpdating, setSuppStatusUpdating,
+}: {
+  showToast: (msg: string, ok?: boolean) => void;
+  isMobile: boolean;
+  suppTickets: SuppTicket[] | null;
+  setSuppTickets: (v: SuppTicket[] | null) => void;
+  suppLoading: boolean;
+  setSuppLoading: (v: boolean) => void;
+  suppFilter: string;
+  setSuppFilter: (v: string) => void;
+  suppTicket: SuppTicketDetail | null;
+  setSuppTicket: (v: SuppTicketDetail | null) => void;
+  suppTicketLoading: boolean;
+  setSuppTicketLoading: (v: boolean) => void;
+  suppReply: string;
+  setSuppReply: (v: string) => void;
+  suppReplying: boolean;
+  setSuppReplying: (v: boolean) => void;
+  suppStatusUpdating: boolean;
+  setSuppStatusUpdating: (v: boolean) => void;
+}) {
+  function getToken() { return localStorage.getItem("token") ?? ""; }
+
+  function loadTickets(filter = suppFilter) {
+    setSuppLoading(true);
+    const qs = filter !== "all" ? `?status=${filter}&limit=50` : "?limit=50";
+    fetch(`${API_SUPP}/support/admin/tickets${qs}`, {
+      headers: { Authorization: `Bearer ${getToken()}` },
+    })
+      .then(r => r.json())
+      .then((d: { tickets: SuppTicket[] }) => setSuppTickets(d.tickets ?? []))
+      .catch(() => showToast("Failed to load tickets", false))
+      .finally(() => setSuppLoading(false));
+  }
+
+  function openTicket(id: number) {
+    setSuppTicketLoading(true);
+    fetch(`${API_SUPP}/support/admin/tickets/${id}`, {
+      headers: { Authorization: `Bearer ${getToken()}` },
+    })
+      .then(r => r.json())
+      .then((d: SuppTicketDetail) => setSuppTicket(d))
+      .catch(() => showToast("Failed to load ticket", false))
+      .finally(() => setSuppTicketLoading(false));
+  }
+
+  async function sendReply() {
+    if (!suppTicket || !suppReply.trim()) return;
+    setSuppReplying(true);
+    try {
+      const res = await fetch(`${API_SUPP}/support/admin/tickets/${suppTicket.id}/reply`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${getToken()}` },
+        body: JSON.stringify({ message: suppReply.trim() }),
+      });
+      if (!res.ok) throw new Error();
+      setSuppReply("");
+      showToast("Reply sent — email dispatched to user");
+      openTicket(suppTicket.id);
+      loadTickets();
+    } catch { showToast("Failed to send reply", false); }
+    finally { setSuppReplying(false); }
+  }
+
+  async function updateStatus(status?: string, priority?: string) {
+    if (!suppTicket) return;
+    setSuppStatusUpdating(true);
+    try {
+      const res = await fetch(`${API_SUPP}/support/admin/tickets/${suppTicket.id}/status`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${getToken()}` },
+        body: JSON.stringify({ ...(status && { status }), ...(priority && { priority }) }),
+      });
+      if (!res.ok) throw new Error();
+      showToast("Ticket updated");
+      openTicket(suppTicket.id);
+      loadTickets();
+    } catch { showToast("Failed to update ticket", false); }
+    finally { setSuppStatusUpdating(false); }
+  }
+
+  const didInit = useRef(false);
+  useEffect(() => {
+    if (!didInit.current && suppTickets === null) {
+      didInit.current = true;
+      loadTickets();
+    }
+  }); // eslint-disable-line react-hooks/exhaustive-deps
+
+  const FILTERS = [
+    { v: "all", label: "All" },
+    { v: "OPEN", label: "Open" },
+    { v: "IN_PROGRESS", label: "In Progress" },
+    { v: "RESOLVED", label: "Resolved" },
+    { v: "CLOSED", label: "Closed" },
+  ];
+
+  return (
+    <div style={{ display: "grid", gridTemplateColumns: suppTicket && !isMobile ? "1fr 1.6fr" : "1fr", gap: "1.5rem" }}>
+
+      {/* Ticket list */}
+      <div>
+        <div style={{ display: "flex", gap: "0.4rem", flexWrap: "wrap" as const, marginBottom: "1rem" }}>
+          {FILTERS.map(f => (
+            <button key={f.v} onClick={() => { setSuppFilter(f.v); loadTickets(f.v); }}
+              style={{ padding: "0.3rem 0.85rem", borderRadius: 100, border: "none", cursor: "pointer", fontFamily: T.ff, fontSize: "0.78rem", fontWeight: 600, background: suppFilter === f.v ? T.ink : T.border, color: suppFilter === f.v ? T.white : T.inkMuted }}>
+              {f.label}
+            </button>
+          ))}
+          <button onClick={() => loadTickets(suppFilter)} style={{ marginLeft: "auto", padding: "0.3rem 0.85rem", borderRadius: 100, border: `1px solid ${T.border}`, background: T.white, color: T.inkSoft, fontFamily: T.ff, fontSize: "0.78rem", fontWeight: 600, cursor: "pointer" }}>
+            Refresh
+          </button>
+        </div>
+
+        {suppLoading ? (
+          <div style={{ padding: "2rem", textAlign: "center" as const, color: T.inkMuted }}>Loading…</div>
+        ) : !suppTickets || suppTickets.length === 0 ? (
+          <div style={{ padding: "2rem", textAlign: "center" as const, color: T.inkMuted, background: T.white, borderRadius: T.r, border: `1px solid ${T.border}` }}>No tickets found</div>
+        ) : (
+          <div style={{ display: "flex", flexDirection: "column" as const, gap: "0.5rem" }}>
+            {suppTickets.map(t => {
+              const s = SUPP_STATUS_COLORS[t.status] ?? SUPP_STATUS_COLORS.OPEN;
+              const p = SUPP_PRIORITY_COLORS[t.priority] ?? SUPP_PRIORITY_COLORS.NORMAL;
+              const uName = [t.user.firstName, t.user.lastName].filter(Boolean).join(" ") || t.user.email;
+              return (
+                <div key={t.id} onClick={() => openTicket(t.id)}
+                  style={{ background: T.white, border: `1.5px solid ${suppTicket?.id === t.id ? T.leaf : T.border}`, borderRadius: 12, padding: "0.85rem 1rem", cursor: "pointer" }}>
+                  <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "0.5rem", marginBottom: "0.4rem" }}>
+                    <div style={{ fontSize: "0.85rem", fontWeight: 600, color: T.ink, flex: 1, lineHeight: 1.3 }}>#{t.id} — {t.subject}</div>
+                    <span style={{ padding: "0.15rem 0.55rem", borderRadius: 100, fontSize: "0.7rem", fontWeight: 600, background: s.bg, color: s.color, whiteSpace: "nowrap" as const, flexShrink: 0 }}>{s.label}</span>
+                  </div>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" as const }}>
+                    <span style={{ fontSize: "0.72rem", color: T.inkMuted }}>{uName}</span>
+                    {t.category && <span style={{ fontSize: "0.7rem", color: T.inkMuted }}>· {t.category}</span>}
+                    <span style={{ fontSize: "0.7rem", color: T.inkMuted }}>· {new Date(t.createdAt).toLocaleDateString("en-GB", { day: "numeric", month: "short" })}</span>
+                    {t._count.replies > 0 && <span style={{ fontSize: "0.7rem", color: T.inkMuted }}>· {t._count.replies} replies</span>}
+                    <span style={{ marginLeft: "auto", padding: "0.1rem 0.4rem", borderRadius: 100, fontSize: "0.68rem", fontWeight: 600, background: p.bg, color: p.color }}>{t.priority}</span>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
+        )}
+      </div>
+
+      {/* Thread view */}
+      {suppTicket && (
+        <div style={{ background: T.white, border: `1px solid ${T.border}`, borderRadius: T.r, padding: isMobile ? "1rem" : "1.25rem", display: "flex", flexDirection: "column" as const, gap: "1rem" }}>
+          {suppTicketLoading ? (
+            <div style={{ padding: "2rem", textAlign: "center" as const, color: T.inkMuted }}>Loading…</div>
+          ) : (
+            <>
+              <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "1rem" }}>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: "0.72rem", color: T.inkMuted, marginBottom: "0.2rem" }}>
+                    Ticket #{suppTicket.id} · {[suppTicket.user.firstName, suppTicket.user.lastName].filter(Boolean).join(" ") || suppTicket.user.email}
+                  </div>
+                  <div style={{ fontFamily: T.ffd, fontSize: "1.05rem", fontWeight: 700, color: T.ink, lineHeight: 1.3 }}>{suppTicket.subject}</div>
+                  {suppTicket.category && <div style={{ fontSize: "0.75rem", color: T.inkMuted, marginTop: "0.2rem" }}>{suppTicket.category}</div>}
+                </div>
+                <button onClick={() => setSuppTicket(null)} style={{ border: "none", background: "none", fontSize: "1.1rem", cursor: "pointer", color: T.inkMuted, lineHeight: 1 }}>✕</button>
+              </div>
+
+              <div style={{ display: "flex", gap: "0.5rem", paddingBottom: "0.75rem", borderBottom: `1px solid ${T.border}` }}>
+                <select value={suppTicket.status} disabled={suppStatusUpdating} onChange={e => updateStatus(e.target.value)}
+                  style={{ padding: "0.3rem 0.65rem", border: `1px solid ${T.border}`, borderRadius: 8, fontSize: "0.78rem", fontFamily: T.ff, background: T.white, cursor: "pointer" }}>
+                  <option value="OPEN">Open</option>
+                  <option value="IN_PROGRESS">In Progress</option>
+                  <option value="RESOLVED">Resolved</option>
+                  <option value="CLOSED">Closed</option>
+                </select>
+                <select value={suppTicket.priority} disabled={suppStatusUpdating} onChange={e => updateStatus(undefined, e.target.value)}
+                  style={{ padding: "0.3rem 0.65rem", border: `1px solid ${T.border}`, borderRadius: 8, fontSize: "0.78rem", fontFamily: T.ff, background: T.white, cursor: "pointer" }}>
+                  <option value="LOW">Low</option>
+                  <option value="NORMAL">Normal</option>
+                  <option value="HIGH">High</option>
+                  <option value="URGENT">Urgent</option>
+                </select>
+              </div>
+
+              <div style={{ display: "flex", flexDirection: "column" as const, gap: "0.75rem", maxHeight: 380, overflowY: "auto" as const }}>
+                <div style={{ background: T.cream, border: `1px solid ${T.border}`, borderRadius: "4px 12px 12px 12px", padding: "0.85rem 1rem" }}>
+                  <div style={{ fontSize: "0.72rem", color: T.inkMuted, marginBottom: "0.4rem" }}>
+                    {[suppTicket.user.firstName, suppTicket.user.lastName].filter(Boolean).join(" ") || suppTicket.user.email}
+                    {" · "}{new Date(suppTicket.createdAt).toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}
+                  </div>
+                  <p style={{ margin: 0, fontSize: "0.88rem", lineHeight: 1.65, color: T.ink, whiteSpace: "pre-wrap" as const }}>{suppTicket.message}</p>
+                </div>
+                {suppTicket.replies.map(r => (
+                  <div key={r.id} style={{ display: "flex", justifyContent: r.isAdmin ? "flex-start" : "flex-end" as const }}>
+                    <div style={{ maxWidth: "85%", background: r.isAdmin ? T.leafLight : T.cream, border: `1px solid ${r.isAdmin ? "#a8d4b5" : T.border}`, borderRadius: r.isAdmin ? "4px 12px 12px 12px" : "12px 4px 12px 12px", padding: "0.75rem 0.9rem" }}>
+                      <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", marginBottom: "0.35rem" }}>
+                        {r.isAdmin && <span style={{ fontSize: "0.68rem", fontWeight: 700, color: T.leaf }}>OpenWebinar Team</span>}
+                        <span style={{ fontSize: "0.68rem", color: T.inkMuted }}>{new Date(r.createdAt).toLocaleString("en-GB", { day: "numeric", month: "short", hour: "2-digit", minute: "2-digit" })}</span>
+                      </div>
+                      <p style={{ margin: 0, fontSize: "0.85rem", lineHeight: 1.6, color: T.ink, whiteSpace: "pre-wrap" as const }}>{r.message}</p>
+                    </div>
+                  </div>
+                ))}
+              </div>
+
+              {suppTicket.status !== "RESOLVED" && suppTicket.status !== "CLOSED" && (
+                <div style={{ paddingTop: "0.75rem", borderTop: `1px solid ${T.border}` }}>
+                  <textarea value={suppReply} onChange={e => setSuppReply(e.target.value)}
+                    placeholder="Write a reply… (email will be sent to the user)"
+                    rows={3}
+                    style={{ width: "100%", padding: "0.65rem 0.85rem", border: `1.5px solid ${T.border}`, borderRadius: 10, fontSize: "0.875rem", fontFamily: T.ff, outline: "none", resize: "vertical" as const, boxSizing: "border-box" as const, lineHeight: 1.6 }}
+                  />
+                  <div style={{ display: "flex", justifyContent: "flex-end" as const, marginTop: "0.65rem" }}>
+                    <button onClick={sendReply} disabled={suppReplying || !suppReply.trim()}
+                      style={{ padding: "0.55rem 1.25rem", background: T.leaf, border: "none", borderRadius: 100, fontSize: "0.85rem", fontWeight: 600, color: T.white, cursor: (suppReplying || !suppReply.trim()) ? "not-allowed" : "pointer", opacity: (suppReplying || !suppReply.trim()) ? 0.6 : 1, fontFamily: T.ff }}>
+                      {suppReplying ? "Sending…" : "Send Reply"}
+                    </button>
+                  </div>
+                </div>
+              )}
+            </>
+          )}
+        </div>
+      )}
     </div>
   );
 }
