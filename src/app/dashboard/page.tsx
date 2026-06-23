@@ -28,6 +28,15 @@ function greeting(name: string) {
   return `Good ${part}, ${name || "there"}!`;
 }
 
+interface AnnItem {
+  id: number;
+  title: string | null;
+  content: string;
+  createdAt: string;
+  readCount: number;
+  subscriberCount: number;
+}
+
 function timeAgo(iso: string) {
   const diff = Date.now() - new Date(iso).getTime();
   const mins = Math.floor(diff / 60_000);
@@ -188,6 +197,13 @@ export default function DashboardPage() {
   const [dashSessTab, setDashSessTab] = useState<"upcoming" | "draft" | "rejected" | "completed">("upcoming");
   const [copiedId, setCopiedId] = useState<number | null>(null);
   const [isMobile, setIsMobile] = useState(false);
+  const [annText, setAnnText] = useState("");
+  const [annTitle, setAnnTitle] = useState("");
+  const [annSending, setAnnSending] = useState(false);
+  const [annList, setAnnList] = useState<AnnItem[]>([]);
+  const [annListLoading, setAnnListLoading] = useState(false);
+  const [annDeletingId, setAnnDeletingId] = useState<number | null>(null);
+  const [annError, setAnnError] = useState<string | null>(null);
 
   function copySessionLink(id: number) {
     const url = `${window.location.origin}/session/${id}`;
@@ -227,6 +243,12 @@ export default function DashboardPage() {
     check();
     window.addEventListener("resize", check);
     return () => window.removeEventListener("resize", check);
+  }, []);
+
+  useEffect(() => {
+    const token = localStorage.getItem("token");
+    if (token) loadAnnouncements();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   async function handleFollowBack(subscriberId: number, currentlyFollowing: boolean) {
@@ -274,6 +296,56 @@ export default function DashboardPage() {
     finally { setCancellingId(null); }
   }
 
+
+  async function loadAnnouncements() {
+    setAnnListLoading(true);
+    const token = localStorage.getItem("token");
+    try {
+      const r = await fetch(`${process.env.NEXT_PUBLIC_API_URL ?? ""}/announcements/my`, {
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      if (r.ok) setAnnList(await r.json());
+    } catch { /* ignore */ }
+    finally { setAnnListLoading(false); }
+  }
+
+  async function sendAnnouncement() {
+    if (!annText.trim()) return;
+    setAnnSending(true);
+    setAnnError(null);
+    const token = localStorage.getItem("token");
+    try {
+      const r = await fetch(`${process.env.NEXT_PUBLIC_API_URL ?? ""}/announcements`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ content: annText.trim(), title: annTitle.trim() || undefined }),
+      });
+      if (r.ok) {
+        setAnnText("");
+        setAnnTitle("");
+        loadAnnouncements();
+      } else {
+        const body = await r.json().catch(() => ({}));
+        setAnnError(body.message ?? `Error ${r.status}`);
+      }
+    } catch (e) {
+      setAnnError(e instanceof Error ? e.message : "Network error");
+    } finally { setAnnSending(false); }
+  }
+
+  async function deleteAnnouncement(id: number) {
+    if (!confirm("Delete this announcement? Subscribers will no longer see it.")) return;
+    setAnnDeletingId(id);
+    const token = localStorage.getItem("token");
+    try {
+      await fetch(`${process.env.NEXT_PUBLIC_API_URL ?? ""}/announcements/${id}`, {
+        method: "DELETE",
+        headers: { Authorization: `Bearer ${token}` },
+      });
+      setAnnList(prev => prev.filter(a => a.id !== id));
+    } catch { /* ignore */ }
+    finally { setAnnDeletingId(null); }
+  }
 
   if (loading) {
     return (
@@ -585,6 +657,84 @@ export default function DashboardPage() {
                 })}
               </div>
             </div>
+
+            {/* Announcements */}
+            <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.1rem", marginTop: "1.75rem" }}>
+              <SectionTitle>Announcements</SectionTitle>
+              <span style={{ fontSize: "0.75rem", color: T.inkMuted }}>{stats.subscriberCount} subscriber{stats.subscriberCount !== 1 ? "s" : ""}</span>
+            </div>
+
+            {/* Compose box */}
+            <div style={{ background: T.white, border: `1px solid ${T.border}`, borderRadius: T.r, padding: "1.25rem", marginBottom: "1.25rem" }}>
+              <div style={{ fontSize: "0.72rem", fontWeight: 700, letterSpacing: "0.06em", textTransform: "uppercase", color: T.inkMuted, marginBottom: "0.75rem" }}>
+                Broadcast to all subscribers
+              </div>
+              <input
+                value={annTitle}
+                onChange={e => setAnnTitle(e.target.value)}
+                placeholder="Title (optional)"
+                style={{ width: "100%", padding: "0.6rem 0.85rem", borderRadius: T.rs, border: `1.5px solid ${T.border}`, fontFamily: T.ff, fontSize: "0.85rem", color: T.ink, background: T.cream, outline: "none", marginBottom: "0.65rem", boxSizing: "border-box" as const }}
+              />
+              <textarea
+                value={annText}
+                onChange={e => setAnnText(e.target.value)}
+                placeholder="Write your announcement…"
+                rows={3}
+                style={{ width: "100%", padding: "0.6rem 0.85rem", borderRadius: T.rs, border: `1.5px solid ${T.border}`, fontFamily: T.ff, fontSize: "0.85rem", color: T.ink, background: T.cream, outline: "none", resize: "vertical" as const, boxSizing: "border-box" as const, lineHeight: 1.6 }}
+              />
+              <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginTop: "0.75rem" }}>
+                <span style={{ fontSize: "0.72rem", color: T.inkMuted }}>{annText.length} chars</span>
+                <button
+                  onClick={sendAnnouncement}
+                  disabled={annSending || !annText.trim()}
+                  style={{ display: "flex", alignItems: "center", gap: "0.45rem", padding: "0.55rem 1.25rem", borderRadius: T.rs, fontFamily: T.ff, fontSize: "0.85rem", fontWeight: 600, background: annSending || !annText.trim() ? T.border : T.leaf, color: annSending || !annText.trim() ? T.inkMuted : T.white, border: "none", cursor: annSending || !annText.trim() ? "not-allowed" : "pointer", transition: "background 0.2s" }}>
+                  {annSending
+                    ? <><svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.5} style={{ animation: "oc-spin 0.8s linear infinite" }}><path d="M12 2v4M12 18v4M4.93 4.93l2.83 2.83M16.24 16.24l2.83 2.83M2 12h4M18 12h4M4.93 19.07l2.83-2.83M16.24 7.76l2.83-2.83"/></svg> Sending…</>
+                    : <><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><line x1="22" y1="2" x2="11" y2="13"/><polygon points="22 2 15 22 11 13 2 9 22 2"/></svg> Send to {stats.subscriberCount} subscriber{stats.subscriberCount !== 1 ? "s" : ""}</>
+                  }
+                </button>
+              </div>
+              {annError && (
+                <div style={{ marginTop: "0.6rem", fontSize: "0.78rem", color: "#c0392b", background: "#fdecea", border: "1px solid #f5c6c6", borderRadius: T.rs, padding: "0.5rem 0.75rem" }}>
+                  {annError}
+                </div>
+              )}
+            </div>
+
+            {/* Past announcements */}
+            {annListLoading ? (
+              <div style={{ padding: "1.5rem", textAlign: "center", color: T.inkMuted, fontSize: "0.85rem" }}>Loading…</div>
+            ) : annList.length === 0 ? (
+              <div style={{ background: T.white, border: `1px solid ${T.border}`, borderRadius: T.r, padding: "1.5rem", textAlign: "center", color: T.inkMuted, fontSize: "0.875rem" }}>
+                No announcements yet. Send your first one above.
+              </div>
+            ) : (
+              <div style={{ display: "flex", flexDirection: "column", gap: "0.75rem", marginBottom: "1.75rem" }}>
+                {annList.map(a => (
+                  <div key={a.id} style={{ background: T.white, border: `1px solid ${T.border}`, borderRadius: T.r, padding: "1rem 1.25rem" }}>
+                    <div style={{ display: "flex", alignItems: "flex-start", justifyContent: "space-between", gap: "0.75rem", marginBottom: a.title ? "0.3rem" : "0.5rem" }}>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        {a.title && <div style={{ fontSize: "0.88rem", fontWeight: 700, color: T.ink, marginBottom: "0.2rem" }}>{a.title}</div>}
+                        <div style={{ fontSize: "0.82rem", color: T.inkSoft, lineHeight: 1.6, whiteSpace: "pre-wrap" as const }}>{a.content}</div>
+                      </div>
+                      <button
+                        onClick={() => deleteAnnouncement(a.id)}
+                        disabled={annDeletingId === a.id}
+                        title="Delete announcement"
+                        style={{ flexShrink: 0, background: "none", border: "none", cursor: annDeletingId === a.id ? "not-allowed" : "pointer", color: T.inkMuted, padding: "0.2rem", borderRadius: 6, opacity: annDeletingId === a.id ? 0.4 : 1 }}>
+                        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 01-2 2H8a2 2 0 01-2-2L5 6"/><path d="M10 11v6M14 11v6"/><path d="M9 6V4a1 1 0 011-1h4a1 1 0 011 1v2"/></svg>
+                      </button>
+                    </div>
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.75rem", marginTop: "0.5rem" }}>
+                      <span style={{ fontSize: "0.68rem", color: T.inkMuted }}>{timeAgo(a.createdAt)}</span>
+                      <span style={{ fontSize: "0.68rem", color: T.leaf, fontWeight: 600, background: T.leafLight, padding: "0.1rem 0.5rem", borderRadius: 100 }}>
+                        {a.readCount} / {a.subscriberCount} read
+                      </span>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
 
             {/* Recent Reviews */}
             <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.1rem" }}>

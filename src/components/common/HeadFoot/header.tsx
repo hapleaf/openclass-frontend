@@ -33,6 +33,12 @@ export default function Header({
   const [cachedRole, setCachedRole] = useState('');
   const [dashRole, setDashRole] = useState<'teacher' | 'student' | null>(null);
   const [isAdmin, setIsAdmin] = useState(false);
+  const [unreadMsgs, setUnreadMsgs] = useState(0);
+  const [unreadAnns, setUnreadAnns] = useState(0);
+  const [bellHover, setBellHover] = useState(false);
+  const [annHover, setAnnHover] = useState(false);
+  const [webinarHover, setWebinarHover] = useState(false);
+  const [speakerHover, setSpeakerHover] = useState(false);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth <= 1024);
@@ -55,11 +61,25 @@ export default function Header({
       setCachedInitials(initials(p));
       setCachedRole(p.title || '');
       setDashRole((localStorage.getItem('oc_default_role') as 'teacher' | 'student') || null);
+      setUnreadMsgs(parseInt(localStorage.getItem('oc_msg_unread') ?? '0', 10) || 0);
+      setUnreadAnns(parseInt(localStorage.getItem('oc_ann_unread') ?? '0', 10) || 0);
       try {
         const payload = JSON.parse(atob(token.split('.')[1]));
         setIsAdmin(payload.role === 'admin');
       } catch { /* ignore */ }
     }
+  }, []);
+
+  useEffect(() => {
+    const sync = () => setUnreadMsgs(parseInt(localStorage.getItem('oc_msg_unread') ?? '0', 10) || 0);
+    window.addEventListener('oc_msg_update', sync);
+    return () => window.removeEventListener('oc_msg_update', sync);
+  }, []);
+
+  useEffect(() => {
+    const sync = () => setUnreadAnns(parseInt(localStorage.getItem('oc_ann_unread') ?? '0', 10) || 0);
+    window.addEventListener('oc_ann_update', sync);
+    return () => window.removeEventListener('oc_ann_update', sync);
   }, []);
 
   useEffect(() => {
@@ -222,8 +242,30 @@ export default function Header({
           <>
             <ul style={{ display: "flex", alignItems: "center", gap: "0.35rem", listStyle: "none", margin: "0 0 0 auto", padding: 0 }}>
               {isLoggedIn && <li><Link href={dashRole === "student" ? "/student-dashboard" : "/dashboard"} style={linkStyle(activeLink === "dashboard")}>Dashboard</Link></li>}
-              <li><Link href="/live" style={linkStyle(activeLink === "live")}>Webinars</Link></li>
-              <li><Link href="/speakers" style={linkStyle(activeLink === "speakers" || activeLink === "teachers")}>Speakers</Link></li>
+              <li style={{ position: "relative" }} onMouseEnter={() => setWebinarHover(true)} onMouseLeave={() => setWebinarHover(false)}>
+                <Link href="/live" style={linkStyle(activeLink === "live")}>Webinars</Link>
+                {webinarHover && (
+                  <div style={{ position: "absolute", top: "calc(100% + 10px)", left: "50%", transform: "translateX(-50%)", width: 260, background: "#fff", border: "1.5px solid #e2ded6", borderRadius: 14, boxShadow: "0 8px 28px rgba(15,20,16,0.12)", padding: "1rem 1.1rem", zIndex: 400, pointerEvents: "none" }}>
+                    <div style={{ position: "absolute", top: -7, left: "50%", transform: "translateX(-50%)", width: 12, height: 12, background: "#fff", border: "1.5px solid #e2ded6", borderBottom: "none", borderRight: "none", rotate: "45deg" }} />
+                    <div style={{ fontSize: "0.82rem", fontWeight: 700, color: "#0f1410", marginBottom: "0.4rem" }}>🎙️ Live Webinars</div>
+                    <div style={{ fontSize: "0.76rem", color: "#3a4140", lineHeight: 1.55 }}>
+                      Browse and join <strong>live webinars</strong> hosted by expert speakers — interactive sessions where you can ask questions, learn, and engage in real time.
+                    </div>
+                  </div>
+                )}
+              </li>
+              <li style={{ position: "relative" }} onMouseEnter={() => setSpeakerHover(true)} onMouseLeave={() => setSpeakerHover(false)}>
+                <Link href="/speakers" style={linkStyle(activeLink === "speakers" || activeLink === "teachers")}>Speakers</Link>
+                {speakerHover && (
+                  <div style={{ position: "absolute", top: "calc(100% + 10px)", left: "50%", transform: "translateX(-50%)", width: 260, background: "#fff", border: "1.5px solid #e2ded6", borderRadius: 14, boxShadow: "0 8px 28px rgba(15,20,16,0.12)", padding: "1rem 1.1rem", zIndex: 400, pointerEvents: "none" }}>
+                    <div style={{ position: "absolute", top: -7, left: "50%", transform: "translateX(-50%)", width: 12, height: 12, background: "#fff", border: "1.5px solid #e2ded6", borderBottom: "none", borderRight: "none", rotate: "45deg" }} />
+                    <div style={{ fontSize: "0.82rem", fontWeight: 700, color: "#0f1410", marginBottom: "0.4rem" }}>👥 Browse Speakers</div>
+                    <div style={{ fontSize: "0.76rem", color: "#3a4140", lineHeight: 1.55 }}>
+                      Discover expert speakers across topics — <strong>subscribe</strong> to follow their sessions, receive announcements, and send them a direct message.
+                    </div>
+                  </div>
+                )}
+              </li>
               {isLoggedIn && userRole !== "Student" && dashRole !== "student" && <li><Link href="/my-sessions" style={linkStyle(activeLink === "sessions")}>My Webinars</Link></li>}
               {isLoggedIn && (
                 <li style={{ position: "relative" }}
@@ -264,7 +306,54 @@ export default function Header({
                   </Link>
                 </li>
               )}
+              {isLoggedIn && (
+                <li style={{ position: "relative" }} onMouseEnter={() => setAnnHover(true)} onMouseLeave={() => setAnnHover(false)}>
+                  <Link href="/announcements" style={{ position: "relative", display: "inline-flex", alignItems: "center", gap: "0.4rem", textDecoration: "none", fontSize: "0.78rem", fontWeight: 600, color: "#1d6b3c", background: "#d4ead9", border: "1.5px solid #a8d5b5", padding: "0.35rem 0.85rem", borderRadius: 100, fontFamily: "var(--font-dm-sans), sans-serif", whiteSpace: "nowrap" as const }}>
+                    <svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2} style={{ flexShrink: 0 }}><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                    Announcements
+                    {unreadAnns > 0 && (
+                      <span style={{ minWidth: 16, height: 16, borderRadius: 100, background: "#1d6b3c", color: "#fff", fontSize: "0.55rem", fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", padding: "0 3px" }}>
+                        {unreadAnns > 9 ? "9+" : unreadAnns}
+                      </span>
+                    )}
+                  </Link>
+                  {annHover && (
+                    <div style={{ position: "absolute", top: "calc(100% + 10px)", left: "50%", transform: "translateX(-50%)", width: 260, background: "#fff", border: "1.5px solid #e2ded6", borderRadius: 14, boxShadow: "0 8px 28px rgba(15,20,16,0.12)", padding: "1rem 1.1rem", zIndex: 400, pointerEvents: "none" }}>
+                      <div style={{ position: "absolute", top: -7, left: "50%", transform: "translateX(-50%)", width: 12, height: 12, background: "#fff", border: "1.5px solid #e2ded6", borderBottom: "none", borderRight: "none", rotate: "45deg" }} />
+                      <div style={{ fontSize: "0.82rem", fontWeight: 700, color: "#0f1410", marginBottom: "0.4rem" }}>📢 Speaker announcements</div>
+                      <div style={{ fontSize: "0.76rem", color: "#3a4140", lineHeight: 1.55 }}>
+                        When a speaker you're <strong>subscribed to</strong> sends a broadcast, it appears here — updates, new sessions, or anything they want their subscribers to know.
+                      </div>
+                      {unreadAnns > 0 && <div style={{ marginTop: "0.65rem", fontSize: "0.7rem", color: "#1d6b3c", fontWeight: 600 }}>{unreadAnns} unread →</div>}
+                    </div>
+                  )}
+                </li>
+              )}
             </ul>
+
+            {/* Messages icon — desktop */}
+            {isLoggedIn && (
+              <div style={{ position: "relative", flexShrink: 0 }} onMouseEnter={() => setBellHover(true)} onMouseLeave={() => setBellHover(false)}>
+                <Link href="/messages" style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center", width: 36, height: 36, borderRadius: "50%", border: "1.5px solid #e2ded6", background: "#fff", textDecoration: "none" }}>
+                  <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="#3a4140" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round"><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" /></svg>
+                  {unreadMsgs > 0 && (
+                    <span style={{ position: "absolute", top: -3, right: -3, minWidth: 16, height: 16, borderRadius: 100, background: "#1d6b3c", border: "2px solid #faf7f2", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.55rem", fontWeight: 700, color: "#fff", padding: "0 3px" }}>
+                      {unreadMsgs > 9 ? "9+" : unreadMsgs}
+                    </span>
+                  )}
+                </Link>
+                {bellHover && (
+                  <div style={{ position: "absolute", top: "calc(100% + 10px)", left: "50%", transform: "translateX(-50%)", width: 260, background: "#fff", border: "1.5px solid #e2ded6", borderRadius: 14, boxShadow: "0 8px 28px rgba(15,20,16,0.12)", padding: "1rem 1.1rem", zIndex: 500, pointerEvents: "none" }}>
+                    <div style={{ position: "absolute", top: -7, left: "50%", transform: "translateX(-50%)", width: 12, height: 12, background: "#fff", border: "1.5px solid #e2ded6", borderBottom: "none", borderRight: "none", rotate: "45deg" }} />
+                    <div style={{ fontSize: "0.82rem", fontWeight: 700, color: "#0f1410", marginBottom: "0.4rem" }}>💬 Direct Messages</div>
+                    <div style={{ fontSize: "0.76rem", color: "#3a4140", lineHeight: 1.55 }}>
+                      When someone reaches out to you <strong>one-on-one</strong>, their message appears here — private conversations between you and anyone on the platform.
+                    </div>
+                    {unreadMsgs > 0 && <div style={{ marginTop: "0.65rem", fontSize: "0.7rem", color: "#1d6b3c", fontWeight: 600 }}>{unreadMsgs} unread →</div>}
+                  </div>
+                )}
+              </div>
+            )}
 
             {/* Desktop auth */}
             {isLoggedIn ? (
@@ -289,8 +378,15 @@ export default function Header({
                       <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2" /><circle cx="12" cy="7" r="4" /></svg>
                       My Profile
                     </Link>
-                    <Link href="/support" onClick={() => setDropdownOpen(false)} style={ddItem()}>
-                      <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" /></svg>
+                    <Link href="/messages" onClick={() => setDropdownOpen(false)} style={{ ...ddItem(), justifyContent: "space-between" }}>
+                      <span style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
+                        <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" /></svg>
+                        Messages
+                      </span>
+                      {unreadMsgs > 0 && <span style={{ minWidth: 18, height: 18, borderRadius: 100, background: "#1d6b3c", color: "#fff", fontSize: "0.65rem", fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", padding: "0 4px" }}>{unreadMsgs > 9 ? "9+" : unreadMsgs}</span>}
+                    </Link>
+                    <Link href="/support" onClick={() => setDropdownOpen(false)} title="Get help from the OpenWebinar team" style={ddItem()}>
+                      <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
                       Support
                     </Link>
                     <div style={{ height: 1, background: "#e2ded6" }} />
@@ -377,8 +473,24 @@ export default function Header({
                 My Profile
               </Link>
 
-              <Link href="/support" onClick={() => setMenuOpen(false)} style={{ ...mobileLinkStyle(false), display: "flex", alignItems: "center", gap: "0.6rem" }}>
-                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" /></svg>
+              <Link href="/messages" onClick={() => setMenuOpen(false)} style={{ ...mobileLinkStyle(false), display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <span style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
+                  <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" /></svg>
+                  Messages
+                </span>
+                {unreadMsgs > 0 && <span style={{ minWidth: 20, height: 20, borderRadius: 100, background: "#1d6b3c", color: "#fff", fontSize: "0.7rem", fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", padding: "0 5px" }}>{unreadMsgs > 9 ? "9+" : unreadMsgs}</span>}
+              </Link>
+
+              <Link href="/announcements" onClick={() => setMenuOpen(false)} style={{ ...mobileLinkStyle(false), display: "flex", alignItems: "center", justifyContent: "space-between" }}>
+                <span style={{ display: "flex", alignItems: "center", gap: "0.6rem" }}>
+                  <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M15 17h5l-1.405-1.405A2.032 2.032 0 0118 14.158V11a6.002 6.002 0 00-4-5.659V5a2 2 0 10-4 0v.341C7.67 6.165 6 8.388 6 11v3.159c0 .538-.214 1.055-.595 1.436L4 17h5m6 0v1a3 3 0 11-6 0v-1m6 0H9"/></svg>
+                  Announcements
+                </span>
+                {unreadAnns > 0 && <span style={{ minWidth: 20, height: 20, borderRadius: 100, background: "#1d6b3c", color: "#fff", fontSize: "0.7rem", fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", padding: "0 5px" }}>{unreadAnns > 9 ? "9+" : unreadAnns}</span>}
+              </Link>
+
+              <Link href="/support" onClick={() => setMenuOpen(false)} title="Get help from the OpenWebinar team" style={{ ...mobileLinkStyle(false), display: "flex", alignItems: "center", gap: "0.6rem" }}>
+                <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><circle cx="12" cy="12" r="10"/><path d="M9.09 9a3 3 0 015.83 1c0 2-3 3-3 3M12 17h.01"/></svg>
                 Support
               </Link>
 

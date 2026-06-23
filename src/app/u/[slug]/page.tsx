@@ -234,6 +234,12 @@ export default function PublicProfilePage() {
   const [reviews, setReviews]           = useState<ReviewData[]>([]);
   const [isMobile, setIsMobile]         = useState(false);
 
+  /* message modal state */
+  const [showMsgModal, setShowMsgModal] = useState(false);
+  const [msgText, setMsgText] = useState("");
+  const [msgSending, setMsgSending] = useState(false);
+  const [msgSent, setMsgSent] = useState<number | null>(null); // conversationId on success
+
   /* review form state */
   const [showReviewForm, setShowReviewForm] = useState(false);
   const [nextReviewDate, setNextReviewDate] = useState<Date | null>(null);
@@ -296,6 +302,30 @@ export default function PublicProfilePage() {
     obs.observe(barsRef.current);
     return () => obs.disconnect();
   }, [data]);
+
+  const handleSendMessage = async () => {
+    if (!data || !msgText.trim()) return;
+    setMsgSending(true);
+    try {
+      const token = localStorage.getItem("token");
+      const res = await fetch(`${API}/messages`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json", Authorization: `Bearer ${token}` },
+        body: JSON.stringify({ recipientId: data.profile.id, content: msgText.trim() }),
+      });
+      if (!res.ok) {
+        const d = await res.json().catch(() => ({})) as { message?: string };
+        throw new Error(d.message || "Failed to send");
+      }
+      const d = await res.json() as { conversationId: number };
+      setMsgSent(d.conversationId);
+      setMsgText("");
+    } catch (err: unknown) {
+      alert(err instanceof Error ? err.message : "Failed to send message");
+    } finally {
+      setMsgSending(false);
+    }
+  };
 
   const handleSubscribe = async () => {
     if (!isLoggedIn) { router.push("/login"); return; }
@@ -372,6 +402,46 @@ export default function PublicProfilePage() {
         .live-join-btn { animation: live-ring 2s ease-out infinite; }
         .live-join-btn:hover { background: #145c30 !important; }
       `}</style>
+
+      {/* ── MESSAGE MODAL ── */}
+      {showMsgModal && (
+        <div onClick={() => setShowMsgModal(false)} style={{ position: "fixed", inset: 0, background: "rgba(15,20,16,0.45)", zIndex: 500, display: "flex", alignItems: "center", justifyContent: "center", padding: "1rem" }}>
+          <div onClick={e => e.stopPropagation()} style={{ background: C.white, borderRadius: 20, padding: "1.75rem", width: "100%", maxWidth: 480, boxShadow: "0 20px 60px rgba(15,20,16,0.2)" }}>
+            {msgSent ? (
+              <div style={{ textAlign: "center" as const, padding: "1rem 0" }}>
+                <div style={{ fontSize: "2.5rem", marginBottom: "0.75rem" }}>✅</div>
+                <div style={{ fontFamily: C.ffD, fontSize: "1.1rem", fontWeight: 700, color: C.ink, marginBottom: "0.4rem" }}>Message sent!</div>
+                <div style={{ fontSize: "0.85rem", color: C.inkMuted, marginBottom: "1.5rem" }}>Your message has been delivered to {profile.firstName || name}.</div>
+                <div style={{ display: "flex", gap: "0.65rem", justifyContent: "center" }}>
+                  <button onClick={() => setShowMsgModal(false)} style={{ padding: "0.55rem 1.1rem", borderRadius: 100, border: `1.5px solid ${C.border}`, background: C.white, color: C.inkSoft, fontFamily: C.ff, fontSize: "0.85rem", fontWeight: 600, cursor: "pointer" }}>Close</button>
+                  <a href={`/messages?conv=${msgSent}`} style={{ padding: "0.55rem 1.25rem", borderRadius: 100, border: "none", background: C.leaf, color: "#fff", fontFamily: C.ff, fontSize: "0.85rem", fontWeight: 600, textDecoration: "none", display: "inline-flex", alignItems: "center" }}>View Conversation →</a>
+                </div>
+              </div>
+            ) : (
+              <>
+                <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "1.25rem" }}>
+                  <div style={{ fontFamily: C.ffD, fontSize: "1.1rem", fontWeight: 700, color: C.ink }}>Message {profile.firstName || name}</div>
+                  <button onClick={() => setShowMsgModal(false)} style={{ background: "none", border: "none", fontSize: "1.1rem", cursor: "pointer", color: C.inkMuted, lineHeight: 1, padding: "0.2rem" }}>✕</button>
+                </div>
+                <textarea
+                  value={msgText}
+                  onChange={e => setMsgText(e.target.value)}
+                  placeholder={`Write a message to ${profile.firstName || name}…`}
+                  rows={5}
+                  autoFocus
+                  style={{ width: "100%", padding: "0.75rem 0.9rem", border: `1.5px solid ${C.border}`, borderRadius: 12, fontSize: "0.9rem", fontFamily: C.ff, outline: "none", resize: "vertical" as const, boxSizing: "border-box" as const, lineHeight: 1.6 }}
+                />
+                <div style={{ display: "flex", gap: "0.65rem", justifyContent: "flex-end" as const, marginTop: "1rem" }}>
+                  <button onClick={() => setShowMsgModal(false)} style={{ padding: "0.55rem 1.1rem", borderRadius: 100, border: `1.5px solid ${C.border}`, background: C.white, color: C.inkSoft, fontFamily: C.ff, fontSize: "0.875rem", fontWeight: 600, cursor: "pointer" }}>Cancel</button>
+                  <button onClick={handleSendMessage} disabled={msgSending || !msgText.trim()} style={{ padding: "0.55rem 1.4rem", borderRadius: 100, border: "none", background: C.leaf, color: "#fff", fontFamily: C.ff, fontSize: "0.875rem", fontWeight: 600, cursor: (msgSending || !msgText.trim()) ? "not-allowed" : "pointer", opacity: (msgSending || !msgText.trim()) ? 0.6 : 1 }}>
+                    {msgSending ? "Sending…" : "Send Message"}
+                  </button>
+                </div>
+              </>
+            )}
+          </div>
+        </div>
+      )}
 
       {/* ── NAV ── */}
       <Header activeLink="speakers" />
@@ -456,17 +526,27 @@ export default function PublicProfilePage() {
             </div>
           </div>
 
-          {/* subscribe */}
+          {/* subscribe + message */}
           {!isOwnProfile && (
             <div style={{ display: "flex", flexDirection: "column", gap: "0.6rem", alignItems: isMobile ? "flex-start" : "flex-end", flexShrink: 0, width: isMobile ? "100%" : undefined }}>
-              <button
-                onClick={handleSubscribe}
-                disabled={subLoading}
-                style={{ display: "inline-flex", alignItems: "center", gap: "0.45rem", padding: "0.6rem 1.4rem", borderRadius: 100, fontFamily: C.ff, fontSize: "0.875rem", fontWeight: 600, cursor: subLoading ? "wait" : "pointer", border: subscribed ? "1.5px solid rgba(29,107,60,0.25)" : "none", background: subscribed ? C.leafLight : C.leaf, color: subscribed ? C.leaf : "#fff", boxShadow: subscribed ? "none" : "0 4px 12px rgba(29,107,60,0.3)", transition: "all 0.2s", whiteSpace: "nowrap" as const, opacity: subLoading ? 0.7 : 1 }}>
-                {subscribed ? "✓ Subscribed" : (
-                  <><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg> Subscribe Free</>
+              <div style={{ display: "flex", gap: "0.5rem", flexWrap: "wrap" as const }}>
+                <button
+                  onClick={handleSubscribe}
+                  disabled={subLoading}
+                  style={{ display: "inline-flex", alignItems: "center", gap: "0.45rem", padding: "0.6rem 1.4rem", borderRadius: 100, fontFamily: C.ff, fontSize: "0.875rem", fontWeight: 600, cursor: subLoading ? "wait" : "pointer", border: subscribed ? "1.5px solid rgba(29,107,60,0.25)" : "none", background: subscribed ? C.leafLight : C.leaf, color: subscribed ? C.leaf : "#fff", boxShadow: subscribed ? "none" : "0 4px 12px rgba(29,107,60,0.3)", transition: "all 0.2s", whiteSpace: "nowrap" as const, opacity: subLoading ? 0.7 : 1 }}>
+                  {subscribed ? "✓ Subscribed" : (
+                    <><svg width="13" height="13" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.2}><path d="M18 8A6 6 0 006 8c0 7-3 9-3 9h18s-3-2-3-9M13.73 21a2 2 0 01-3.46 0"/></svg> Subscribe Free</>
+                  )}
+                </button>
+                {isLoggedIn && subscribed && (
+                  <button
+                    onClick={() => { setShowMsgModal(true); setMsgSent(null); setMsgText(""); }}
+                    style={{ display: "inline-flex", alignItems: "center", gap: "0.45rem", padding: "0.6rem 1.1rem", borderRadius: 100, fontFamily: C.ff, fontSize: "0.875rem", fontWeight: 600, cursor: "pointer", border: `1.5px solid ${C.border}`, background: C.white, color: C.inkSoft, whiteSpace: "nowrap" as const }}>
+                    <svg width="14" height="14" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}><path d="M21 15a2 2 0 01-2 2H7l-4 4V5a2 2 0 012-2h14a2 2 0 012 2z" /></svg>
+                    Message
+                  </button>
                 )}
-              </button>
+              </div>
               <div style={{ fontSize: "0.72rem", color: C.inkMuted, textAlign: "right" }}>
                 {subscribed
                   ? `✓ You're following ${profile.firstName || name}`

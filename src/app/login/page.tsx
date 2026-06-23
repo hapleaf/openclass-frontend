@@ -249,6 +249,19 @@ export default function SignIn({ onSubmit, onGoSignUp, errorMessage }: SignInPro
         const data = await login({ email, password });
         localStorage.setItem("token", data.accessToken);
         await getProfile().catch(() => {});
+        // Seed unread counts so header badges are ready immediately
+        fetch(`${process.env.NEXT_PUBLIC_API_URL ?? ""}/messages/unread-count`, {
+          headers: { Authorization: `Bearer ${data.accessToken}` },
+        }).then(r => r.json()).then((d: { count: number }) => {
+          localStorage.setItem("oc_msg_unread", String(d.count ?? 0));
+          window.dispatchEvent(new Event("oc_msg_update"));
+        }).catch(() => {});
+        fetch(`${process.env.NEXT_PUBLIC_API_URL ?? ""}/announcements/unread-count`, {
+          headers: { Authorization: `Bearer ${data.accessToken}` },
+        }).then(r => r.json()).then((d: { count: number }) => {
+          localStorage.setItem("oc_ann_unread", String(d.count ?? 0));
+          window.dispatchEvent(new Event("oc_ann_update"));
+        }).catch(() => {});
         const def = localStorage.getItem("oc_default_role");
         router.push(def === "teacher" ? "/dashboard" : def === "student" ? "/student-dashboard" : "/roles");
       }
