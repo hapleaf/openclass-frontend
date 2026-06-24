@@ -77,7 +77,7 @@ export const metadata: Metadata = {
       "Host and attend free live webinars from expert speakers worldwide. Build your reputation, get discovered, and share knowledge — at zero cost.",
     images: [
       {
-        url: "/og-image.svg",
+        url: "/opengraph-image",
         width: 1200,
         height: 630,
         alt: "OpenWebinar — Free Webinars for Everyone",
@@ -93,11 +93,16 @@ export const metadata: Metadata = {
     title: "OpenWebinar — The World's Only Free Webinar Hub",
     description:
       "Host and attend free live webinars from expert speakers worldwide. Zero cost. No paywalls.",
-    images: ["/og-image.png"],
+    images: ["/opengraph-image"],
   },
 
   icons: {
-    icon: [{ url: "/favicon.svg", type: "image/svg+xml" }],
+    icon: [
+      { url: "/favicon.svg", type: "image/svg+xml" },
+      { url: "/icon", type: "image/png", sizes: "32x32" },
+    ],
+    apple: [{ url: "/apple-icon", sizes: "180x180", type: "image/png" }],
+    shortcut: "/favicon.svg",
   },
 
   category: "education",
