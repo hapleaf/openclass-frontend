@@ -29,14 +29,14 @@ const CARDS: {
 }[] = [
   {
     role: "teacher",
-    emoji: "🎓",
-    title: "Teacher",
+    emoji: "🎙️",
+    title: "Speaker",
     tagline: "Share your expertise. Reach thousands.",
     bullets: [
-      "Create & manage live classes and webinars",
+      "Host live webinars and broadcast to your audience",
       "Track subscribers, reviews, and engagement",
-      "Build your public teacher profile",
-      "View your Teaching Center dashboard",
+      "Send announcements directly to all your subscribers",
+      "Manage everything from your Speaker dashboard",
     ],
     accentBg: "#1d6b3c",
     accentText: "#d4ead9",
@@ -46,14 +46,14 @@ const CARDS: {
   },
   {
     role: "student",
-    emoji: "📚",
-    title: "Student",
-    tagline: "Learn from the best. Grow every day.",
+    emoji: "🎧",
+    title: "Attendee",
+    tagline: "Learn from experts. Grow every day.",
     bullets: [
-      "Browse live classes & webinars across subjects",
-      "Follow your favourite teachers",
-      "Register for upcoming sessions for free",
-      "Track sessions you've attended",
+      "Browse and join live webinars across topics",
+      "Subscribe to your favourite speakers",
+      "Receive announcements from speakers you follow",
+      "Track webinars you've registered for and attended",
     ],
     accentBg: "#1a4f7a",
     accentText: "#ddeaf8",
@@ -110,7 +110,7 @@ function RolesPageInner() {
 
         {/* Logo */}
         <Link href="/" style={{ position: "absolute", top: "1.5rem", left: "2rem", fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.4rem", fontWeight: 700, color: "#fff", textDecoration: "none", letterSpacing: "-0.02em" }}>
-          Open<span style={{ color: "#4a9e68" }}>Class</span>
+          Open<span style={{ color: "#4a9e68" }}>Webinar</span>
         </Link>
 
         <div style={{ position: "relative", zIndex: 1, width: "100%", maxWidth: 780, textAlign: "center" }}>
@@ -121,7 +121,7 @@ function RolesPageInner() {
               Welcome back, {name}
             </div>
             <h1 style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "clamp(1.8rem,4vw,2.6rem)", fontWeight: 700, color: "#fff", letterSpacing: "-0.03em", lineHeight: 1.1, marginBottom: "0.6rem" }}>
-              How are you using <em style={{ color: "#7ed9a4", fontStyle: "italic" }}>OpenClass</em> today?
+              How are you using <em style={{ color: "#7ed9a4", fontStyle: "italic" }}>OpenWebinar</em> today?
             </h1>
             <p style={{ color: "rgba(255,255,255,0.45)", fontSize: "0.95rem", maxWidth: 460, margin: "0 auto" }}>
               {isChanging ? "Switch your view. You can change this any time." : "Choose your role to get the right dashboard. You can always switch later."}
@@ -218,7 +218,7 @@ function RolesPageInner() {
             onClick={handleContinue}
             disabled={!selected}
             style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.85rem 2.5rem", borderRadius: 100, fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "0.95rem", fontWeight: 700, border: "none", cursor: selected ? "pointer" : "not-allowed", background: selected ? (selected === "teacher" ? "#1d6b3c" : "#1a4f7a") : "rgba(255,255,255,0.1)", color: selected ? "#fff" : "rgba(255,255,255,0.3)", transition: "all 0.2s", boxShadow: selected ? "0 4px 20px rgba(0,0,0,0.3)" : "none" }}>
-            Continue as {selected ? (selected === "teacher" ? "Teacher" : "Student") : "…"}
+            Continue as {selected ? (selected === "teacher" ? "Speaker" : "Attendee") : "…"}
             <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </button>
 
