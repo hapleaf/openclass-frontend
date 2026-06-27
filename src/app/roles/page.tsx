@@ -70,8 +70,16 @@ function RolesPageInner() {
   const [saveDefault, setSaveDefault] = useState(false);
   const [hovered, setHovered] = useState<Role | null>(null);
   const [currentDefault, setCurrentDefault] = useState<Role | null>(null);
+  const [isMobile, setIsMobile] = useState(false);
 
   const isChanging = searchParams.get("change") === "1";
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth < 640);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   useEffect(() => {
     // If not explicitly changing and a default is already set, skip this page
@@ -101,7 +109,7 @@ function RolesPageInner() {
   return (
     <>
 
-      <div style={{ minHeight: "100vh", background: "#0f1410", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: "2rem", fontFamily: "var(--font-dm-sans), sans-serif", position: "relative", overflow: "hidden" }}>
+      <div style={{ minHeight: "100vh", background: "#0f1410", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", padding: isMobile ? "5rem 1.25rem 2rem" : "2rem", fontFamily: "var(--font-dm-sans), sans-serif", position: "relative", overflow: "hidden" }}>
 
         {/* Background texture */}
         <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px)", backgroundSize: "32px 32px", pointerEvents: "none" }} />
@@ -129,7 +137,7 @@ function RolesPageInner() {
           </div>
 
           {/* Role cards */}
-          <div style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "1.25rem", marginBottom: "1.75rem" }}>
+          <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "1fr 1fr", gap: "1.25rem", marginBottom: "1.75rem" }}>
             {CARDS.map(card => {
               const isSelected = selected === card.role;
               const isHov = hovered === card.role;
@@ -142,7 +150,7 @@ function RolesPageInner() {
                     background: isSelected ? "rgba(255,255,255,0.06)" : "rgba(255,255,255,0.03)",
                     border: `2px solid ${isSelected ? card.borderHover : isHov ? "rgba(255,255,255,0.15)" : "rgba(255,255,255,0.08)"}`,
                     borderRadius: 20,
-                    padding: "1.75rem",
+                    padding: isMobile ? "1.25rem" : "1.75rem",
                     cursor: "pointer",
                     textAlign: "left",
                     transition: "all 0.2s",
@@ -217,7 +225,7 @@ function RolesPageInner() {
           <button
             onClick={handleContinue}
             disabled={!selected}
-            style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", padding: "0.85rem 2.5rem", borderRadius: 100, fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "0.95rem", fontWeight: 700, border: "none", cursor: selected ? "pointer" : "not-allowed", background: selected ? (selected === "teacher" ? "#1d6b3c" : "#1a4f7a") : "rgba(255,255,255,0.1)", color: selected ? "#fff" : "rgba(255,255,255,0.3)", transition: "all 0.2s", boxShadow: selected ? "0 4px 20px rgba(0,0,0,0.3)" : "none" }}>
+            style={{ display: "inline-flex", alignItems: "center", justifyContent: "center", gap: "0.5rem", padding: "0.85rem 2.5rem", borderRadius: 100, fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "0.95rem", fontWeight: 700, border: "none", cursor: selected ? "pointer" : "not-allowed", background: selected ? (selected === "teacher" ? "#1d6b3c" : "#1a4f7a") : "rgba(255,255,255,0.1)", color: selected ? "#fff" : "rgba(255,255,255,0.3)", transition: "all 0.2s", boxShadow: selected ? "0 4px 20px rgba(0,0,0,0.3)" : "none", width: isMobile ? "100%" : "auto" }}>
             Continue as {selected ? (selected === "teacher" ? "Speaker" : "Attendee") : "…"}
             <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path d="M5 12h14M12 5l7 7-7 7"/></svg>
           </button>
