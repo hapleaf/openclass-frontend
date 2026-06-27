@@ -12,10 +12,10 @@ import {
   getContactMessages, getContactThread, replyToContact, markContactRead, deleteContactMessage,
   recordingRunManually, recordingQueueStatus, recordingGetUploaded, recordingGetLogs,
   infraTestS3, infraTestBunny, infraTestFfmpeg, infraTestLiveKit, infraTestRedis, getSystemStats,
-  SystemStats, recordingScanDisk, recordingSyncS3, storageMigrateUrls,
+  SystemStats, recordingScanDisk, recordingSyncS3, storageMigrateUrls, recordingGetEgressLogs,
   AdminOverview, PendingSession, SessionStats, UserStats, SessionRow, AuditLogEntry, AdminUser,
   EngagementRow, TopTeachers, TopStudentRow, SubscriberTeacherRow, ContactMessage,
-  InfraTestResult, RecordingQueueStatus, UploadedSession, RecordingLogEntry,
+  InfraTestResult, RecordingQueueStatus, UploadedSession, RecordingLogEntry, EgressLog,
 } from "@/lib/admin";
 
 /* ── tokens ── */
@@ -285,6 +285,10 @@ export default function AdminPage() {
   const [scanDiskRunning, setScanDiskRunning]       = useState(false);
   const [syncS3Running, setSyncS3Running]           = useState(false);
   const [migrateUrlsRunning, setMigrateUrlsRunning] = useState(false);
+  const [egressLogs, setEgressLogs]                 = useState<EgressLog[] | null>(null);
+  const [egressLogsLoading, setEgressLogsLoading]   = useState(false);
+  const [egressFilter, setEgressFilter]             = useState("all");
+  const [egressExpanded, setEgressExpanded]         = useState<number | null>(null);
 
   const [suppTickets, setSuppTickets]               = useState<SuppTicket[] | null>(null);
   const [suppLoading, setSuppLoading]               = useState(false);
@@ -383,6 +387,8 @@ export default function AdminPage() {
     recordingGetUploaded().then(setRecUploaded).catch(() => {});
     setRecLogsLoading(true);
     recordingGetLogs().then(setRecLogs).catch(() => {}).finally(() => setRecLogsLoading(false));
+    setEgressLogsLoading(true);
+    recordingGetEgressLogs().then(setEgressLogs).catch(() => {}).finally(() => setEgressLogsLoading(false));
   }, [tab]);
 
   /* outcome chart date filter */
@@ -2070,6 +2076,141 @@ export default function AdminPage() {
                     </div>
                   ) : (
                     <div style={{ color: T.inkMuted, fontSize: "0.82rem" }}>No logs yet — logs appear once the cron runs or you click Run Now</div>
+                  )}
+                </div>
+
+                {/* ── Egress Logs ─────────────────────────────────────────── */}
+                <div style={{ background: T.white, border: `1px solid ${T.border}`, borderRadius: T.r, padding: "1.25rem 1.5rem" }}>
+                  <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "0.75rem", marginBottom: "1rem" }}>
+                    <div style={{ fontFamily: T.ffd, fontSize: "1rem", fontWeight: 700, color: T.ink }}>Egress Logs</div>
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.5rem", flexWrap: "wrap" }}>
+                      {/* Filter pills */}
+                      {(["all","EGRESS_ACTIVE","EGRESS_COMPLETE","EGRESS_FAILED","EGRESS_ABORTED"] as const).map(f => {
+                        const labels: Record<string, string> = { all: "All", EGRESS_ACTIVE: "Active", EGRESS_COMPLETE: "Complete", EGRESS_FAILED: "Failed", EGRESS_ABORTED: "Aborted" };
+                        const active = egressFilter === f;
+                        return (
+                          <button key={f} onClick={() => {
+                            setEgressFilter(f);
+                            setEgressLogsLoading(true);
+                            recordingGetEgressLogs(f === "all" ? undefined : f).then(setEgressLogs).catch(() => {}).finally(() => setEgressLogsLoading(false));
+                          }}
+                            style={{ padding: "0.25rem 0.75rem", borderRadius: 100, border: `1px solid ${active ? T.leaf : T.border}`, background: active ? T.leafLight : T.white, color: active ? T.leaf : T.inkMuted, fontWeight: 600, fontSize: "0.72rem", cursor: "pointer", fontFamily: T.ff }}>
+                            {labels[f]}
+                          </button>
+                        );
+                      })}
+                      <button onClick={() => {
+                        setEgressLogsLoading(true);
+                        recordingGetEgressLogs(egressFilter === "all" ? undefined : egressFilter).then(setEgressLogs).catch(() => {}).finally(() => setEgressLogsLoading(false));
+                      }}
+                        style={{ padding: "0.25rem 0.85rem", borderRadius: T.rs, border: `1px solid ${T.border}`, background: T.white, color: T.inkSoft, fontWeight: 600, fontSize: "0.72rem", cursor: "pointer", fontFamily: T.ff }}>
+                        Refresh
+                      </button>
+                    </div>
+                  </div>
+
+                  {egressLogsLoading ? (
+                    <div style={{ color: T.inkMuted, fontSize: "0.82rem" }}>Loading…</div>
+                  ) : !egressLogs || egressLogs.length === 0 ? (
+                    <div style={{ color: T.inkMuted, fontSize: "0.82rem" }}>
+                      No egress logs yet — they appear as soon as a speaker clicks &quot;Start Recording&quot; in a session.
+                    </div>
+                  ) : (
+                    <div style={{ overflowX: "auto" as const }}>
+                      <table style={{ width: "100%", borderCollapse: "collapse" as const, fontSize: "0.78rem" }}>
+                        <thead>
+                          <tr style={{ background: T.cream, textAlign: "left" as const }}>
+                            {["Session","Egress ID","Status","Triggered By","Started","Ended","Duration","File Size","Error"].map(h => (
+                              <th key={h} style={{ padding: "0.5rem 0.75rem", fontWeight: 700, color: T.inkMuted, whiteSpace: "nowrap" as const, fontSize: "0.7rem", textTransform: "uppercase" as const, letterSpacing: "0.04em" }}>{h}</th>
+                            ))}
+                          </tr>
+                        </thead>
+                        <tbody>
+                          {egressLogs.map(log => {
+                            const STATUS_STYLE: Record<string, { bg: string; color: string }> = {
+                              EGRESS_STARTING: { bg: T.sunLight,  color: T.sun },
+                              EGRESS_ACTIVE:   { bg: "#e8f4ff",   color: T.sky },
+                              EGRESS_ENDING:   { bg: T.sunLight,  color: T.sun },
+                              EGRESS_COMPLETE: { bg: T.leafLight, color: T.leaf },
+                              EGRESS_FAILED:   { bg: T.redLight,  color: T.red },
+                              EGRESS_ABORTED:  { bg: "#f0ede8",   color: T.inkMuted },
+                            };
+                            const sty = STATUS_STYLE[log.status] ?? { bg: "#f0ede8", color: T.inkMuted };
+                            const isExpanded = egressExpanded === log.id;
+                            const durationStr = log.fileDurationSec != null
+                              ? `${Math.floor(log.fileDurationSec / 60)}m ${log.fileDurationSec % 60}s`
+                              : log.recordingStartedAt && log.recordingEndedAt
+                                ? `${Math.round((new Date(log.recordingEndedAt).getTime() - new Date(log.recordingStartedAt).getTime()) / 60000)}m`
+                                : "—";
+                            const sizeStr = log.fileSizeBytes != null
+                              ? log.fileSizeBytes > 1_000_000_000
+                                ? `${(log.fileSizeBytes / 1_000_000_000).toFixed(1)} GB`
+                                : `${(log.fileSizeBytes / 1_000_000).toFixed(1)} MB`
+                              : "—";
+
+                            return (
+                              <>
+                                <tr key={log.id}
+                                  onClick={() => setEgressExpanded(isExpanded ? null : log.id)}
+                                  style={{ borderTop: `1px solid ${T.border}`, cursor: "pointer", background: isExpanded ? T.cream : "transparent", transition: "background 0.15s" }}>
+                                  <td style={{ padding: "0.55rem 0.75rem", color: T.ink, fontWeight: 600, maxWidth: 180, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>
+                                    <div style={{ fontSize: "0.75rem", color: T.inkMuted, marginBottom: "0.1rem" }}>#{log.session.id}</div>
+                                    {log.session.title}
+                                  </td>
+                                  <td style={{ padding: "0.55rem 0.75rem", fontFamily: "monospace", fontSize: "0.7rem", color: T.inkSoft, whiteSpace: "nowrap" as const }}>{log.egressId.slice(0, 16)}…</td>
+                                  <td style={{ padding: "0.55rem 0.75rem", whiteSpace: "nowrap" as const }}>
+                                    <span style={{ padding: "0.2rem 0.6rem", borderRadius: 100, background: sty.bg, color: sty.color, fontWeight: 700, fontSize: "0.68rem" }}>
+                                      {log.status.replace("EGRESS_", "")}
+                                    </span>
+                                  </td>
+                                  <td style={{ padding: "0.55rem 0.75rem", color: T.inkSoft, whiteSpace: "nowrap" as const }}>{log.triggeredByName ?? <span style={{ color: T.inkMuted }}>—</span>}</td>
+                                  <td style={{ padding: "0.55rem 0.75rem", color: T.inkSoft, whiteSpace: "nowrap" as const, fontSize: "0.72rem" }}>{log.recordingStartedAt ? fmtDateTime(log.recordingStartedAt) : <span style={{ color: T.inkMuted }}>—</span>}</td>
+                                  <td style={{ padding: "0.55rem 0.75rem", color: T.inkSoft, whiteSpace: "nowrap" as const, fontSize: "0.72rem" }}>{log.recordingEndedAt ? fmtDateTime(log.recordingEndedAt) : <span style={{ color: T.inkMuted }}>—</span>}</td>
+                                  <td style={{ padding: "0.55rem 0.75rem", color: T.inkSoft, whiteSpace: "nowrap" as const }}>{durationStr}</td>
+                                  <td style={{ padding: "0.55rem 0.75rem", color: T.inkSoft, whiteSpace: "nowrap" as const }}>{sizeStr}</td>
+                                  <td style={{ padding: "0.55rem 0.75rem", maxWidth: 200, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const, color: log.error ? T.red : T.inkMuted }}>
+                                    {log.error ?? "—"}
+                                  </td>
+                                </tr>
+                                {isExpanded && (
+                                  <tr key={`${log.id}-detail`} style={{ borderTop: `1px solid ${T.border}` }}>
+                                    <td colSpan={9} style={{ padding: "0.75rem 1rem", background: "#fafafa" }}>
+                                      <div style={{ display: "grid", gridTemplateColumns: isMobile ? "1fr" : "repeat(3, 1fr)", gap: "0.75rem", fontSize: "0.75rem" }}>
+                                        <div>
+                                          <div style={{ fontWeight: 700, color: T.inkMuted, marginBottom: "0.3rem", textTransform: "uppercase" as const, fontSize: "0.65rem", letterSpacing: "0.05em" }}>Egress Identity</div>
+                                          <div style={{ fontFamily: "monospace", color: T.ink, wordBreak: "break-all" as const }}>{log.egressId}</div>
+                                          <div style={{ color: T.inkMuted, marginTop: "0.2rem" }}>Room: {log.roomName ?? "—"}</div>
+                                          <div style={{ color: T.inkMuted }}>Room ID: {log.roomId?.slice(0, 20) ?? "—"}</div>
+                                        </div>
+                                        <div>
+                                          <div style={{ fontWeight: 700, color: T.inkMuted, marginBottom: "0.3rem", textTransform: "uppercase" as const, fontSize: "0.65rem", letterSpacing: "0.05em" }}>File Output</div>
+                                          <div style={{ color: T.ink, wordBreak: "break-all" as const }}>{log.filename ?? "—"}</div>
+                                          <div style={{ color: T.inkMuted, marginTop: "0.2rem" }}>Location: {log.fileLocation ?? "—"}</div>
+                                          <div style={{ color: T.inkMuted }}>Size: {sizeStr} · Duration: {durationStr}</div>
+                                          {log.backupStorageUsed && <div style={{ color: T.sun, marginTop: "0.2rem", fontWeight: 600 }}>⚠ Backup storage was used</div>}
+                                        </div>
+                                        <div>
+                                          <div style={{ fontWeight: 700, color: T.inkMuted, marginBottom: "0.3rem", textTransform: "uppercase" as const, fontSize: "0.65rem", letterSpacing: "0.05em" }}>Diagnostics</div>
+                                          <div style={{ color: T.inkMuted }}>Retry count: <span style={{ color: log.retryCount > 0 ? T.sun : T.ink, fontWeight: 600 }}>{log.retryCount}</span></div>
+                                          <div style={{ color: T.inkMuted }}>Last heartbeat: {log.lkUpdatedAt ? fmtDateTime(log.lkUpdatedAt) : "—"}</div>
+                                          <div style={{ color: T.inkMuted }}>Created: {fmtDateTime(log.createdAt)}</div>
+                                          {log.error && (
+                                            <div style={{ marginTop: "0.4rem", padding: "0.4rem 0.6rem", background: T.redLight, borderRadius: 6, color: T.red, fontWeight: 600 }}>
+                                              Error {log.errorCode ? `(${log.errorCode})` : ""}: {log.error}
+                                              {log.details && <div style={{ fontWeight: 400, marginTop: "0.2rem", color: T.inkSoft, wordBreak: "break-all" as const }}>{log.details}</div>}
+                                            </div>
+                                          )}
+                                        </div>
+                                      </div>
+                                    </td>
+                                  </tr>
+                                )}
+                              </>
+                            );
+                          })}
+                        </tbody>
+                      </table>
+                    </div>
                   )}
                 </div>
 

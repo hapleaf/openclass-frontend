@@ -436,3 +436,37 @@ export async function storageMigrateUrls(): Promise<{ banners: number; videos: n
   if (!r.ok) throw new Error(j.message || 'Failed');
   return j;
 }
+
+export interface EgressLog {
+  id: number;
+  sessionId: number;
+  egressId: string;
+  roomId: string | null;
+  roomName: string | null;
+  status: string;
+  triggeredByUserId: number | null;
+  triggeredByName: string | null;
+  recordingStartedAt: string | null;
+  recordingEndedAt: string | null;
+  lkUpdatedAt: string | null;
+  filename: string | null;
+  fileSizeBytes: number | null;
+  fileDurationSec: number | null;
+  fileLocation: string | null;
+  error: string | null;
+  errorCode: number | null;
+  details: string | null;
+  retryCount: number;
+  backupStorageUsed: boolean;
+  createdAt: string;
+  updatedAt: string;
+  session: { id: number; title: string; scheduledAt: string };
+}
+
+export async function recordingGetEgressLogs(status?: string): Promise<EgressLog[]> {
+  const qs = status && status !== 'all' ? `?status=${encodeURIComponent(status)}` : '';
+  const r = await adminFetch(`/recordings/egress-logs${qs}`);
+  const j = await r.json();
+  if (!r.ok) throw new Error(j.message || 'Failed');
+  return j;
+}
