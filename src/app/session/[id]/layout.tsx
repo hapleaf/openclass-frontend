@@ -35,10 +35,6 @@ export async function generateMetadata(
     ? s.description.slice(0, 200).replace(/\n/g, " ")
     : `Join this free webinar on OpenWebinar${s.category ? ` · ${s.category}` : ""}${s.skillLevel ? ` · ${s.skillLevel}` : ""}.`;
 
-  const ogImage = s.bannerUrl
-    ? { url: s.bannerUrl, width: 1200, height: 630, alt: s.title }
-    : { url: `${BASE_URL}/opengraph-image`, width: 1200, height: 630, alt: "OpenWebinar — Free Webinars for Everyone" };
-
   return {
     title,
     description: desc,
@@ -48,13 +44,11 @@ export async function generateMetadata(
       type: "website",
       siteName: "OpenWebinar",
       url: `${BASE_URL}/session/${id}`,
-      images: [ogImage],
     },
     twitter: {
       card: "summary_large_image",
       title: s.title,
       description: desc,
-      images: [ogImage.url],
     },
   };
 }
