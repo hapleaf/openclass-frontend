@@ -1270,10 +1270,12 @@ export default function JoinPage() {
                 <div style={{ fontSize: "0.85rem", fontWeight: 700, color: T.ink }}>{teacherName}</div>
                 <div style={{ fontSize: "0.72rem", color: T.inkMuted }}>{session?.category || "Instructor"} · {isOrg ? "You're hosting" : "Instructor"}</div>
               </div>
-              <div style={{ display: "flex", gap: "0.4rem" }}>
-                <span style={{ fontSize: "0.67rem", fontWeight: 600, padding: "0.15rem 0.55rem", borderRadius: 100, background: T.leafLight, color: T.leaf }}>{session?.type === "webinar" ? "Webinar" : "Live Class"}</span>
-                <span style={{ fontSize: "0.67rem", fontWeight: 600, padding: "0.15rem 0.55rem", borderRadius: 100, background: "#ddeaf8", color: T.sky }}>{session?.skillLevel || "All Levels"}</span>
-              </div>
+              {!isMobile && (
+                <div style={{ display: "flex", gap: "0.4rem" }}>
+                  <span style={{ fontSize: "0.67rem", fontWeight: 600, padding: "0.15rem 0.55rem", borderRadius: 100, background: T.leafLight, color: T.leaf }}>{session?.type === "webinar" ? "Webinar" : "Live Class"}</span>
+                  <span style={{ fontSize: "0.67rem", fontWeight: 600, padding: "0.15rem 0.55rem", borderRadius: 100, background: "#ddeaf8", color: T.sky }}>{session?.skillLevel || "All Levels"}</span>
+                </div>
+              )}
               <button
                 onClick={() => {
                   const url = `${window.location.origin}/session/${sessionId}`;
@@ -1290,7 +1292,9 @@ export default function JoinPage() {
                   <><svg width="11" height="11" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}><path d="M10 13a5 5 0 007.54.54l3-3a5 5 0 00-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 00-7.54-.54l-3 3a5 5 0 007.07 7.07l1.71-1.71"/></svg> Share</>
                 )}
               </button>
-              <a href={`/profile/${session?.user.id}`} target="_blank" style={{ fontSize: "0.75rem", color: T.leaf, fontWeight: 600, textDecoration: "none", flexShrink: 0 }}>View profile →</a>
+              {!isMobile && (
+                <a href={`/profile/${session?.user.id}`} target="_blank" style={{ fontSize: "0.75rem", color: T.leaf, fontWeight: 600, textDecoration: "none", flexShrink: 0 }}>View profile →</a>
+              )}
             </div>
 
             {/* About + Rate tabs */}

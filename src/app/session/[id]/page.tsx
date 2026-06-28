@@ -139,6 +139,7 @@ export default function SessionDetailPage() {
   const [copied, setCopied] = useState(false);
   const [currentUserId, setCurrentUserId] = useState<number | null>(null);
   const [introPlaying, setIntroPlaying] = useState(false);
+  const [isMobile, setIsMobile] = useState(false);
 
   // Recording
   const [recordingProcessing, setRecordingProcessing] = useState(() =>
@@ -194,6 +195,13 @@ export default function SessionDetailPage() {
         .catch(() => {});
     }
   }, [id]);
+
+  useEffect(() => {
+    const check = () => setIsMobile(window.innerWidth <= 720);
+    check();
+    window.addEventListener("resize", check);
+    return () => window.removeEventListener("resize", check);
+  }, []);
 
   // Load captcha once session data arrives and user is a student
   useEffect(() => {
@@ -409,7 +417,7 @@ export default function SessionDetailPage() {
         .sd-left{min-width:0}
         .sd-share-icons{display:flex;gap:0.6rem;flex-wrap:wrap}
         @media(max-width:720px){
-          .sd-page{padding-top:57px}
+          .sd-page{padding-top:57px;padding-bottom:80px}
           .sd-grid{grid-template-columns:1fr;padding:1.25rem 0}
           .sd-sidebar{position:static}
           .sd-wrap{padding:0 1rem}
@@ -1125,6 +1133,85 @@ export default function SessionDetailPage() {
           </div>
         </div>
       </div>
+      {/* ── Mobile sticky CTA bar ─────────────────────────────────────────── */}
+      {isMobile && (
+        <div style={{
+          position: "fixed", bottom: 0, left: 0, right: 0, zIndex: 300,
+          background: "rgba(255,255,255,0.97)",
+          backdropFilter: "blur(12px)", WebkitBackdropFilter: "blur(12px)",
+          borderTop: "1px solid #e2ded6",
+          padding: "0.75rem 1.25rem calc(0.75rem + env(safe-area-inset-bottom))",
+          display: "flex", alignItems: "center", gap: "0.75rem",
+          boxShadow: "0 -4px 20px rgba(0,0,0,0.08)",
+        }}>
+          {/* Left: status pill */}
+          <div style={{ flexShrink: 0 }}>
+            {status === "live" ? (
+              <span style={{ display: "inline-flex", alignItems: "center", gap: "0.35rem", background: "#dc2626", color: "#fff", fontSize: "0.72rem", fontWeight: 700, padding: "0.3rem 0.7rem", borderRadius: 100, whiteSpace: "nowrap" }}>
+                <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#fff", animation: "pulse 1.5s infinite", display: "inline-block" }} />
+                LIVE
+              </span>
+            ) : status === "upcoming" ? (
+              <span style={{ display: "inline-flex", alignItems: "center", gap: "0.35rem", background: "#d4ead9", color: "#1d6b3c", fontSize: "0.72rem", fontWeight: 700, padding: "0.3rem 0.7rem", borderRadius: 100, whiteSpace: "nowrap" }}>
+                🗓 Upcoming
+              </span>
+            ) : (
+              <span style={{ display: "inline-flex", alignItems: "center", gap: "0.35rem", background: "#f0ede8", color: "#6b7a72", fontSize: "0.72rem", fontWeight: 700, padding: "0.3rem 0.7rem", borderRadius: 100, whiteSpace: "nowrap" }}>
+                🔒 Ended
+              </span>
+            )}
+          </div>
+
+          {/* Right: CTA button */}
+          <div style={{ flex: 1 }}>
+            {isOrganizer ? (
+              status === "live" ? (
+                <button onClick={() => router.push(`/join/${id}`)}
+                  style={{ width: "100%", padding: "0.7rem", borderRadius: 10, border: "none", background: "#1d6b3c", color: "#fff", fontSize: "0.9rem", fontWeight: 700, cursor: "pointer", fontFamily: "var(--font-dm-sans), sans-serif" }}>
+                  🎙️ Start Session
+                </button>
+              ) : (
+                <div style={{ fontSize: "0.82rem", color: "#6b7a72", textAlign: "center" }}>You&apos;re hosting this session</div>
+              )
+            ) : status === "closed" ? (
+              <button disabled style={{ width: "100%", padding: "0.7rem", borderRadius: 10, border: "1px solid #e2ded6", background: "#faf7f2", color: "#6b7a72", fontSize: "0.9rem", fontWeight: 600, cursor: "default", fontFamily: "var(--font-dm-sans), sans-serif" }}>
+                🔒 Webinar Closed
+              </button>
+            ) : status === "live" ? (
+              isRegistered ? (
+                <button onClick={() => {
+                  if (!localStorage.getItem("token")) { router.push(`/login?redirect=/join/${id}`); return; }
+                  router.push(`/join/${id}`);
+                }}
+                  style={{ width: "100%", padding: "0.7rem", borderRadius: 10, border: "none", background: "#1d6b3c", color: "#fff", fontSize: "0.9rem", fontWeight: 700, cursor: "pointer", fontFamily: "var(--font-dm-sans), sans-serif" }}>
+                  ▶ Join Now
+                </button>
+              ) : (
+                <button onClick={() => {
+                  if (!localStorage.getItem("token")) { router.push(`/login?redirect=/session/${id}`); return; }
+                  handleRegisterToggle();
+                }} disabled={registerLoading}
+                  style={{ width: "100%", padding: "0.7rem", borderRadius: 10, border: "none", background: "#1a4f7a", color: "#fff", fontSize: "0.9rem", fontWeight: 700, cursor: registerLoading ? "default" : "pointer", fontFamily: "var(--font-dm-sans), sans-serif", display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}>
+                  {registerLoading
+                    ? <><span style={{ width: 14, height: 14, border: "2px solid currentColor", borderTopColor: "transparent", borderRadius: "50%", display: "inline-block", animation: "oc-spin 0.7s linear infinite" }} /> Registering…</>
+                    : <>🔔 Register to Join</>}
+                </button>
+              )
+            ) : (
+              <button onClick={() => {
+                if (!localStorage.getItem("token")) { router.push(`/login?redirect=/session/${id}`); return; }
+                handleRegisterToggle();
+              }} disabled={registerLoading}
+                style={{ width: "100%", padding: "0.7rem", borderRadius: 10, border: isRegistered ? "1.5px solid #1d6b3c" : "none", background: isRegistered ? "#fff" : "#1a4f7a", color: isRegistered ? "#1d6b3c" : "#fff", fontSize: "0.9rem", fontWeight: 700, cursor: registerLoading ? "default" : "pointer", fontFamily: "var(--font-dm-sans), sans-serif", display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem", transition: "all 0.15s" }}>
+                {registerLoading
+                  ? <><span style={{ width: 14, height: 14, border: "2px solid currentColor", borderTopColor: "transparent", borderRadius: "50%", display: "inline-block", animation: "oc-spin 0.7s linear infinite" }} /> Updating…</>
+                  : isRegistered ? <>✓ Registered — Tap to cancel</> : <>🔔 Register Free</>}
+              </button>
+            )}
+          </div>
+        </div>
+      )}
+
       <Footer />
     </>
   );
