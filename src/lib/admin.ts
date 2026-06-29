@@ -470,3 +470,10 @@ export async function recordingGetEgressLogs(status?: string): Promise<EgressLog
   if (!r.ok) throw new Error(j.message || 'Failed');
   return j;
 }
+
+export async function recordingSyncEgressLogs(): Promise<{ updated: number; markedAborted: number; errors: string[] }> {
+  const r = await adminFetch('/recordings/egress-logs/sync', { method: 'POST' });
+  const j = await r.json();
+  if (!r.ok) throw new Error(j.message || 'Failed');
+  return j;
+}

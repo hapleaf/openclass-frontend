@@ -231,7 +231,8 @@ export default function DashboardPage() {
       .then(fresh => { setData(fresh); writeDashCache(fresh); })
       .catch(() => { if (!cached) router.replace("/login"); })
       .finally(() => setLoading(false));
-  }, [router]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const id = setInterval(() => setTick(t => t + 1), 30_000);

@@ -7,6 +7,7 @@ import Header from "@/components/common/HeadFoot/header";
 import Footer from "@/components/common/HeadFoot/footer";
 import { getProfile, updateProfile, uploadAvatar, clearProfileCache, getCategories, getDashboard, getPublicProfile, ProfileData, CategoryData, ReviewData, fullName, initials as profileInitials, makeProfileSlug, computeExpertiseLevel } from "@/lib/profile";
 import { getMySessions, deleteSession, cancelSession, SessionData } from "@/lib/session";
+import { getStreamIntegrations, saveStreamIntegration, removeStreamIntegration, PLATFORMS, StreamIntegration } from "@/lib/stream";
 
 /* ── design tokens ── */
 const T = {
@@ -175,7 +176,15 @@ function SessionStatusBadge({ sessionStatus, qualityFlag }: { sessionStatus?: st
 export default function ProfilePage() {
   const router = useRouter();
   const fileInputRef = useRef<HTMLInputElement>(null);
-  const [tab, setTab] = useState<"view" | "edit">("view");
+  const [tab, setTab] = useState<"view" | "edit" | "streaming">("view");
+
+  // ── Streaming integrations state ──────────────────────────────────────────
+  const [streamIntegrations, setStreamIntegrations] = useState<StreamIntegration[]>([]);
+  const [streamPlatformTab, setStreamPlatformTab] = useState<string>("facebook");
+  const [streamForms, setStreamForms] = useState<Record<string, { rtmpUrl: string; streamKey: string; label: string }>>({});
+  const [streamEditing, setStreamEditing] = useState<Record<string, boolean>>({});
+  const [streamSaving, setStreamSaving] = useState<Record<string, boolean>>({});
+  const [streamShowKey, setStreamShowKey] = useState<Record<string, boolean>>({});
   const [sessTab, setSessTab] = useState<"upcoming" | "draft" | "completed">("upcoming");
   const [mySessions, setMySessions] = useState<SessionData[]>([]);
   const [now, setNow] = useState(() => new Date());
@@ -233,7 +242,8 @@ export default function ProfilePage() {
       })
       .catch(() => { localStorage.removeItem("token"); clearProfileCache(); router.push("/login"); })
       .finally(() => setLoading(false));
-  }, [router]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const id = setInterval(() => setNow(new Date()), 30_000);
@@ -322,6 +332,54 @@ export default function ProfilePage() {
     } finally {
       setUploading(false);
       if (fileInputRef.current) fileInputRef.current.value = "";
+    }
+  }
+
+  // ── Load stream integrations when tab opens ───────────────────────────────
+  useEffect(() => {
+    if (tab !== "streaming") return;
+    getStreamIntegrations()
+      .then((rows) => {
+        setStreamIntegrations(rows);
+        const forms: Record<string, { rtmpUrl: string; streamKey: string; label: string }> = {};
+        rows.forEach((r) => {
+          forms[r.platform] = { rtmpUrl: r.rtmpUrl, streamKey: "", label: r.label || "" };
+        });
+        setStreamForms((prev) => ({ ...Object.fromEntries(Object.keys(PLATFORMS).map((p) => [p, { rtmpUrl: PLATFORMS[p].rtmpBase, streamKey: "", label: "" }])), ...forms, ...prev }));
+      })
+      .catch(() => {});
+  }, [tab]);
+
+  async function handleStreamSave(platform: string) {
+    const form = streamForms[platform];
+    if (!form?.streamKey?.trim()) { showToast("Stream key is required"); return; }
+    setStreamSaving((p) => ({ ...p, [platform]: true }));
+    try {
+      const saved = await saveStreamIntegration(platform, { rtmpUrl: form.rtmpUrl || PLATFORMS[platform].rtmpBase, streamKey: form.streamKey, label: form.label });
+      setStreamIntegrations((prev) => {
+        const existing = prev.find((r) => r.platform === platform);
+        return existing ? prev.map((r) => r.platform === platform ? saved : r) : [...prev, saved];
+      });
+      setStreamForms((p) => ({ ...p, [platform]: { ...p[platform], streamKey: "" } }));
+      setStreamEditing((p) => ({ ...p, [platform]: false }));
+      showToast(`✓ ${PLATFORMS[platform].label} saved!`);
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : "Save failed");
+    } finally {
+      setStreamSaving((p) => ({ ...p, [platform]: false }));
+    }
+  }
+
+  async function handleStreamRemove(platform: string) {
+    if (!confirm(`Remove ${PLATFORMS[platform].label} integration?`)) return;
+    try {
+      await removeStreamIntegration(platform);
+      setStreamIntegrations((prev) => prev.filter((r) => r.platform !== platform));
+      setStreamEditing((p) => ({ ...p, [platform]: false }));
+      setStreamForms((p) => ({ ...p, [platform]: { rtmpUrl: PLATFORMS[platform].rtmpBase, streamKey: "", label: "" } }));
+      showToast(`${PLATFORMS[platform].label} removed`);
+    } catch (err) {
+      showToast(err instanceof Error ? err.message : "Remove failed");
     }
   }
 
@@ -455,10 +513,14 @@ export default function ProfilePage() {
 
       {/* ── TAB BAR ── */}
       <div style={{ maxWidth: 1160, margin: "1rem auto 0", padding: isMobile ? "0 1rem" : "0 2rem", display: "flex", alignItems: "center", justifyContent: "space-between" }}>
-        <div style={{ display: "flex", gap: "0.35rem" }}>
-          {(["view", "edit"] as const).map((t) => (
-            <button key={t} onClick={() => setTab(t)} style={{ padding: "0.45rem 1rem", borderRadius: 100, fontSize: "0.82rem", fontWeight: 500, cursor: "pointer", border: `1.5px solid ${tab === t ? T.leaf : T.border}`, background: tab === t ? T.leaf : T.white, color: tab === t ? T.white : T.inkMuted, transition: "all 0.2s", fontFamily: T.ff }}>
-              {t === "view" ? "👁 Profile View" : "✏️ Edit Profile"}
+        <div style={{ display: "flex", gap: "0.35rem", flexWrap: "wrap" as const }}>
+          {([
+            { key: "view",      label: "👁 Profile" },
+            { key: "edit",      label: "✏️ Edit Profile" },
+            { key: "streaming", label: "📡 Streaming" },
+          ] as const).map(({ key, label }) => (
+            <button key={key} onClick={() => setTab(key)} style={{ padding: "0.45rem 1rem", borderRadius: 100, fontSize: "0.82rem", fontWeight: 500, cursor: "pointer", border: `1.5px solid ${tab === key ? T.leaf : T.border}`, background: tab === key ? T.leaf : T.white, color: tab === key ? T.white : T.inkMuted, transition: "all 0.2s", fontFamily: T.ff }}>
+              {label}
             </button>
           ))}
         </div>
@@ -1006,6 +1068,165 @@ export default function ProfilePage() {
         )}
 
       </div>
+
+        {/* ════ STREAMING PANEL ════ */}
+        {tab === "streaming" && (
+          <div style={{ gridColumn: "1 / -1" }}>
+            <div style={{ maxWidth: 720, margin: "0 auto" }}>
+
+              {/* Page header */}
+              <div style={{ marginBottom: "1.25rem" }}>
+                <div style={{ fontFamily: T.ffD, fontSize: "1.25rem", fontWeight: 700, color: T.ink, marginBottom: "0.35rem" }}>Streaming Integrations</div>
+                <div style={{ fontSize: "0.82rem", color: T.inkMuted }}>Save your RTMP stream keys — enable platforms from the Go Live modal in your webinar room.</div>
+              </div>
+
+              {/* Platform tab pills */}
+              <div style={{ display: "flex", gap: "0.45rem", marginBottom: "1.25rem", flexWrap: "wrap" as const }}>
+                {Object.entries(PLATFORMS).map(([pk, p]) => {
+                  const saved = streamIntegrations.find((r) => r.platform === pk);
+                  const isActive = streamPlatformTab === pk;
+                  return (
+                    <button
+                      key={pk}
+                      onClick={() => setStreamPlatformTab(pk)}
+                      style={{
+                        display: "flex", alignItems: "center", gap: "0.4rem",
+                        padding: "0.45rem 1rem", borderRadius: 100, fontSize: "0.82rem", fontWeight: 500,
+                        cursor: "pointer", fontFamily: T.ff, transition: "all 0.15s",
+                        border: `1.5px solid ${isActive ? p.color : T.border}`,
+                        background: isActive ? p.bg : T.white,
+                        color: isActive ? p.color : T.inkMuted,
+                      }}
+                    >
+                      <span>{p.emoji}</span>
+                      <span>{p.label}</span>
+                      {saved && (
+                        <span style={{ width: 7, height: 7, borderRadius: "50%", background: T.leaf, display: "inline-block", marginLeft: 2 }} />
+                      )}
+                    </button>
+                  );
+                })}
+              </div>
+
+              {/* Active platform card */}
+              {(() => {
+                const platformKey = streamPlatformTab;
+                const p = PLATFORMS[platformKey];
+                if (!p) return null;
+                const saved = streamIntegrations.find((r) => r.platform === platformKey);
+                const isEditing = streamEditing[platformKey] ?? false;
+                const isSaving = streamSaving[platformKey] ?? false;
+                const showKey = streamShowKey[platformKey] ?? false;
+                const form = streamForms[platformKey] ?? { rtmpUrl: p.rtmpBase, streamKey: "", label: "" };
+
+                return (
+                  <div style={sectionCard}>
+                    {/* Header row */}
+                    <div style={{ display: "flex", alignItems: "center", gap: "0.85rem", marginBottom: "1.25rem" }}>
+                      <div style={{ width: 44, height: 44, borderRadius: 12, background: p.bg, display: "flex", alignItems: "center", justifyContent: "center", fontSize: "1.4rem", flexShrink: 0 }}>{p.emoji}</div>
+                      <div style={{ flex: 1 }}>
+                        <div style={{ fontWeight: 700, fontSize: "0.95rem", color: T.ink }}>{p.label}</div>
+                        <div style={{ fontSize: "0.75rem", color: T.inkMuted, marginTop: "0.1rem" }}>
+                          {saved
+                            ? <span style={{ color: T.leaf, fontWeight: 600 }}>✓ Connected{saved.label ? ` — ${saved.label}` : " — stream key saved"}</span>
+                            : "Not connected"}
+                        </div>
+                      </div>
+                      {saved && !isEditing && (
+                        <div style={{ display: "flex", gap: "0.5rem" }}>
+                          <button onClick={() => setStreamEditing((prev) => ({ ...prev, [platformKey]: true }))} style={{ padding: "0.35rem 0.85rem", borderRadius: 100, border: `1.5px solid ${T.border}`, background: T.white, color: T.inkSoft, fontSize: "0.78rem", fontWeight: 600, cursor: "pointer", fontFamily: T.ff }}>Edit</button>
+                          <button onClick={() => handleStreamRemove(platformKey)} style={{ padding: "0.35rem 0.85rem", borderRadius: 100, border: "1.5px solid #fdecea", background: "#fdecea", color: "#c0392b", fontSize: "0.78rem", fontWeight: 600, cursor: "pointer", fontFamily: T.ff }}>Remove</button>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* How-to steps */}
+                    <div style={{ background: T.cream, border: `1px solid ${T.border}`, borderRadius: T.rs, padding: "0.85rem 1rem", marginBottom: "1.25rem" }}>
+                      <div style={{ fontSize: "0.75rem", fontWeight: 700, color: T.ink, marginBottom: "0.5rem", textTransform: "uppercase" as const, letterSpacing: "0.05em" }}>How to get your stream key</div>
+                      {p.steps.map((step, i) => (
+                        <div key={i} style={{ display: "flex", gap: "0.6rem", fontSize: "0.8rem", color: T.inkSoft, marginBottom: i < p.steps.length - 1 ? "0.3rem" : 0 }}>
+                          <span style={{ width: 18, height: 18, borderRadius: "50%", background: T.leafLight, color: T.leaf, fontSize: "0.65rem", fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 1 }}>{i + 1}</span>
+                          {step}
+                        </div>
+                      ))}
+                      {p.note && <div style={{ marginTop: "0.65rem", fontSize: "0.75rem", color: T.sun, fontWeight: 500 }}>{p.note}</div>}
+                      <a href={p.docsUrl} target="_blank" rel="noreferrer" style={{ display: "inline-block", marginTop: "0.65rem", fontSize: "0.75rem", color: T.leaf, fontWeight: 600, textDecoration: "none" }}>Open {p.label} →</a>
+                    </div>
+
+                    {/* Form — show when not saved OR when editing */}
+                    {(!saved || isEditing) && (
+                      <div>
+                        <div style={{ marginBottom: "0.85rem" }}>
+                          <label style={labelStyle}>Channel name (optional)</label>
+                          <input value={form.label} onChange={(e) => setStreamForms((prev) => ({ ...prev, [platformKey]: { ...form, label: e.target.value } }))} placeholder={`e.g. My ${p.label} Page`} style={inputStyle} />
+                          <div style={hintStyle}>Helps you identify this account in the Go Live modal</div>
+                        </div>
+
+                        <div style={{ marginBottom: "0.85rem" }}>
+                          <label style={labelStyle}>Stream URL</label>
+                          <input value={form.rtmpUrl} onChange={(e) => setStreamForms((prev) => ({ ...prev, [platformKey]: { ...form, rtmpUrl: e.target.value } }))} placeholder={p.rtmpBase} style={{ ...inputStyle, fontFamily: "monospace", fontSize: "0.78rem" }} />
+                          <div style={hintStyle}>{p.perBroadcast ? "This URL changes per broadcast — paste the one from your current live event." : `Pre-filled with the standard ${p.label} RTMP server. Change only if you use a relay.`}</div>
+                        </div>
+
+                        <div style={{ marginBottom: "1rem" }}>
+                          <label style={labelStyle}>
+                            Stream Key
+                            {saved && <span style={{ fontSize: "0.72rem", color: T.inkMuted, fontWeight: 400, marginLeft: "0.5rem" }}>Leave blank to keep existing key</span>}
+                          </label>
+                          <div style={{ position: "relative" }}>
+                            <input
+                              type={showKey ? "text" : "password"}
+                              value={form.streamKey}
+                              onChange={(e) => setStreamForms((prev) => ({ ...prev, [platformKey]: { ...form, streamKey: e.target.value } }))}
+                              placeholder={saved ? saved.streamKeyMasked : p.keyHint}
+                              style={{ ...inputStyle, paddingRight: "3.5rem", fontFamily: "monospace", fontSize: "0.78rem" }}
+                            />
+                            <button onClick={() => setStreamShowKey((prev) => ({ ...prev, [platformKey]: !showKey }))} style={{ position: "absolute", right: "0.75rem", top: "50%", transform: "translateY(-50%)", background: "none", border: "none", color: T.inkMuted, cursor: "pointer", fontSize: "0.75rem", fontWeight: 600, fontFamily: T.ff }}>
+                              {showKey ? "Hide" : "Show"}
+                            </button>
+                          </div>
+                        </div>
+
+                        <div style={{ display: "flex", gap: "0.6rem" }}>
+                          {isEditing && (
+                            <button onClick={() => setStreamEditing((prev) => ({ ...prev, [platformKey]: false }))} style={{ flex: 1, padding: "0.6rem", borderRadius: T.rs, border: `1.5px solid ${T.border}`, background: T.white, color: T.inkSoft, fontFamily: T.ff, fontSize: "0.85rem", fontWeight: 600, cursor: "pointer" }}>Cancel</button>
+                          )}
+                          <button
+                            onClick={() => handleStreamSave(platformKey)}
+                            disabled={isSaving || (!form.streamKey.trim() && !saved)}
+                            style={{ flex: 2, padding: "0.6rem", borderRadius: T.rs, border: "none", background: isSaving ? T.leafLight : T.leaf, color: isSaving ? T.leaf : T.white, fontFamily: T.ff, fontSize: "0.85rem", fontWeight: 600, cursor: isSaving ? "default" : "pointer", opacity: (!form.streamKey.trim() && !saved) ? 0.5 : 1, transition: "all 0.2s" }}
+                          >
+                            {isSaving ? "Saving…" : saved ? "Update Key" : `Save ${p.label}`}
+                          </button>
+                        </div>
+                      </div>
+                    )}
+
+                    {/* Saved state — read-only summary */}
+                    {saved && !isEditing && (
+                      <div style={{ background: T.cream, border: `1px solid ${T.border}`, borderRadius: T.rs, padding: "0.75rem 1rem" }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "0.4rem" }}>
+                          <span style={{ fontSize: "0.75rem", color: T.inkMuted, fontWeight: 600, textTransform: "uppercase" as const, letterSpacing: "0.04em" }}>Stream URL</span>
+                          <span style={{ fontSize: "0.75rem", fontFamily: "monospace", color: T.inkSoft, wordBreak: "break-all" as const }}>{saved.rtmpUrl}</span>
+                        </div>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                          <span style={{ fontSize: "0.75rem", color: T.inkMuted, fontWeight: 600, textTransform: "uppercase" as const, letterSpacing: "0.04em" }}>Stream Key</span>
+                          <span style={{ fontSize: "0.75rem", fontFamily: "monospace", color: T.inkSoft }}>{saved.streamKeyMasked}</span>
+                        </div>
+                        {p.perBroadcast && (
+                          <div style={{ marginTop: "0.65rem", fontSize: "0.72rem", color: "#b45309", background: "#fffbeb", border: "1px solid #fde68a", borderRadius: 6, padding: "0.4rem 0.6rem" }}>
+                            ⚠️ This platform generates a new key per broadcast. Click Edit and paste the new URL + key before each webinar.
+                          </div>
+                        )}
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
+
+            </div>
+          </div>
+        )}
 
       {/* ── TOAST ── */}
       {toast && (

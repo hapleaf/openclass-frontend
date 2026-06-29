@@ -134,7 +134,8 @@ export default function StudentDashboardPage() {
       .then(fresh => { setData(fresh); writeStudCache(fresh); })
       .catch(() => { if (!cached) router.replace("/login"); })
       .finally(() => setLoading(false));
-  }, [router]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   function refreshSessions() {
     setRefreshingSessions(true);

@@ -201,7 +201,8 @@ export default function SignIn({ onSubmit, onGoSignUp, errorMessage }: SignInPro
 
   useEffect(() => {
     if (localStorage.getItem("token")) router.replace(localStorage.getItem("oc_default_role") === "teacher" ? "/dashboard" : localStorage.getItem("oc_default_role") === "student" ? "/student-dashboard" : "/roles");
-  }, [router]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   /* login */
   const [email, setEmail] = useState("");

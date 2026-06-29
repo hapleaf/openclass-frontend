@@ -122,7 +122,8 @@ export default function MySessionsPage() {
       .then(fresh => { setSessions(fresh); writeMysessCache(fresh); })
       .catch(() => { if (!cached) router.replace("/login"); })
       .finally(() => setLoading(false));
-  }, [router]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   // tick clock every 30s so live status updates
   useEffect(() => {

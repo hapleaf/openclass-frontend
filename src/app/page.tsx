@@ -9,7 +9,7 @@ const CAT_CACHE_KEY = "oc_categories_cache";
 
 const FEATURES = [
   { icon: "🎙️", bg: "#d4ead9", title: "Host Free Webinars", desc: "Launch a webinar in minutes — no studio, no software, no cost. Just you, your knowledge, and an audience ready to learn." },
-  { icon: "📡", bg: "#ddeaf8", title: "HD Live Streaming", desc: "Crystal-clear live streaming directly from your browser. Share your screen, present slides, and speak to hundreds at once." },
+  { icon: "📡", bg: "#ddeaf8", title: "Multicast to Social Media", desc: "Go live on Facebook, YouTube, LinkedIn, X and Instagram simultaneously — one click from your webinar room, no extra tools needed." },
   { icon: "💬", bg: "#fdf3e0", title: "Live Chat & Q&A", desc: "Attendees ask questions and react in real-time during every webinar. Teachers respond live — true classroom energy, online." },
   { icon: "⭐", bg: "#f8ede5", title: "Reputation System", desc: "Every webinar earns ratings and reviews. Great hosts rise naturally through genuine audience feedback, not paid promotion." },
   { icon: "🔍", bg: "#f0ebff", title: "Discovery Engine", desc: "Get found by thousands of learners searching your expertise. OpenWebinar puts your knowledge in front of the right audience." },
@@ -93,6 +93,27 @@ export default function HomePage() {
         .dual-cta-card { padding: 2rem 1.5rem !important; }
         .grid-3col { grid-template-columns: 1fr !important; }
       }
+      html { scroll-behavior: smooth; }
+
+      @keyframes bdot {
+        0%,100% { opacity: 0.15; transform: translateX(0) scale(0.7); }
+        50%      { opacity: 1;    transform: translateX(3px) scale(1); }
+      }
+      .bdot { animation: bdot 1.2s ease-in-out infinite; }
+      .bdot0 { animation-delay: 0s; }
+      .bdot1 { animation-delay: 0.22s; }
+      .bdot2 { animation-delay: 0.44s; }
+
+      @keyframes iring {
+        0%   { transform: scale(1);   opacity: 0.65; }
+        100% { transform: scale(2.2); opacity: 0; }
+      }
+      .iring { animation: iring 2s ease-out infinite; }
+      .ir0 { animation-delay: 0s; }
+      .ir1 { animation-delay: 0.35s; }
+      .ir2 { animation-delay: 0.7s; }
+      .ir3 { animation-delay: 1.05s; }
+      .ir4 { animation-delay: 1.4s; }
     `;
     document.head.appendChild(style);
 
@@ -153,8 +174,14 @@ export default function HomePage() {
         <div style={{ position: "absolute", inset: 0, zIndex: 0, backgroundImage: "radial-gradient(circle, rgba(29,107,60,0.1) 1px, transparent 1px)", backgroundSize: "40px 40px", maskImage: "radial-gradient(ellipse 85% 80% at 50% 50%, black, transparent)" }} />
 
         <div style={{ position: "relative", zIndex: 1, maxWidth: 820, margin: "0 auto", width: "100%" }}>
-          <div className="eyebrow-dot fade-up d1" style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "#d4ead9", color: "#1d6b3c", fontSize: "0.8rem", fontWeight: 500, letterSpacing: "0.05em", textTransform: "uppercase", padding: "0.35rem 0.85rem", borderRadius: 100, marginBottom: "1.75rem" }}>
-            Free webinars · Build reputation · Get discovered
+          <div className="fade-up d1" style={{ display: "inline-flex", alignItems: "center", gap: "1rem", marginBottom: "1.75rem", flexWrap: "wrap", justifyContent: "center" }}>
+            <div className="eyebrow-dot" style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "#d4ead9", color: "#1d6b3c", fontSize: "0.8rem", fontWeight: 500, letterSpacing: "0.05em", textTransform: "uppercase", padding: "0.35rem 0.85rem", borderRadius: 100 }}>
+              Free webinars · Build reputation · Get discovered
+            </div>
+            <div style={{ display: "inline-flex", alignItems: "center", gap: "0.4rem", background: "rgba(124,58,237,0.1)", border: "1px solid rgba(168,85,247,0.35)", color: "#7c3aed", fontSize: "0.78rem", fontWeight: 600, letterSpacing: "0.04em", padding: "0.35rem 0.85rem", borderRadius: 100 }}>
+              <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#a855f7", display: "inline-block" }} />
+              New · Multicast to 5 platforms
+            </div>
           </div>
 
           <h1 className="fade-up d2" style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "clamp(2.4rem,6vw,5rem)", fontWeight: 700, lineHeight: 1.05, letterSpacing: "-0.03em", color: "#0f1410", marginBottom: "1rem" }}>
@@ -165,9 +192,42 @@ export default function HomePage() {
             Host freely. Grow freely. Always.
           </p>
 
-          <p className="fade-up d3" style={{ fontSize: "1rem", color: "#5f6e66", maxWidth: 560, margin: "0 auto 2.5rem", lineHeight: 1.8 }}>
+          <p className="fade-up d3" style={{ fontSize: "1rem", color: "#5f6e66", maxWidth: 560, margin: "0 auto 1.5rem", lineHeight: 1.8 }}>
             OpenWebinar is the world's first dedicated platform for free webinars. Share your expertise, build a real reputation, and reach a global audience — at zero cost. Paid sessions coming soon for those ready to monetize.
           </p>
+
+          {/* Multicast callout strip */}
+          <div className="fade-up d3" style={{ display: "inline-flex", alignItems: "center", gap: "0.65rem", background: "rgba(124,58,237,0.07)", border: "1px solid rgba(168,85,247,0.22)", borderRadius: 100, padding: "0.6rem 1.25rem", marginBottom: "2.5rem", flexWrap: "wrap" as const, justifyContent: "center" }}>
+            <span style={{ fontSize: "0.82rem", color: "#5f6e66" }}>Multicast your webinar live to</span>
+
+            {/* Traveling signal dots */}
+            <div style={{ display: "flex", gap: "3px", alignItems: "center" }}>
+              {[0,1,2].map(i => (
+                <div key={i} className={`bdot bdot${i}`} style={{ width: 5, height: 5, borderRadius: "50%", background: "#a855f7", flexShrink: 0 }} />
+              ))}
+            </div>
+
+            {/* Social media brand icons with pulsing rings */}
+            <div style={{ display: "flex", gap: "0.3rem", alignItems: "center" }}>
+              {([
+                { title: "Facebook",  bg: "#1877F2", svg: <svg viewBox="0 0 24 24" width="13" height="13" fill="#fff"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg> },
+                { title: "YouTube",   bg: "#FF0000", svg: <svg viewBox="0 0 24 24" width="13" height="13" fill="#fff"><path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg> },
+                { title: "LinkedIn",  bg: "#0A66C2", svg: <svg viewBox="0 0 24 24" width="13" height="13" fill="#fff"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg> },
+                { title: "X",         bg: "#000000", svg: <svg viewBox="0 0 24 24" width="12" height="12" fill="#fff"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg> },
+                { title: "Instagram", bg: "radial-gradient(circle at 30% 107%,#fdf497 0%,#fd5949 45%,#d6249f 60%,#285AEB 90%)", svg: <svg viewBox="0 0 24 24" width="13" height="13" fill="#fff"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98C.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg> },
+              ] as { title: string; bg: string; svg: React.ReactNode }[]).map((p, i) => (
+                <div key={p.title} title={p.title} style={{ position: "relative", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                  {/* Pulsing ring */}
+                  <div className={`iring ir${i}`} style={{ position: "absolute", inset: -3, borderRadius: "50%", border: `1.5px solid ${p.title === "X" ? "#888" : p.title === "Instagram" ? "#d6249f" : p.bg}`, pointerEvents: "none" }} />
+                  {/* Icon */}
+                  <div style={{ width: 26, height: 26, borderRadius: "50%", background: p.bg, display: "flex", alignItems: "center", justifyContent: "center" }}>{p.svg}</div>
+                </div>
+              ))}
+            </div>
+
+            <span style={{ fontSize: "0.82rem", color: "#5f6e66" }}>simultaneously —</span>
+            <a href="#multicast" style={{ fontSize: "0.82rem", color: "#7c3aed", fontWeight: 700, textDecoration: "none" }}>see how it works →</a>
+          </div>
 
           {/* Zero cost callout */}
           <div className="fade-up d4" style={{ display: "inline-flex", alignItems: "center", gap: "1.5rem", background: "#fff", border: "1.5px solid #e2ded6", borderRadius: 16, padding: "1.1rem 2rem", marginBottom: "2.5rem", flexWrap: "wrap", justifyContent: "center" }}>
@@ -308,6 +368,99 @@ export default function HomePage() {
           </div>
         </div>
       </div>
+
+      {/* ── MULTICAST / SOCIAL BROADCAST ─────────────────────────── */}
+      <section id="multicast" className="section-pad" style={{ padding: "6rem 2rem", background: "#0f1410", color: "#faf7f2", position: "relative", overflow: "hidden" }}>
+        <div style={{ position: "absolute", inset: 0, backgroundImage: "radial-gradient(circle, rgba(255,255,255,0.03) 1px, transparent 1px)", backgroundSize: "36px 36px" }} />
+        <div style={{ position: "absolute", top: 0, left: "50%", transform: "translateX(-50%)", width: 600, height: 300, background: "radial-gradient(ellipse at 50% 0%, rgba(124,58,237,0.18) 0%, transparent 70%)", pointerEvents: "none" }} />
+        <div style={{ maxWidth: 1100, margin: "0 auto", position: "relative", zIndex: 1 }}>
+
+          {/* Eyebrow */}
+          <div className="anim-item" style={{ display: "inline-flex", alignItems: "center", gap: "0.45rem", background: "rgba(124,58,237,0.18)", border: "1px solid rgba(168,85,247,0.35)", color: "#c084fc", fontSize: "0.78rem", fontWeight: 600, letterSpacing: "0.06em", textTransform: "uppercase" as const, padding: "0.35rem 0.9rem", borderRadius: 100, marginBottom: "1.5rem" }}>
+            <span style={{ width: 6, height: 6, borderRadius: "50%", background: "#a855f7", display: "inline-block" }} />
+            New — Live Multicasting
+          </div>
+
+          <div className="grid-2col" style={{ display: "grid", gridTemplateColumns: "1fr 1fr", gap: "4rem", alignItems: "center" }}>
+
+            {/* Left — copy */}
+            <div>
+              <h2 className="anim-item" style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "clamp(1.75rem,3.5vw,2.8rem)", fontWeight: 700, letterSpacing: "-0.02em", lineHeight: 1.2, marginBottom: "1rem", color: "#faf7f2" }}>
+                Go live on every platform.<br /><em style={{ fontStyle: "italic", color: "#c084fc" }}>Simultaneously.</em>
+              </h2>
+              <p className="anim-item" style={{ fontSize: "1rem", color: "rgba(250,247,242,0.6)", lineHeight: 1.8, marginBottom: "2rem", maxWidth: 480 }}>
+                One click from inside your webinar room. Your session streams to Facebook, YouTube, LinkedIn, X, and Instagram at the same time — reaching every corner of your existing audience without switching tools.
+              </p>
+              <ul className="anim-item" style={{ listStyle: "none", padding: 0, margin: "0 0 2.25rem", display: "flex", flexDirection: "column" as const, gap: "0.75rem" }}>
+                {[
+                  ["Set up stream keys once in your profile, reuse forever"],
+                  ["Choose which platforms to broadcast to before each webinar"],
+                  ["Recording and multicast run side-by-side — nothing interrupted"],
+                  ["5 platforms · Facebook, YouTube, LinkedIn, X & Instagram"],
+                ].map(([text]) => (
+                  <li key={text} style={{ display: "flex", alignItems: "flex-start", gap: "0.65rem", fontSize: "0.875rem", color: "rgba(250,247,242,0.75)", lineHeight: 1.5 }}>
+                    <span style={{ width: 18, height: 18, borderRadius: "50%", background: "rgba(168,85,247,0.2)", border: "1px solid rgba(168,85,247,0.4)", color: "#c084fc", fontSize: "0.65rem", fontWeight: 700, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, marginTop: 2 }}>✓</span>
+                    {text}
+                  </li>
+                ))}
+              </ul>
+              <div className="anim-item" style={{ display: "flex", gap: "0.85rem", flexWrap: "wrap" as const }}>
+                <Link href="/login" style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "linear-gradient(135deg,#7c3aed,#a855f7)", color: "#fff", padding: "0.8rem 1.75rem", borderRadius: 100, fontWeight: 600, fontSize: "0.9rem", textDecoration: "none" }}>
+                  Start broadcasting →
+                </Link>
+                <Link href="/profile" style={{ display: "inline-flex", alignItems: "center", gap: "0.5rem", background: "rgba(255,255,255,0.07)", color: "rgba(250,247,242,0.7)", padding: "0.8rem 1.5rem", borderRadius: 100, fontWeight: 500, fontSize: "0.9rem", textDecoration: "none", border: "1px solid rgba(255,255,255,0.12)" }}>
+                  Set up stream keys
+                </Link>
+              </div>
+            </div>
+
+            {/* Right — broadcast hub visual */}
+            <div className="anim-item" style={{ display: "flex", flexDirection: "column" as const, alignItems: "center", gap: "0" }}>
+
+              {/* Source webinar badge */}
+              <div style={{ background: "rgba(255,255,255,0.06)", border: "1.5px solid rgba(255,255,255,0.12)", borderRadius: 16, padding: "1rem 1.5rem", display: "flex", alignItems: "center", gap: "0.75rem", width: "100%", maxWidth: 340, boxSizing: "border-box" as const }}>
+                <div style={{ width: 10, height: 10, borderRadius: "50%", background: "#ef4444", flexShrink: 0, boxShadow: "0 0 8px #ef4444" }} />
+                <div>
+                  <div style={{ fontSize: "0.82rem", fontWeight: 700, color: "#faf7f2" }}>Your Webinar — LIVE</div>
+                  <div style={{ fontSize: "0.72rem", color: "rgba(250,247,242,0.45)", marginTop: "0.1rem" }}>1 source · HD broadcast</div>
+                </div>
+                <div style={{ marginLeft: "auto", background: "rgba(124,58,237,0.25)", border: "1px solid rgba(168,85,247,0.4)", borderRadius: 100, padding: "0.2rem 0.6rem", fontSize: "0.7rem", fontWeight: 700, color: "#c084fc", whiteSpace: "nowrap" as const }}>📡 Multicasting</div>
+              </div>
+
+              {/* Connector line */}
+              <div style={{ width: 2, height: 28, background: "linear-gradient(to bottom, rgba(168,85,247,0.5), rgba(168,85,247,0.15))", margin: "0 auto" }} />
+
+              {/* Broadcast engine node */}
+              <div style={{ background: "rgba(124,58,237,0.15)", border: "1.5px solid rgba(168,85,247,0.35)", borderRadius: 12, padding: "0.6rem 1.25rem", fontSize: "0.78rem", fontWeight: 600, color: "#c084fc", letterSpacing: "0.04em" }}>OpenWebinar Broadcast Engine</div>
+
+              {/* Fan-out lines */}
+              <div style={{ width: "100%", maxWidth: 340, height: 28, position: "relative" }}>
+                {[0, 1, 2, 3, 4].map(i => (
+                  <div key={i} style={{ position: "absolute", top: 0, bottom: 0, left: `${10 + i * 20}%`, width: 1.5, background: "linear-gradient(to bottom, rgba(168,85,247,0.3), rgba(168,85,247,0.08))" }} />
+                ))}
+              </div>
+
+              {/* Platform tiles */}
+              <div style={{ display: "grid", gridTemplateColumns: "repeat(5,1fr)", gap: "0.5rem", width: "100%", maxWidth: 340 }}>
+                {([
+                  { label: "Facebook",  iconBg: "#1877F2", tileBg: "rgba(24,119,242,0.12)",  border: "rgba(24,119,242,0.35)",   svg: <svg viewBox="0 0 24 24" width="15" height="15" fill="#fff"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg> },
+                  { label: "YouTube",   iconBg: "#FF0000", tileBg: "rgba(255,0,0,0.1)",       border: "rgba(255,0,0,0.3)",       svg: <svg viewBox="0 0 24 24" width="15" height="15" fill="#fff"><path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg> },
+                  { label: "LinkedIn",  iconBg: "#0A66C2", tileBg: "rgba(10,102,194,0.12)",   border: "rgba(10,102,194,0.35)",   svg: <svg viewBox="0 0 24 24" width="15" height="15" fill="#fff"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg> },
+                  { label: "X",         iconBg: "#000",    tileBg: "rgba(255,255,255,0.06)",   border: "rgba(255,255,255,0.15)",  svg: <svg viewBox="0 0 24 24" width="13" height="13" fill="#fff"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg> },
+                  { label: "Instagram", iconBg: "url(#ig)", tileBg: "rgba(225,48,108,0.1)", border: "rgba(225,48,108,0.3)",   svg: <svg viewBox="0 0 24 24" width="14" height="14" fill="#fff"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98C.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg> },
+                ] as { label: string; iconBg: string; tileBg: string; border: string; svg: React.ReactNode }[]).map((p) => (
+                  <div key={p.label} style={{ display: "flex", flexDirection: "column" as const, alignItems: "center", gap: "0.35rem", padding: "0.75rem 0.25rem", borderRadius: 12, background: p.tileBg, border: `1.5px solid ${p.border}` }}>
+                    <div style={{ width: 34, height: 34, borderRadius: 8, background: p.label === "Instagram" ? "radial-gradient(circle at 30% 107%, #fdf497 0%, #fd5949 45%, #d6249f 60%, #285AEB 90%)" : p.iconBg, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>{p.svg}</div>
+                    <span style={{ fontSize: "0.6rem", color: "rgba(250,247,242,0.5)", textAlign: "center" as const, lineHeight: 1.2 }}>{p.label}</span>
+                  </div>
+                ))}
+              </div>
+
+              <div style={{ marginTop: "1.25rem", fontSize: "0.75rem", color: "rgba(250,247,242,0.35)", textAlign: "center" as const }}>All 5 platforms receive the same HD stream</div>
+            </div>
+          </div>
+        </div>
+      </section>
 
       {/* ── ATTENDEE EXPERIENCE ────────────────────────────────────── */}
       <section className="section-pad" style={{ padding: "6rem 2rem", background: "#fff", borderTop: "1px solid #e2ded6" }}>

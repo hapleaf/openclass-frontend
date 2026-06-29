@@ -14,6 +14,7 @@ import {
 import Header from "@/components/common/HeadFoot/header";
 import { getPublicSession, type PublicSessionData } from "@/lib/session";
 import { apiFetch } from "@/lib/api";
+import { getStreamIntegrations, startStream, stopStream, getStreamStatus, PLATFORMS, type StreamIntegration } from "@/lib/stream";
 
 // ── Design tokens ─────────────────────────────────────────────────────────────
 const T = {
@@ -42,6 +43,8 @@ interface TokenResponse {
   roomName: string;
   isOrganizer: boolean;
   isRecording: boolean;
+  isStreaming: boolean;
+  streamingPlatforms?: string[];
   sessionInfo: {
     id: number;
     title: string;
@@ -193,6 +196,18 @@ export default function JoinPage() {
   const joiningRef = useRef(false);
   const [isMobile, setIsMobile] = useState(false);
 
+  // ── Streaming state ───────────────────────────────────────────────────────
+  const [isStreaming, setIsStreaming] = useState(false);
+  const [streamingPlatforms, setStreamingPlatforms] = useState<string[]>([]);
+  // Per-platform status: "connecting" | "live" | "failed"
+  const [streamPlatformStatus, setStreamPlatformStatus] = useState<Record<string, "connecting" | "live" | "failed">>({});
+  const [streamLoading, setStreamLoading] = useState(false);
+  const [showStreamModal, setShowStreamModal] = useState(false);
+  const [streamIntegrations, setStreamIntegrations] = useState<StreamIntegration[]>([]);
+  const [selectedPlatforms, setSelectedPlatforms] = useState<string[]>([]);
+  const [streamError, setStreamError] = useState<string | null>(null);
+  const streamPollRef = React.useRef<ReturnType<typeof setInterval> | null>(null);
+
   // ── Who am I? ──────────────────────────────────────────────────────────────
   const myUserId = useRef<number | null>(null);
   const myName = useRef<string>("You");
@@ -246,6 +261,15 @@ export default function JoinPage() {
         setOnlineCount(data.onlineCount);
         setRegisteredCount(data.registeredCount);
         if (data.isRecording) setIsRecording(true);
+        if (data.isStreaming) {
+          setIsStreaming(true);
+          if (data.streamingPlatforms?.length) {
+            setStreamingPlatforms(data.streamingPlatforms);
+            const initStatus: Record<string, "connecting" | "live" | "failed"> = {};
+            data.streamingPlatforms.forEach((p: string) => { initStatus[p] = "live"; });
+            setStreamPlatformStatus(initStatus);
+          }
+        }
         setPhase("device-check");
       } catch {
         setErrorMsg("Could not connect to session. Please try again.");
@@ -692,6 +716,84 @@ export default function JoinPage() {
     }
   }, [sessionId]);
 
+  // ── Stream integrations load (organizer only, on room phase) ─────────────
+  useEffect(() => {
+    if (phase !== "room" || !tokenData?.isOrganizer) return;
+    getStreamIntegrations()
+      .then((rows) => {
+        setStreamIntegrations(rows);
+        setSelectedPlatforms(rows.map((r) => r.platform));
+      })
+      .catch(() => {});
+  }, [phase, tokenData?.isOrganizer]);
+
+  const handleStartStream = useCallback(async () => {
+    if (!selectedPlatforms.length) { setStreamError("Select at least one platform"); return; }
+    setStreamLoading(true);
+    setStreamError(null);
+    try {
+      await startStream(Number(sessionId), selectedPlatforms);
+      const initStatus: Record<string, "connecting" | "live" | "failed"> = {};
+      selectedPlatforms.forEach((p) => { initStatus[p] = "connecting"; });
+      setIsStreaming(true);
+      setStreamingPlatforms(selectedPlatforms);
+      setStreamPlatformStatus(initStatus);
+      setShowStreamModal(false);
+
+      // Poll egress status for up to 30s — update per-platform
+      let attempts = 0;
+      if (streamPollRef.current) clearInterval(streamPollRef.current);
+      streamPollRef.current = setInterval(async () => {
+        attempts++;
+        try {
+          const s = await getStreamStatus(Number(sessionId));
+          const LKMAP: Record<string, "connecting" | "live" | "failed"> = {
+            STARTING: "connecting", ACTIVE: "live",
+            COMPLETE: "failed", FAILED: "failed", ABORTED: "failed", LIMIT_REACHED: "failed",
+          };
+          const next: Record<string, "connecting" | "live" | "failed"> = {};
+          Object.entries(s.platforms).forEach(([p, st]) => {
+            next[p] = LKMAP[st] ?? "connecting";
+          });
+          setStreamPlatformStatus(next);
+
+          const values = Object.values(next);
+          const allResolved = values.every((v) => v === "live" || v === "failed");
+          if (allResolved || !s.anyActive && attempts >= 3) {
+            clearInterval(streamPollRef.current!);
+            streamPollRef.current = null;
+          }
+        } catch { /* ignore poll errors */ }
+        if (attempts >= 10) {
+          // 30s elapsed — assume live for any still-connecting platform
+          setStreamPlatformStatus((prev) => {
+            const next = { ...prev };
+            Object.keys(next).forEach((p) => { if (next[p] === "connecting") next[p] = "live"; });
+            return next;
+          });
+          clearInterval(streamPollRef.current!);
+          streamPollRef.current = null;
+        }
+      }, 3000);
+    } catch (err) {
+      setStreamError(err instanceof Error ? err.message : "Failed to start stream");
+    } finally {
+      setStreamLoading(false);
+    }
+  }, [sessionId, selectedPlatforms]);
+
+  const handleStopStream = useCallback(async () => {
+    setStreamLoading(true);
+    if (streamPollRef.current) { clearInterval(streamPollRef.current); streamPollRef.current = null; }
+    try {
+      await stopStream(Number(sessionId));
+    } catch { /* backend already handles gracefully — always clears DB */ }
+    setIsStreaming(false);
+    setStreamingPlatforms([]);
+    setStreamPlatformStatus({});
+    setStreamLoading(false);
+  }, [sessionId]);
+
   const sendChat = useCallback(() => {
     const text = chatInput.trim();
     if (!text) return;
@@ -1100,6 +1202,58 @@ export default function JoinPage() {
                 <span style={{ fontSize: "0.78rem", fontWeight: 600, color: "#fc8a8a", fontFamily: "var(--font-dm-sans), sans-serif" }}>Recording</span>
               </div>
             )}
+            {/* ── Go Live / Streaming ── */}
+            {isOrg && !isStreaming && (
+              <button
+                onClick={() => setShowStreamModal(true)}
+                disabled={streamIntegrations.length === 0}
+                title={streamIntegrations.length === 0 ? "Set up streaming in Profile → Streaming" : "Go Live on social media"}
+                style={{ background: "rgba(255,255,255,0.08)", color: streamIntegrations.length === 0 ? "rgba(255,255,255,0.3)" : "rgba(255,255,255,0.75)", border: "1px solid rgba(255,255,255,0.18)", borderRadius: 100, padding: "0.35rem 0.9rem", fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "0.78rem", fontWeight: 600, cursor: streamIntegrations.length === 0 ? "not-allowed" : "pointer", display: "flex", alignItems: "center", gap: "0.4rem", transition: "all 0.2s" }}
+              >
+                📡 {isMobile ? "Live" : "Go Live"}
+              </button>
+            )}
+            {isOrg && isStreaming && (() => {
+              const statuses = Object.values(streamPlatformStatus);
+              const anyConnecting = statuses.some((v) => v === "connecting");
+              const allFailed = statuses.length > 0 && statuses.every((v) => v === "failed");
+              const dotColor = allFailed ? "#ef4444" : anyConnecting ? "#f59e0b" : "#a855f7";
+              const label = allFailed ? "FAILED" : anyConnecting ? "CONNECTING…" : "LIVE";
+              const labelColor = allFailed ? "#f87171" : anyConnecting ? "#fbbf24" : "#d8b4fe";
+              const borderColor = allFailed ? "rgba(239,68,68,0.3)" : "rgba(168,85,247,0.35)";
+              const bgColor = allFailed ? "rgba(239,68,68,0.1)" : "rgba(168,85,247,0.12)";
+              return (
+                <div style={{ display: "flex", alignItems: "center", gap: "0.5rem" }}>
+                  <div style={{ display: "flex", alignItems: "center", gap: "0.4rem", background: bgColor, border: `1px solid ${borderColor}`, borderRadius: 100, padding: "0.3rem 0.75rem" }}>
+                    <div style={{ width: 7, height: 7, borderRadius: "50%", background: dotColor, animation: "pulse-live 2s infinite", flexShrink: 0 }} />
+                    <span style={{ fontSize: "0.72rem", fontWeight: 700, color: labelColor, fontFamily: "var(--font-dm-sans), sans-serif", letterSpacing: "0.04em" }}>{label}</span>
+                    {/* Per-platform icons with status ring */}
+                    {streamingPlatforms.map((pk) => {
+                      const st = streamPlatformStatus[pk] ?? "connecting";
+                      const ring = st === "live" ? "#22c55e" : st === "failed" ? "#ef4444" : "#f59e0b";
+                      return (
+                        <div key={pk} title={`${PLATFORMS[pk]?.label ?? pk}: ${st.toUpperCase()}`} style={{ position: "relative", width: 22, height: 22, flexShrink: 0 }}>
+                          <div style={{ width: 22, height: 22, borderRadius: "50%", background: pk === "instagram" ? "radial-gradient(circle at 30% 107%,#fdf497 0%,#fd5949 45%,#d6249f 60%,#285AEB 90%)" : PLATFORMS[pk]?.color ?? "#888", display: "flex", alignItems: "center", justifyContent: "center", outline: `2px solid ${ring}`, outlineOffset: 1 }}>
+                            {pk === "facebook"  && <svg viewBox="0 0 24 24" width="10" height="10" fill="#fff"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>}
+                            {pk === "youtube"   && <svg viewBox="0 0 24 24" width="10" height="10" fill="#fff"><path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>}
+                            {pk === "linkedin"  && <svg viewBox="0 0 24 24" width="10" height="10" fill="#fff"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>}
+                            {pk === "x"         && <svg viewBox="0 0 24 24" width="9" height="9" fill="#fff"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>}
+                            {pk === "instagram" && <svg viewBox="0 0 24 24" width="10" height="10" fill="#fff"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98C.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>}
+                          </div>
+                        </div>
+                      );
+                    })}
+                  </div>
+                  <button
+                    onClick={handleStopStream}
+                    disabled={streamLoading}
+                    style={{ background: "rgba(239,68,68,0.12)", border: "1px solid rgba(239,68,68,0.3)", borderRadius: 100, padding: "0.3rem 0.75rem", fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "0.72rem", fontWeight: 600, color: "#fca5a5", cursor: streamLoading ? "default" : "pointer" }}
+                  >
+                    {streamLoading ? "Stopping…" : allFailed ? "Dismiss" : "Stop"}
+                  </button>
+                </div>
+              );
+            })()}
             {isOrg && (
               <button onClick={() => setShowEndConfirm(true)} style={{ background: "rgba(255,255,255,0.07)", color: "rgba(255,255,255,0.65)", border: "1px solid rgba(255,255,255,0.14)", borderRadius: 100, padding: "0.35rem 0.9rem", fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "0.78rem", fontWeight: 600, cursor: "pointer", transition: "all 0.15s" }}>
                 {isMobile ? "End" : "End Session"}
@@ -1310,7 +1464,10 @@ export default function JoinPage() {
               <div style={{ padding: "1.1rem" }}>
                 {activeTab === "about" && (
                   <>
-                    <p style={{ fontSize: "0.85rem", color: T.inkSoft, lineHeight: 1.75, margin: "0 0 1rem" }}>{session?.description || "No description provided."}</p>
+                    {session?.description
+                      ? <div style={{ fontSize: "0.85rem", color: T.inkSoft, lineHeight: 1.75, margin: "0 0 1rem" }} dangerouslySetInnerHTML={{ __html: session.description }} />
+                      : <p style={{ fontSize: "0.85rem", color: T.inkSoft, lineHeight: 1.75, margin: "0 0 1rem" }}>No description provided.</p>
+                    }
                     {session?.tags && (() => { let tags: string[] = []; try { tags = JSON.parse(session.tags); } catch { tags = session.tags.split(",").map(t => t.trim()); } return (
                       <div style={{ display: "flex", flexWrap: "wrap" as const, gap: "0.4rem" }}>
                         {tags.map((tag) => <span key={tag} style={{ fontSize: "0.72rem", fontWeight: 500, padding: "0.2rem 0.6rem", borderRadius: 100, background: "#ddeaf8", color: T.sky }}>{tag}</span>)}
@@ -1504,6 +1661,96 @@ export default function JoinPage() {
           </div>
         </div>
       </div>
+
+      {/* ── Go Live modal ── */}
+      {showStreamModal && (
+        <div style={{ position: "fixed", inset: 0, zIndex: 9999, display: "flex", alignItems: "center", justifyContent: "center", padding: "1rem" }}>
+          <div onClick={() => !streamLoading && setShowStreamModal(false)} style={{ position: "absolute", inset: 0, background: "rgba(8,14,10,0.78)", backdropFilter: "blur(6px)" }} />
+          <div style={{ position: "relative", width: "100%", maxWidth: 440, background: "#13201a", border: "1px solid rgba(255,255,255,0.09)", borderRadius: 20, overflow: "hidden", boxShadow: "0 32px 80px rgba(0,0,0,0.6)", animation: "modalIn 0.22s ease" }}>
+            <div style={{ height: 3, background: "linear-gradient(90deg, #7c3aed, #a855f7, #c084fc)" }} />
+            <div style={{ padding: "1.75rem 2rem" }}>
+
+              {/* Title */}
+              <div style={{ fontFamily: "var(--font-fraunces), Georgia, serif", fontSize: "1.25rem", fontWeight: 700, color: "#fff", marginBottom: "0.3rem" }}>📡 Go Live</div>
+              <div style={{ fontSize: "0.8rem", color: "rgba(255,255,255,0.45)", marginBottom: "0.75rem" }}>Stream this session to your social media audience</div>
+              <div style={{ fontSize: "0.75rem", color: "#fbbf24", background: "rgba(251,191,36,0.08)", border: "1px solid rgba(251,191,36,0.2)", borderRadius: 8, padding: "0.45rem 0.75rem", marginBottom: "1.25rem" }}>
+                ⚡ Select{" "}<strong>all platforms</strong>{" "}you want before pressing Go Live — you can&apos;t add more mid-stream without stopping first.
+              </div>
+
+              {/* Platform tiles */}
+              <div style={{ display: "flex", flexDirection: "column" as const, gap: "0.55rem", marginBottom: "1.25rem" }}>
+                {Object.entries(PLATFORMS).map(([pk, p]) => {
+                  const integration = streamIntegrations.find((r) => r.platform === pk);
+                  const connected = !!integration;
+                  const selected = selectedPlatforms.includes(pk);
+                  return (
+                    <div
+                      key={pk}
+                      onClick={() => {
+                        if (!connected) return;
+                        setSelectedPlatforms((prev) =>
+                          prev.includes(pk) ? prev.filter((x) => x !== pk) : [...prev, pk]
+                        );
+                      }}
+                      style={{
+                        display: "flex", alignItems: "center", gap: "0.85rem",
+                        padding: "0.75rem 1rem", borderRadius: 12,
+                        border: `1.5px solid ${selected ? "rgba(168,85,247,0.55)" : connected ? "rgba(255,255,255,0.1)" : "rgba(255,255,255,0.05)"}`,
+                        background: selected ? "rgba(168,85,247,0.1)" : connected ? "rgba(255,255,255,0.04)" : "rgba(255,255,255,0.02)",
+                        cursor: connected ? "pointer" : "default",
+                        opacity: connected ? 1 : 0.45,
+                        transition: "all 0.15s",
+                      }}
+                    >
+                      <div style={{ width: 36, height: 36, borderRadius: 10, background: pk === "instagram" ? "radial-gradient(circle at 30% 107%,#fdf497 0%,#fd5949 45%,#d6249f 60%,#285AEB 90%)" : p.color, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 }}>
+                        {pk === "facebook"  && <svg viewBox="0 0 24 24" width="17" height="17" fill="#fff"><path d="M24 12.073c0-6.627-5.373-12-12-12s-12 5.373-12 12c0 5.99 4.388 10.954 10.125 11.854v-8.385H7.078v-3.47h3.047V9.43c0-3.007 1.792-4.669 4.533-4.669 1.312 0 2.686.235 2.686.235v2.953H15.83c-1.491 0-1.956.925-1.956 1.874v2.25h3.328l-.532 3.47h-2.796v8.385C19.612 23.027 24 18.062 24 12.073z"/></svg>}
+                        {pk === "youtube"   && <svg viewBox="0 0 24 24" width="17" height="17" fill="#fff"><path d="M23.495 6.205a3.007 3.007 0 0 0-2.088-2.088c-1.87-.501-9.396-.501-9.396-.501s-7.507-.01-9.396.501A3.007 3.007 0 0 0 .527 6.205a31.247 31.247 0 0 0-.522 5.805 31.247 31.247 0 0 0 .522 5.783 3.007 3.007 0 0 0 2.088 2.088c1.868.502 9.396.502 9.396.502s7.506 0 9.396-.502a3.007 3.007 0 0 0 2.088-2.088 31.247 31.247 0 0 0 .5-5.783 31.247 31.247 0 0 0-.5-5.805zM9.609 15.601V8.408l6.264 3.602z"/></svg>}
+                        {pk === "linkedin"  && <svg viewBox="0 0 24 24" width="17" height="17" fill="#fff"><path d="M20.447 20.452h-3.554v-5.569c0-1.328-.027-3.037-1.852-3.037-1.853 0-2.136 1.445-2.136 2.939v5.667H9.351V9h3.414v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 0 1-2.063-2.065 2.064 2.064 0 1 1 2.063 2.065zm1.782 13.019H3.555V9h3.564v11.452zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.451C23.2 24 24 23.227 24 22.271V1.729C24 .774 23.2 0 22.222 0h.003z"/></svg>}
+                        {pk === "x"         && <svg viewBox="0 0 24 24" width="15" height="15" fill="#fff"><path d="M18.901 1.153h3.68l-8.04 9.19L24 22.846h-7.406l-5.8-7.584-6.638 7.584H.474l8.6-9.83L0 1.154h7.594l5.243 6.932ZM17.61 20.644h2.039L6.486 3.24H4.298Z"/></svg>}
+                        {pk === "instagram" && <svg viewBox="0 0 24 24" width="17" height="17" fill="#fff"><path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98C.014 8.333 0 8.741 0 12c0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98C8.333 23.986 8.741 24 12 24c3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98C15.668.014 15.259 0 12 0zm0 5.838a6.162 6.162 0 1 0 0 12.324 6.162 6.162 0 0 0 0-12.324zM12 16a4 4 0 1 1 0-8 4 4 0 0 1 0 8zm6.406-11.845a1.44 1.44 0 1 0 0 2.881 1.44 1.44 0 0 0 0-2.881z"/></svg>}
+                      </div>
+                      <div style={{ flex: 1, minWidth: 0 }}>
+                        <div style={{ fontSize: "0.88rem", fontWeight: 600, color: connected ? "#fff" : "rgba(255,255,255,0.4)" }}>{p.label}</div>
+                        <div style={{ fontSize: "0.72rem", color: "rgba(255,255,255,0.35)", marginTop: "0.1rem" }}>
+                          {connected
+                            ? (integration.label ? `${integration.label} · ` : "") + "Key saved ✓"
+                            : <a href="/profile#streaming" target="_blank" onClick={(e) => e.stopPropagation()} style={{ color: "#c084fc", textDecoration: "none", fontWeight: 600 }}>Set up in Profile →</a>}
+                        </div>
+                      </div>
+                      <div style={{ width: 20, height: 20, borderRadius: "50%", border: `2px solid ${selected ? "#a855f7" : "rgba(255,255,255,0.2)"}`, background: selected ? "#a855f7" : "transparent", display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0, transition: "all 0.15s" }}>
+                        {selected && <div style={{ width: 8, height: 8, borderRadius: "50%", background: "#fff" }} />}
+                      </div>
+                    </div>
+                  );
+                })}
+              </div>
+
+              {/* Error */}
+              {streamError && (
+                <div style={{ padding: "0.65rem 0.9rem", borderRadius: 10, background: "rgba(239,68,68,0.12)", border: "1px solid rgba(239,68,68,0.3)", color: "#fc8a8a", fontSize: "0.8rem", marginBottom: "1rem" }}>
+                  ⚠️ {streamError}
+                </div>
+              )}
+
+              {/* Actions */}
+              <div style={{ display: "flex", gap: "0.75rem" }}>
+                <button onClick={() => setShowStreamModal(false)} disabled={streamLoading} style={{ flex: 1, padding: "0.7rem", borderRadius: 12, border: "1px solid rgba(255,255,255,0.12)", background: "rgba(255,255,255,0.06)", color: "rgba(255,255,255,0.7)", fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "0.85rem", fontWeight: 600, cursor: "pointer" }}>
+                  Cancel
+                </button>
+                <button
+                  onClick={handleStartStream}
+                  disabled={streamLoading || selectedPlatforms.length === 0}
+                  style={{ flex: 2, padding: "0.7rem", borderRadius: 12, border: "none", background: streamLoading || selectedPlatforms.length === 0 ? "rgba(168,85,247,0.3)" : "linear-gradient(135deg,#7c3aed,#a855f7)", color: "#fff", fontFamily: "var(--font-dm-sans), sans-serif", fontSize: "0.85rem", fontWeight: 700, cursor: streamLoading || selectedPlatforms.length === 0 ? "default" : "pointer", display: "flex", alignItems: "center", justifyContent: "center", gap: "0.5rem" }}
+                >
+                  {streamLoading
+                    ? <><span style={{ width: 14, height: 14, border: "2px solid rgba(255,255,255,0.3)", borderTopColor: "#fff", borderRadius: "50%", display: "inline-block", animation: "spin 0.7s linear infinite" }} /> Starting…</>
+                    : `▶ Stream to ${selectedPlatforms.length} platform${selectedPlatforms.length !== 1 ? "s" : ""}`}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
 
       {/* ── End Session confirmation modal ── */}
       {showEndConfirm && (

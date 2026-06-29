@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect, useCallback, useRef } from "react";
+import { useState, useEffect, useCallback, useRef, Fragment } from "react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { makeProfileSlug } from "@/lib/profile";
@@ -12,7 +12,7 @@ import {
   getContactMessages, getContactThread, replyToContact, markContactRead, deleteContactMessage,
   recordingRunManually, recordingQueueStatus, recordingGetUploaded, recordingGetLogs,
   infraTestS3, infraTestBunny, infraTestFfmpeg, infraTestLiveKit, infraTestRedis, getSystemStats,
-  SystemStats, recordingScanDisk, recordingSyncS3, storageMigrateUrls, recordingGetEgressLogs,
+  SystemStats, recordingScanDisk, recordingSyncS3, storageMigrateUrls, recordingGetEgressLogs, recordingSyncEgressLogs,
   AdminOverview, PendingSession, SessionStats, UserStats, SessionRow, AuditLogEntry, AdminUser,
   EngagementRow, TopTeachers, TopStudentRow, SubscriberTeacherRow, ContactMessage,
   InfraTestResult, RecordingQueueStatus, UploadedSession, RecordingLogEntry, EgressLog,
@@ -312,7 +312,8 @@ export default function AdminPage() {
       const payload = JSON.parse(atob(token.split('.')[1]));
       if (payload.role !== 'admin') { router.replace('/'); return; }
     } catch { router.replace('/'); }
-  }, [router]);
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
 
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth <= 768);
@@ -2106,6 +2107,24 @@ export default function AdminPage() {
                         style={{ padding: "0.25rem 0.85rem", borderRadius: T.rs, border: `1px solid ${T.border}`, background: T.white, color: T.inkSoft, fontWeight: 600, fontSize: "0.72rem", cursor: "pointer", fontFamily: T.ff }}>
                         Refresh
                       </button>
+                      <button onClick={() => {
+                        setEgressLogsLoading(true);
+                        recordingSyncEgressLogs()
+                          .then(r => {
+                            const parts = [];
+                            if (r.updated) parts.push(`${r.updated} updated`);
+                            if (r.markedAborted) parts.push(`${r.markedAborted} marked aborted (webhook missed)`);
+                            if (r.errors?.length) parts.push(`${r.errors.length} errors:\n${r.errors.join('\n')}`);
+                            alert(parts.length ? `Sync complete: ${parts.join('\n')}` : 'Nothing to sync — all logs up to date');
+                            return recordingGetEgressLogs(egressFilter === "all" ? undefined : egressFilter);
+                          })
+                          .then(setEgressLogs)
+                          .catch(e => alert(e.message))
+                          .finally(() => setEgressLogsLoading(false));
+                      }}
+                        style={{ padding: "0.25rem 0.85rem", borderRadius: T.rs, border: `1px solid ${T.sky}`, background: "#e8f4ff", color: T.sky, fontWeight: 600, fontSize: "0.72rem", cursor: "pointer", fontFamily: T.ff }}>
+                        Sync LiveKit
+                      </button>
                     </div>
                   </div>
 
@@ -2149,8 +2168,8 @@ export default function AdminPage() {
                               : "—";
 
                             return (
-                              <>
-                                <tr key={log.id}
+                              <Fragment key={log.id}>
+                                <tr
                                   onClick={() => setEgressExpanded(isExpanded ? null : log.id)}
                                   style={{ borderTop: `1px solid ${T.border}`, cursor: "pointer", background: isExpanded ? T.cream : "transparent", transition: "background 0.15s" }}>
                                   <td style={{ padding: "0.55rem 0.75rem", color: T.ink, fontWeight: 600, maxWidth: 180, overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" as const }}>
@@ -2205,7 +2224,7 @@ export default function AdminPage() {
                                     </td>
                                   </tr>
                                 )}
-                              </>
+                              </Fragment>
                             );
                           })}
                         </tbody>
